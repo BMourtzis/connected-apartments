@@ -8,6 +8,13 @@ namespace ConnApsDomain
 {
     public abstract class Facade
     {
+        internal BuildingRegister buildingRegister;
+        internal PersonRegister personRegister;
 
+        public Facade()
+        {
+            buildingRegister = new BuildingRegister();
+            personRegister = new PersonRegister();
+        }
     }
 }

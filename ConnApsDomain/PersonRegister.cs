@@ -12,7 +12,7 @@ namespace ConnApsDomain
 
         #region Constructors
 
-
+        public PersonRegister() { }
 
         #endregion
 
@@ -24,7 +24,17 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        public IBuildingManager addBuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid)
+        {
+            BuildingManager bm;
+            using (var context = new ConnApsContext())
+            {
+                bm = new BuildingManager(firstname, lastname, dateofbirth, newPhone, userid);
+                context.BuildingManagers.Add(bm);
+                context.SaveChanges();
+            }
+            return bm;
+        }
 
         #endregion
     }

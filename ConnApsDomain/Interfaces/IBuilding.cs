@@ -8,6 +8,7 @@ namespace ConnApsDomain
         string BuildingName { get; }
         string Address { get; }
         IEnumerable<ILocation> Locations { get; }
+        int BuildingId { get; }
         IBuildingManager BuildingManager { get; }
 
     }

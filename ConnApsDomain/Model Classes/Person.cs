@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,10 +10,17 @@ namespace ConnApsDomain
 {
     internal abstract class Person: IPerson
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        private int personId;
+        [Required]
         private string firstName;
+        [Required]
         private string lastName;
+        [Required]
         private DateTime dateOfBirth;
         private string phone;
+        [Required]
         private string userId;
 
         #region Constructors
