@@ -10,8 +10,6 @@ namespace ConnApsDomain
 {
     internal class BuildingManager: Person, IBuildingManager
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         private int buildingManagerId;
 
         internal virtual Building building { get; set; }
@@ -29,13 +27,13 @@ namespace ConnApsDomain
 
         #region Properties
 
-        public int BuildingManagerId
-        {
-            get
-            {
-                return buildingManagerId;
-            }
-        }
+        //public int BuildingManagerId
+        //{
+        //    get
+        //    {
+        //        return buildingManagerId;
+        //    }
+        //}
 
         IBuilding IBuildingManager.Building
         {

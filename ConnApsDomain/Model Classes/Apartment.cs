@@ -10,15 +10,11 @@ namespace ConnApsDomain
 {
     internal class Apartment: Location, IApartment
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int apartmentId;
-        [Required]
         private int tenantsAllowed;
         private string facingDirection;
         private int tenantId;
         
-        [ForeignKey("tenantId")]
+        [ForeignKey("TenantId")]
         internal virtual Tenant Tenant { get; set; }
 
         #region Constructors
@@ -35,27 +31,29 @@ namespace ConnApsDomain
 
         #region Properties
 
-        public int ApartmentId
-        {
-            get
-            {
-                return apartmentId;
-            }
-        }
-
+        [Required]
         public int TenantsAllowed
         {
             get
             {
                 return tenantsAllowed;
             }
+            set
+            {
+                tenantsAllowed = value;
+            }
         }
 
+        [Required]
         public string FacingDirection
         {
             get
             {
                 return facingDirection;
+            }
+            set
+            {
+                facingDirection = value;
             }
         }
 
@@ -64,6 +62,10 @@ namespace ConnApsDomain
             get
             {
                 return tenantId;
+            }
+            set
+            {
+                tenantId = value;
             }
         }
 

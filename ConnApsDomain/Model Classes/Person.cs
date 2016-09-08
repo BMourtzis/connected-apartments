@@ -10,17 +10,11 @@ namespace ConnApsDomain
 {
     internal abstract class Person: IPerson
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int personId;
-        [Required]
+        private int id;
         private string firstName;
-        [Required]
         private string lastName;
-        [Required]
         private DateTime dateOfBirth;
         private string phone;
-        [Required]
         private string userId;
 
         #region Constructors
@@ -40,27 +34,56 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        [Required]
         public string FirstName
         {
             get
             {
                 return firstName;
             }
+            set
+            {
+                firstName = value;
+            }
         }
 
+        [Required]
         public string LastName
         {
             get
             {
                 return lastName;
             }
+            set
+            {
+                lastName = value;
+            }
         }
 
+        [Required]
         public DateTime DoB
         {
             get
             {
                 return dateOfBirth;
+            }
+            set
+            {
+                dateOfBirth = value;
             }
         }
 
@@ -70,13 +93,22 @@ namespace ConnApsDomain
             {
                 return phone;
             }
+            set
+            {
+                phone = value;
+            }
         }
 
+        [Required]
         public string UserId
         {
             get
             {
                 return userId;
+            }
+            set
+            {
+                userId = value;
             }
         }
 

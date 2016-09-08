@@ -10,22 +10,13 @@ namespace ConnApsDomain
 {
     internal class Tenant: Person, ITenant
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int tenantId;
-        //private int apartmentId;
-
-        //[ForeignKey("apartmentId")]
         internal virtual Apartment Aparment { get; set; }
 
         #region Constructors
 
         protected Tenant(): base() { }
 
-        public Tenant(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid): base(firstname, lastname, dateofbirth, newPhone, userid)
-        {
-            //apartmentId = aptid;
-        }
+        public Tenant(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid): base(firstname, lastname, dateofbirth, newPhone, userid) { }
 
         #endregion
 

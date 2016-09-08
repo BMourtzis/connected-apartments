@@ -10,19 +10,14 @@ namespace ConnApsDomain
 {
     internal class Building: IBuilding
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         private int buildingId;
-        [Required]
         private string buildingName;
-        [Required]
         private string address;
-        [Required]
         private int buildingManagerId;
 
         internal virtual ICollection<Location> Locations { get; set; }
 
-        [ForeignKey("buildingManagerId")]
+        [ForeignKey("BuildingManagerId")]
         internal virtual BuildingManager Manager { get; set; }
 
         #region Constructors
@@ -40,27 +35,55 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int BuildingId
+        {
+            get
+            {
+                return buildingId;
+            }
+            set
+            {
+                buildingId = value;
+            }
+        }
+
+        [Required]
         public string BuildingName
         {
             get
             {
                 return buildingName;
             }
+            set
+            {
+                buildingName = value;
+            }
         }
 
+        [Required]
         public string Address
         {
             get
             {
                 return address;
             }
+            set
+            {
+                address = value;
+            }
         }
 
-        public int BuildingId
+        public int BuildingManagerId
         {
             get
             {
-                return buildingId;
+                return buildingManagerId;
+            }
+            set
+            {
+                buildingManagerId = value;
             }
         }
 

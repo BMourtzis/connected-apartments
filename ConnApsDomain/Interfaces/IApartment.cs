@@ -2,7 +2,7 @@
 {
     public interface IApartment
     {
-        int ApartmentId { get; }
+        int Id { get; }
         string Level { get; }
         string Number { get; }
         int BuildingId { get; }

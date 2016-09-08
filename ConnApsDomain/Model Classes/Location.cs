@@ -10,14 +10,14 @@ namespace ConnApsDomain
 {
     internal abstract class Location: ILocation
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        private int locationId;
+        private int id;
         private string level;
         private string number;
+
+        [Required]
+        [ForeignKey("Building")]
         private int buildingId;
 
-        [ForeignKey("buildingId")]
         internal virtual Building Building { get; set; }
 
         #region Constructors
@@ -35,27 +35,56 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        [Required]
         public string Level
         {
             get
             {
                 return level;
             }
+            set
+            {
+                level = value;
+            }
         }
 
+        [Required]
         public string Number
         {
             get
             {
                 return number;
             }
+            set
+            {
+                number = value;
+            }
         }
 
+        [Required]
         public int BuildingId
         {
             get
             {
                 return buildingId;
+            }
+            set
+            {
+                buildingId = value;
             }
         }
 
