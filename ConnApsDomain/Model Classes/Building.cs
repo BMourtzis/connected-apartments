@@ -10,25 +10,21 @@ namespace ConnApsDomain
 {
     internal class Building: IBuilding
     {
-        private int buildingId;
+        private int id;
         private string buildingName;
         private string address;
-        private int buildingManagerId;
 
         internal virtual ICollection<Location> Locations { get; set; }
-
-        [ForeignKey("BuildingManagerId")]
-        internal virtual BuildingManager Manager { get; set; }
+        internal virtual ICollection<BuildingManager> Managers { get; set; }
 
         #region Constructors
         
         protected Building() { }
 
-        public Building(string buildingname, string newAddress, int buildingmanagerid)
+        public Building(string buildingname, string newAddress)
         {
             buildingName = buildingname;
             address = newAddress;
-            buildingManagerId = buildingmanagerid;
         }
 
         #endregion
@@ -37,15 +33,15 @@ namespace ConnApsDomain
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int BuildingId
+        public int Id
         {
             get
             {
-                return buildingId;
+                return id;
             }
             set
             {
-                buildingId = value;
+                id = value;
             }
         }
 
@@ -75,18 +71,6 @@ namespace ConnApsDomain
             }
         }
 
-        public int BuildingManagerId
-        {
-            get
-            {
-                return buildingManagerId;
-            }
-            set
-            {
-                buildingManagerId = value;
-            }
-        }
-
         IEnumerable<ILocation> IBuilding.Locations
         {
             get
@@ -95,11 +79,11 @@ namespace ConnApsDomain
             }
         }
 
-        IBuildingManager IBuilding.BuildingManager
+        IEnumerable<IBuildingManager> IBuilding.BuildingManagers
         {
             get
             {
-                return Manager;
+                return Managers;
             }
         }
 
@@ -108,9 +92,10 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public Apartment createApartment()
+        public Apartment CreateApartment(string Level, string Number, int TenantsAllowed, string FacingDirection)
         {
-            return null;
+            Apartment ap = new Apartment(Level, Number, TenantsAllowed, FacingDirection, Id);
+            return ap;
         }
 
         #endregion

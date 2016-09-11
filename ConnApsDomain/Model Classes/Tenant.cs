@@ -10,17 +10,35 @@ namespace ConnApsDomain
 {
     internal class Tenant: Person, ITenant
     {
+        private int apartmentId;
+
+        [ForeignKey("ApartmentId")]
         internal virtual Apartment Aparment { get; set; }
 
         #region Constructors
 
         protected Tenant(): base() { }
 
-        public Tenant(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid): base(firstname, lastname, dateofbirth, newPhone, userid) { }
+        public Tenant(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, int apartmentid): base(firstname, lastname, dateofbirth, newPhone, userid)
+        {
+            apartmentId = apartmentid;
+        }
 
         #endregion
 
         #region Properties
+
+        public int ApartmentId
+        {
+            get
+            {
+                return apartmentId;
+            }
+            set
+            {
+                apartmentId = value;
+            }
+        }
 
         IApartment ITenant.Apartment
         {

@@ -13,7 +13,7 @@ namespace ConnApsConsole
         {
             AdminFacade af = new AdminFacade();
 
-            var b = af.AddBuilding("Bill", "Mourtzis", new DateTime(1995, 3, 16), "0420828985", "134567", "M Apartments", "32 Francis St");
+            var bm = af.FetchBuildingManager(1);
 
             int i = 0;
         }

@@ -1,4 +1,6 @@
-﻿namespace ConnApsDomain
+﻿using System.Collections.Generic;
+
+namespace ConnApsDomain
 {
     public interface IApartment
     {
@@ -9,7 +11,6 @@
         IBuilding Building { get; }
         int TenantsAllowed { get; }
         string FacingDirection { get; }
-        int TenantId { get; }
-        ITenant Tenant { get; }
+        IEnumerable<ITenant> Tenants { get; }
     }
 }

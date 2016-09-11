@@ -10,30 +10,37 @@ namespace ConnApsDomain
 {
     internal class BuildingManager: Person, IBuildingManager
     {
-        private int buildingManagerId;
 
+        private int buildingId;
+
+        [ForeignKey("BuildingId")]
         internal virtual Building building { get; set; }
 
         #region Constructors
 
         protected BuildingManager(): base() { }
 
-        public BuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid): base(firstname, lastname, dateofbirth, newPhone, userid)
+        public BuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, int buildingid): base(firstname, lastname, dateofbirth, newPhone, userid)
         {
-            //buildingId = buildingid;
+            buildingId = buildingid;
         }
 
         #endregion
 
         #region Properties
 
-        //public int BuildingManagerId
-        //{
-        //    get
-        //    {
-        //        return buildingManagerId;
-        //    }
-        //}
+        [Required]
+        public int BuildingId
+        {
+            get
+            {
+                return buildingId;
+            }
+            set
+            {
+                buildingId = value;
+            }
+        }
 
         IBuilding IBuildingManager.Building
         {

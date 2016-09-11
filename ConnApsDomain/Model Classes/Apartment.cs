@@ -12,10 +12,8 @@ namespace ConnApsDomain
     {
         private int tenantsAllowed;
         private string facingDirection;
-        private int tenantId;
         
-        [ForeignKey("TenantId")]
-        internal virtual Tenant Tenant { get; set; }
+        internal virtual ICollection<Tenant> Tenants { get; set; }
 
         #region Constructors
 
@@ -57,23 +55,11 @@ namespace ConnApsDomain
             }
         }
 
-        public int TenantId
+        IEnumerable<ITenant> IApartment.Tenants
         {
             get
             {
-                return tenantId;
-            }
-            set
-            {
-                tenantId = value;
-            }
-        }
-
-        ITenant IApartment.Tenant
-        {
-            get
-            {
-                return Tenant;
+                return Tenants;
             }
         }
 

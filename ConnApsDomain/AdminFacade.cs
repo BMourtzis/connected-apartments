@@ -12,10 +12,10 @@ namespace ConnApsDomain
 
         #region Building
 
-        public IBuilding AddBuilding(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, string buildingname, string newAddress)
+        public IBuilding CreateBuilding(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, string buildingname, string newAddress)
         {
-            var bm = personRegister.addBuildingManager(firstname, lastname, dateofbirth, newPhone, userid);
-            var building = buildingRegister.addBuilding(buildingname, newAddress, bm.BuildingManagerId);
+            var building = buildingRegister.CreateBuilding(buildingname, newAddress);
+            var bm = personRegister.CreateBuildingManager(firstname, lastname, dateofbirth, newPhone, userid, building.Id);
             return building;
         }
 
@@ -23,6 +23,12 @@ namespace ConnApsDomain
 
         #region BuildingManager
 
+        public IBuildingManager FetchBuildingManager(int managerId)
+        {
+            var manager = personRegister.FetchBuildingManager(managerId);
+            return manager;
+        }
+        
         #endregion
     }
 }

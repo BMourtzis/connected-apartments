@@ -8,6 +8,7 @@ namespace ConnApsDomain
         string LastName { get; }
         DateTime DoB { get; }
         string Phone { get; }
+        int ApartmentId { get; }
         string UserId { get; }
         IApartment Apartment { get; }
 
