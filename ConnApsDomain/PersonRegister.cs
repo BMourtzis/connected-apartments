@@ -18,59 +18,87 @@ namespace ConnApsDomain
 
         #region Properties
 
-
+        ConnApsContext context = new ConnApsContext();
+        BuildingRegister br = new BuildingRegister();
 
         #endregion
 
-        #region Functions
+        #region BuildingManager
 
         public IBuildingManager CreateBuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, int buildingId)
         {
-            BuildingManager bm;
-            using (var context = new ConnApsContext())
-            {
-                bm = new BuildingManager(firstname, lastname, dateofbirth, newPhone, userid, buildingId);
-                context.BuildingManagers.Add(bm);
-                context.SaveChanges();
-            }
+            BuildingManager bm = new BuildingManager(firstname, lastname, dateofbirth, newPhone, userid, buildingId);
+            context.BuildingManagers.Add(bm);
+            context.SaveChanges();
+            return bm;
+        }
+
+        public IBuildingManager UpdateBuildingManager(int managerId, string firstname, string lastname, DateTime dateofbirth, string newPhone)
+        {
+            BuildingManager bm = getBuildingManager(managerId);
+            bm.UpdateBuildingManager(firstname, lastname, dateofbirth, newPhone);
+            context.SaveChanges();
             return bm;
         }
 
         public IBuildingManager FetchBuildingManager(int managerId)
         {
-            BuildingManager bm;
-            using (var context = new ConnApsContext())
-            {
-                bm = context.BuildingManagers.Include("Building")
-                            .Where(m => m.Id.Equals(managerId))
-                            .FirstOrDefault();
-            }
+            BuildingManager bm = context.BuildingManagers.Include("Building")
+                                        .Where(m => m.Id.Equals(managerId))
+                                        .FirstOrDefault();
             return bm;
 
         }
 
+        private BuildingManager getBuildingManager(int managerId)
+        {
+            BuildingManager bm = context.BuildingManagers
+                                        .Where(m => m.Id.Equals(managerId))
+                                        .FirstOrDefault();
+            return bm;
+        }
+
+        #endregion
+
+        #region Tenant
+
         public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)
         {
-            Tenant tenant;
-            using (var context = new ConnApsContext())
-            {
-                tenant = new Tenant(firstName, lastName, dob, phone, userId, apartmentId);
-                context.Tenants.Add(tenant);
-                context.SaveChanges();
-            }
+            Tenant tenant = new Tenant(firstName, lastName, dob, phone, userId, apartmentId);
+            context.Tenants.Add(tenant);
+            context.SaveChanges();
+            return tenant;
+        }
+
+        public ITenant UpdateTenant(int tenantId,string firstName, string lastName, DateTime dob, string phone, int apartmentId)
+        {
+            Tenant tenant = getTenant(tenantId);
+            tenant.UpdateTenant(firstName, lastName, dob, phone, apartmentId);
+            context.SaveChanges();
             return tenant;
         }
 
         public ITenant FetchTenant(int tenantId)
         {
-            Tenant tenant;
-            using (var context = new ConnApsContext())
-            {
-                tenant = context.Tenants.Include("Apartment")
-                                .Where(t => t.Id.Equals(tenantId))
-                                .FirstOrDefault();
-            }
+            Tenant tenant = context.Tenants.Include("Apartment")
+                                   .Where(t => t.Id.Equals(tenantId))
+                                   .FirstOrDefault();
             return tenant;
+        }
+
+        private Tenant getTenant(int tenantId)
+        {
+            Tenant tenant = context.Tenants
+                                   .Where(t => t.Id.Equals(tenantId))
+                                   .FirstOrDefault();
+            return tenant;
+        }
+
+        public IBuilding getTenantBuilding(int tenantId)
+        {
+            var tenant = FetchTenant(tenantId);
+            var building = br.FetchBuilding(tenant.BuildingId);
+            return building;
         }
 
         #endregion

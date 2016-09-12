@@ -116,14 +116,12 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public Person UpdateDetails(string firstname, string lastname, DateTime dateofbirth, string newPhone)
+        protected void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string newPhone)
         {
             firstName = firstname;
             lastName = lastname;
             dateOfBirth = dateofbirth;
             phone = newPhone;
-
-            return this;
         }
 
         #endregion

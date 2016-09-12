@@ -40,6 +40,15 @@ namespace ConnApsDomain
             }
         }
 
+        public int BuildingId
+        {
+            get
+            {
+                return Aparment.BuildingId;
+            }
+        }
+
+
         IApartment ITenant.Apartment
         {
             get
@@ -52,7 +61,11 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        public void UpdateTenant(string firstName, string lastName, DateTime dob, string phone, int apartmentId)
+        {
+            UpdatePerson(firstName, lastName, dob, phone);
+            ApartmentId = apartmentId;
+        }
 
         #endregion
     }

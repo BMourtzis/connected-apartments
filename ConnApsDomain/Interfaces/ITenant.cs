@@ -10,6 +10,7 @@ namespace ConnApsDomain
         string Phone { get; }
         int ApartmentId { get; }
         string UserId { get; }
+        int BuildingId { get; }
         IApartment Apartment { get; }
 
     }

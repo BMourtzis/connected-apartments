@@ -71,11 +71,11 @@ namespace ConnApsDomain
             }
         }
 
-        IEnumerable<ILocation> IBuilding.Locations
+        public IEnumerable<IApartment> Apartments
         {
             get
             {
-                return Locations;
+                return Locations.OfType<Apartment>();
             }
         }
 
@@ -91,6 +91,12 @@ namespace ConnApsDomain
         #endregion
 
         #region Functions
+
+        public void UpdateBuilding(string buildingName, string address)
+        {
+            BuildingName = buildingName;
+            Address = address;
+        }
 
         public Apartment CreateApartment(string Level, string Number, int TenantsAllowed, string FacingDirection)
         {

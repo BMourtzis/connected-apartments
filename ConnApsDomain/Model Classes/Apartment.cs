@@ -75,7 +75,12 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        public void UpdateApartment(string level, string number, int tenantsallowed, string facingdirection)
+        {
+            UpdateLocation(level, number);
+            TenantsAllowed = tenantsallowed;
+            FacingDirection = facingdirection;
+        }
 
         #endregion
     }

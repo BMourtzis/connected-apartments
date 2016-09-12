@@ -54,7 +54,10 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        public void UpdateBuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone)
+        {
+            UpdatePerson(firstname, lastname, dateofbirth, newPhone);
+        }
 
         #endregion
     }

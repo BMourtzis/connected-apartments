@@ -100,7 +100,11 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        protected void UpdateLocation(string level, string number)
+        {
+            Level = level;
+            Number = number;
+        }
 
         #endregion
     }
