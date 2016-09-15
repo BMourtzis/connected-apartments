@@ -28,7 +28,7 @@ namespace ConnApsDomain
             var manager = personRegister.FetchBuildingManager(managerId);
             return manager;
         }
-        
+
         #endregion
     }
 }

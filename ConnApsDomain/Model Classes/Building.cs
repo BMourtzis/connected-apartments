@@ -18,7 +18,7 @@ namespace ConnApsDomain
         internal virtual ICollection<BuildingManager> Managers { get; set; }
 
         #region Constructors
-        
+
         protected Building() { }
 
         public Building(string buildingname, string newAddress)

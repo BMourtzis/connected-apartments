@@ -13,7 +13,7 @@ namespace ConnApsDomain
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Tenant>()
                 .HasRequired(t => t.Aparment)
@@ -22,10 +22,11 @@ namespace ConnApsDomain
         }
 
         public virtual DbSet<Building> Buildings { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
+        public virtual DbSet<Apartment> Apartments { get; set; }
         public virtual DbSet<Person> People { get; set; }
         public virtual DbSet<BuildingManager> BuildingManagers { get; set; }
         public virtual DbSet<Tenant> Tenants { get; set; }
-        public virtual DbSet<Location> Locations { get; set; }
-        public virtual DbSet<Apartment> Apartments { get; set; }
+
     }
 }

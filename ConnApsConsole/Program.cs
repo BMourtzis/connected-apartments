@@ -11,9 +11,9 @@ namespace ConnApsConsole
     {
         static void Main(string[] args)
         {
-            var bmf = new BuildingManagerFacade();
+            var af = new AdminFacade();
 
-            var tenant = bmf.UpdateTenant(2, "Michael", "Condon", new DateTime(1994, 6, 9), "0123456789", 1);
+            //var tenant = bmf.UpdateTenant(2, "Michael", "Condon", new DateTime(1994, 6, 9), "0123456789", 1);
 
             int i = 0;
         }

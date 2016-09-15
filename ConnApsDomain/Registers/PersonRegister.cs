@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
-    internal class PersonRegister
+    internal class PersonRegister: IDisposable
     {
 
 
@@ -19,7 +19,6 @@ namespace ConnApsDomain
         #region Properties
 
         ConnApsContext context = new ConnApsContext();
-        BuildingRegister br = new BuildingRegister();
 
         #endregion
 
@@ -70,7 +69,7 @@ namespace ConnApsDomain
             return tenant;
         }
 
-        public ITenant UpdateTenant(int tenantId,string firstName, string lastName, DateTime dob, string phone, int apartmentId)
+        public ITenant UpdateTenant(int tenantId, string firstName, string lastName, DateTime dob, string phone, int apartmentId)
         {
             Tenant tenant = getTenant(tenantId);
             tenant.UpdateTenant(firstName, lastName, dob, phone, apartmentId);
@@ -94,11 +93,9 @@ namespace ConnApsDomain
             return tenant;
         }
 
-        public IBuilding getTenantBuilding(int tenantId)
+        public void Dispose()
         {
-            var tenant = FetchTenant(tenantId);
-            var building = br.FetchBuilding(tenant.BuildingId);
-            return building;
+            context.Dispose();
         }
 
         #endregion

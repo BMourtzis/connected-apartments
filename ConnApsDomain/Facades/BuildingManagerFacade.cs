@@ -25,7 +25,8 @@ namespace ConnApsDomain
 
         public IBuilding GetTenantBuilding(int tenantId)
         {
-
+            var building = buildingRegister.FetchBuilding(personRegister.FetchTenant(tenantId).BuildingId);
+            return building;
         }
 
         #endregion

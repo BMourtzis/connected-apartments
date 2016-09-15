@@ -16,18 +16,21 @@ using Microsoft.Owin.Security.OAuth;
 using ConnApsWebAPI.Models;
 using ConnApsWebAPI.Providers;
 using ConnApsWebAPI.Results;
+using ConnApsDomain;
 
 namespace ConnApsWebAPI.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]
-    public class AccountController : ApiController
+    public class AccountController : BaseController
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        protected AdminFacade CAD;
 
         public AccountController()
         {
+            CAD = new AdminFacade();
         }
 
         public AccountController(ApplicationUserManager userManager,
@@ -318,10 +321,31 @@ namespace ConnApsWebAPI.Controllers
             return logins;
         }
 
+        //POST api/Account/AddRoles
+        //[AllowAnonymous]
+        //[Route("AddRoles")]
+        //public async Task<IHttpActionResult> AddRoles()
+        //{
+        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+        //    var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+        //    var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+        //    return Ok();
+        //}
+
+        // DELETE api/Account/Delete
+        [AllowAnonymous]
+        [Route("Delete")]
+        public IHttpActionResult DeleteUser(string Email)
+        {
+            var user = UserManager.FindByEmail(Email);
+            UserManager.Delete(user);
+            return Ok();
+        }
+
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        public async Task<IHttpActionResult> Register(RegisterBuildingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -331,13 +355,32 @@ namespace ConnApsWebAPI.Controllers
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            if(result.Succeeded)
+            {
+                //await SignInAsync(user, isPersistent: false);
+                try
+                {
+                    using (CAD)
+                    {
+                        CAD.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                    }
+                    UserManager.AddToRole(user.Id, "BuildingManager");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    //return e.Message;
+                    return null;
 
-            if (!result.Succeeded)
+                }
+                return Ok();
+            }
+            else
             {
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            
         }
 
         // POST api/Account/RegisterExternal

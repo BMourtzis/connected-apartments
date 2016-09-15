@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
-    internal class BuildingRegister
+    internal class BuildingRegister: IDisposable
     {
         #region Constructors
 
@@ -17,7 +17,6 @@ namespace ConnApsDomain
         #region Properties
 
         ConnApsContext context = new ConnApsContext();
-        PersonRegister pr = new PersonRegister();
 
         #endregion
 
@@ -99,6 +98,11 @@ namespace ConnApsDomain
                                    .Where(a => a.Id.Equals(apartmentId))
                                    .FirstOrDefault();
             return apt;
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
 
         #endregion
