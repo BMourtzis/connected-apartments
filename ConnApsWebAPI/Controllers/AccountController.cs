@@ -17,6 +17,7 @@ using ConnApsWebAPI.Models;
 using ConnApsWebAPI.Providers;
 using ConnApsWebAPI.Results;
 using ConnApsDomain;
+using System.Web.Http.Results;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -65,7 +66,8 @@ namespace ConnApsWebAPI.Controllers
             {
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
+                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null,
+                Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
         }
 
@@ -333,14 +335,14 @@ namespace ConnApsWebAPI.Controllers
         //}
 
         // DELETE api/Account/Delete
-        [AllowAnonymous]
-        [Route("Delete")]
-        public IHttpActionResult DeleteUser(string Email)
-        {
-            var user = UserManager.FindByEmail(Email);
-            UserManager.Delete(user);
-            return Ok();
-        }
+        //[AllowAnonymous]
+        //[Route("Delete")]
+        //public IHttpActionResult DeleteUser(string Email)
+        //{
+        //    var user = UserManager.FindByEmail(Email);
+        //    UserManager.Delete(user);
+        //    return Ok();
+        //}
 
         // POST api/Account/Register
         [AllowAnonymous]
@@ -433,6 +435,13 @@ namespace ConnApsWebAPI.Controllers
         {
             get { return Request.GetOwinContext().Authentication; }
         }
+
+        //private async Task SignInAsync(ApplicationUser user, bool isPersistent)
+        //{
+        //    Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+        //    var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+        //    Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+        //}
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {

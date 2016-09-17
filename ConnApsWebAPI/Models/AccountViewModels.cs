@@ -32,6 +32,8 @@ namespace ConnApsWebAPI.Models
         public bool HasRegistered { get; set; }
 
         public string LoginProvider { get; set; }
+
+        public IList<String> Roles { get; set; }
     }
 
     public class UserLoginInfoViewModel
