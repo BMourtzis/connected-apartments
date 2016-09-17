@@ -23,10 +23,20 @@ namespace ConnApsDomain
 
         #region BuildingManager
 
-        public IBuildingManager FetchBuildingManager(int managerId)
+        public IBuildingManager FetchBuildingManager(string userId)
         {
-            var manager = personRegister.FetchBuildingManager(managerId);
+            var manager = personRegister.FetchBuildingManager(userId);
             return manager;
+        }
+
+        #endregion
+
+        #region Tenant
+
+        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)
+        {
+            var tenant = personRegister.CreateTenant(firstName, lastName, dob, phone, userId, apartmentId);
+            return tenant;
         }
 
         #endregion

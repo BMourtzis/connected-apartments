@@ -14,8 +14,8 @@ namespace ConnApsDomain
         private string buildingName;
         private string address;
 
-        internal virtual ICollection<Location> Locations { get; set; }
-        internal virtual ICollection<BuildingManager> Managers { get; set; }
+        internal List<Location> Locations { get; set; }
+        internal List<BuildingManager> Managers { get; set; }
 
         #region Constructors
 
@@ -75,7 +75,14 @@ namespace ConnApsDomain
         {
             get
             {
-                return Locations.OfType<Apartment>();
+                if(Locations != null )
+                {
+                    return Locations.OfType<Apartment>();
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

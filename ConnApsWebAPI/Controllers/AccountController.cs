@@ -344,10 +344,10 @@ namespace ConnApsWebAPI.Controllers
         //    return Ok();
         //}
 
-        // POST api/Account/Register
+        // POST api/Account/RegisterBuilding
         [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBuildingModel model)
+        [Route("RegisterBuilding")]
+        public async Task<IHttpActionResult> RegisterBuilding(RegisterBuildingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -359,7 +359,6 @@ namespace ConnApsWebAPI.Controllers
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
             if(result.Succeeded)
             {
-                //await SignInAsync(user, isPersistent: false);
                 try
                 {
                     using (CAD)
@@ -371,8 +370,7 @@ namespace ConnApsWebAPI.Controllers
                 catch (Exception e)
                 {
                     UserManager.Delete(user);
-                    //return e.Message;
-                    return null;
+                    return BadRequest(e.Message);
 
                 }
                 return Ok();
@@ -383,6 +381,43 @@ namespace ConnApsWebAPI.Controllers
             }
 
             
+        }
+
+
+        // POST api/Account/RegisterTenant
+        [Authorize(Roles = "BuildingManager")]
+        [Route("RegisterTenant")]
+        public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                try
+                {
+                    using (CAD)
+                    {
+                        CAD.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                    }
+                    UserManager.AddToRole(user.Id, "Tenant");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
+                }
+                return Ok();
+            }
+            else
+            {
+                return GetErrorResult(result);
+            }
         }
 
         // POST api/Account/RegisterExternal

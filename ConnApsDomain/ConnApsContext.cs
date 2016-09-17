@@ -14,11 +14,10 @@ namespace ConnApsDomain
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Tenant>()
-                .HasRequired(t => t.Aparment)
-                .WithMany(a => a.Tenants)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<Tenant>().HasRequired(t => t.Aparment).WithMany(a => a.Tenants).WillCascadeOnDelete(false);
+            modelBuilder.Entity<Building>().HasMany(b => b.Locations);
+            modelBuilder.Entity<Building>().HasMany(b => b.Managers);
+            modelBuilder.Entity<Apartment>().HasMany(a => a.Tenants);
         }
 
         public virtual DbSet<Building> Buildings { get; set; }

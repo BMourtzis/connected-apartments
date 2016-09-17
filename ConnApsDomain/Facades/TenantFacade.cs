@@ -8,6 +8,14 @@ namespace ConnApsDomain
 {
     public class TenantFacade: Facade
     {
+        #region Tenant
 
+        public ITenant FetchTenant(string userId)
+        {
+            var tenant = personRegister.FetchTenant(userId);
+            return tenant;
+        }
+
+        #endregion
     }
 }

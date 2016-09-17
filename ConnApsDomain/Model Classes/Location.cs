@@ -13,11 +13,9 @@ namespace ConnApsDomain
         private int id;
         private string level;
         private string number;
-
-        [Required]
-        [ForeignKey("Building")]
         private int buildingId;
 
+        [ForeignKey("BuildingId")]
         internal virtual Building Building { get; set; }
 
         #region Constructors

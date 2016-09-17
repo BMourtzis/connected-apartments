@@ -42,7 +42,7 @@ namespace ConnApsDomain
         {
             Building bu = context.Buildings
                                  .Include("Locations")
-                                 .Include("BuildingManager")
+                                 .Include("Managers")
                                  .Where(b => b.Id.Equals(buildingId))
                                  .FirstOrDefault();
             return bu;
@@ -90,6 +90,12 @@ namespace ConnApsDomain
                                    .Where(a => a.Id.Equals(apartmentId))
                                    .FirstOrDefault();
             return apt;
+        }
+
+        public IEnumerable<IApartment> FetchApartments(int buildingId)
+        {
+            var b = FetchBuilding(buildingId);
+            return b.Apartments;
         }
 
         private Apartment getApartment(int apartmentId)

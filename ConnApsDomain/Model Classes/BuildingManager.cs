@@ -14,7 +14,7 @@ namespace ConnApsDomain
         private int buildingId;
 
         [ForeignKey("BuildingId")]
-        internal virtual Building building { get; set; }
+        internal virtual Building Building { get; set; }
 
         #region Constructors
 
@@ -46,7 +46,7 @@ namespace ConnApsDomain
         {
             get
             {
-                return building;
+                return Building;
             }
         }
 

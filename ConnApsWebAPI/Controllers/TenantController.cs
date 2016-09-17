@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -12,19 +13,25 @@ namespace ConnApsWebAPI.Controllers
     [RoutePrefix("api/Tenant")]
     public class TenantController : BaseController
     {
-        protected TenantController CAD;
+        protected TenantFacade CAD;
 
         public TenantController()
         {
-            CAD = new TenantController();
+            CAD = new TenantFacade();
         }
 
-        // GET api/BuildingManager/Test
+        #region Tenant
+
+        // GET api/BuildingManager/TenantInfo
         [HttpGet]
-        [Route("Test")]
-        public string Test()
+        [Route("TenantInfo")]
+        public ITenant FetchTenant()
         {
-            return "this works";
+            var t = CAD.FetchTenant(User.Identity.GetUserId());
+            return t;
         }
+
+        #endregion
+
     }
 }

@@ -61,10 +61,14 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public void UpdateTenant(string firstName, string lastName, DateTime dob, string phone, int apartmentId)
+        public void UpdateTenant(string firstName, string lastName, DateTime dob, string phone)
         {
             UpdatePerson(firstName, lastName, dob, phone);
-            ApartmentId = apartmentId;
+        }
+
+        public void ChangeApartment(int aptId)
+        {
+            ApartmentId = aptId;
         }
 
         #endregion
