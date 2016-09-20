@@ -44,7 +44,14 @@ namespace ConnApsDomain
         {
             get
             {
-                return Apartment.BuildingId;
+                if(Apartment != null)
+                {
+                    return Apartment.BuildingId;
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 

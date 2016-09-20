@@ -42,7 +42,7 @@ namespace ConnApsWebAPI.Models
         public string FacingDirection { get; set; }
     }
 
-    public class TenantUpdateModel
+    public class BMTenantUpdateModel
     {
         [Required]
         public string UserId { get; set; }
