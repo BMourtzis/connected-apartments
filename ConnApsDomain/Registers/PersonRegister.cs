@@ -9,7 +9,6 @@ namespace ConnApsDomain
     internal class PersonRegister: IDisposable
     {
 
-
         #region Constructors
 
         public PersonRegister() { }

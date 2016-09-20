@@ -13,7 +13,7 @@ namespace ConnApsDomain
         private int apartmentId;
 
         [ForeignKey("ApartmentId")]
-        internal virtual Apartment Aparment { get; set; }
+        internal virtual Apartment Apartment { get; set; }
 
         #region Constructors
 
@@ -44,7 +44,7 @@ namespace ConnApsDomain
         {
             get
             {
-                return Aparment.BuildingId;
+                return Apartment.BuildingId;
             }
         }
 
@@ -53,7 +53,7 @@ namespace ConnApsDomain
         {
             get
             {
-                return Aparment;
+                return Apartment;
             }
         }
 
