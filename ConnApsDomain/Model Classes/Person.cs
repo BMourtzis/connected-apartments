@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ namespace ConnApsDomain
 {
     internal abstract class Person: IPerson
     {
+        private int id;
         private string firstName;
         private string lastName;
         private DateTime dateOfBirth;
@@ -31,27 +34,56 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        [Required]
         public string FirstName
         {
             get
             {
                 return firstName;
             }
+            set
+            {
+                firstName = value;
+            }
         }
 
+        [Required]
         public string LastName
         {
             get
             {
                 return lastName;
             }
+            set
+            {
+                lastName = value;
+            }
         }
 
+        [Required]
         public DateTime DoB
         {
             get
             {
                 return dateOfBirth;
+            }
+            set
+            {
+                dateOfBirth = value;
             }
         }
 
@@ -61,13 +93,22 @@ namespace ConnApsDomain
             {
                 return phone;
             }
+            set
+            {
+                phone = value;
+            }
         }
 
+        [Required]
         public string UserId
         {
             get
             {
                 return userId;
+            }
+            set
+            {
+                userId = value;
             }
         }
 
@@ -75,14 +116,12 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public Person UpdateDetails(string firstname, string lastname, DateTime dateofbirth, string newPhone)
+        protected void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string newPhone)
         {
             firstName = firstname;
             lastName = lastname;
             dateOfBirth = dateofbirth;
             phone = newPhone;
-
-            return this;
         }
 
         #endregion

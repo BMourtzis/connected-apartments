@@ -8,6 +8,6 @@ namespace ConnApsDomain
 {
     internal class Facility: Location
     {
-
+        private int facilityId;
     }
 }

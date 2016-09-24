@@ -16,18 +16,24 @@ using Microsoft.Owin.Security.OAuth;
 using ConnApsWebAPI.Models;
 using ConnApsWebAPI.Providers;
 using ConnApsWebAPI.Results;
+using ConnApsDomain;
+using System.Web.Http.Results;
+using System.Text;
+using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]
-    public class AccountController : ApiController
+    public class AccountController : BaseController
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
+        protected AdminFacade CAD;
 
         public AccountController()
         {
+            CAD = new AdminFacade();
         }
 
         public AccountController(ApplicationUserManager userManager,
@@ -62,7 +68,8 @@ namespace ConnApsWebAPI.Controllers
             {
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
+                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null,
+                Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
         }
 
@@ -318,10 +325,31 @@ namespace ConnApsWebAPI.Controllers
             return logins;
         }
 
-        // POST api/Account/Register
+        //POST api/Account/AddRoles
         [AllowAnonymous]
-        [Route("Register")]
-        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        [Route("AddRoles")]
+        public async Task<IHttpActionResult> AddRoles()
+        {
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+            var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+            var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+            return Ok();
+        }
+
+        // DELETE api/Account/Delete
+        //[AllowAnonymous]
+        //[Route("Delete")]
+        //public IHttpActionResult DeleteUser(string Email)
+        //{
+        //    var user = UserManager.FindByEmail(Email);
+        //    UserManager.Delete(user);
+        //    return Ok();
+        //}
+
+        // POST api/Account/RegisterBuilding
+        [AllowAnonymous]
+        [Route("RegisterBuilding")]
+        public async Task<IHttpActionResult> RegisterBuilding(RegisterBuildingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -331,13 +359,71 @@ namespace ConnApsWebAPI.Controllers
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            if(result.Succeeded)
+            {
+                try
+                {
+                    using (CAD)
+                    {
+                        CAD.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                    }
+                    UserManager.AddToRole(user.Id, "BuildingManager");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
 
-            if (!result.Succeeded)
+                }
+                return Ok();
+            }
+            else
             {
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            
+        }
+
+
+        // POST api/Account/RegisterTenant
+        [Authorize(Roles = "BuildingManager")]
+        [Route("RegisterTenant")]
+        public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+
+            model.Password = generatePassword();
+
+            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                try
+                {
+                    using (CAD)
+                    {
+                        CAD.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                    }
+                    UserManager.AddToRole(user.Id, "Tenant");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
+                }
+
+                EmailService.SendTenantCreationEmail(model.Email, model.Password);
+                return Ok<RegisterTenantModel>(model);
+            }
+            else
+            {
+                return GetErrorResult(result);
+            }
         }
 
         // POST api/Account/RegisterExternal
@@ -487,6 +573,34 @@ namespace ConnApsWebAPI.Controllers
                 _random.GetBytes(data);
                 return HttpServerUtility.UrlTokenEncode(data);
             }
+        }
+
+        private String generatePassword()
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            double length = 6 * random.NextDouble() + 5;
+
+            for (int i = 0; i < length; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(93 * random.NextDouble() + 33)));
+                builder.Append(ch);
+            }
+            
+            //Insert Number
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(9 * random.NextDouble() + 48))));
+            length++;
+
+            //Insert Upper Character
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(25 * random.NextDouble() + 65))));
+            length++;
+
+            //Insert Lower Character
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(25 * random.NextDouble() + 97))));
+            length++;
+
+            return builder.ToString();
         }
 
         #endregion

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
-    public class TenantFacade: Facade
+    public interface IDisposableFacade: IDisposable
     {
 
     }

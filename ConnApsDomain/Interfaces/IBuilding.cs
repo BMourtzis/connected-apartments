@@ -5,10 +5,10 @@ namespace ConnApsDomain
 {
     public interface IBuilding
     {
+        int Id { get; }
         string BuildingName { get; }
         string Address { get; }
-        IEnumerable<ILocation> Locations { get; }
-        IBuildingManager BuildingManager { get; }
-
+        IEnumerable<IApartment> Apartments { get; }
+        IEnumerable<IBuildingManager> BuildingManagers { get; }
     }
 }

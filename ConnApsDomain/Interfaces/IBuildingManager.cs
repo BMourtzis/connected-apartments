@@ -9,6 +9,7 @@ namespace ConnApsDomain
         DateTime DoB { get; }
         string Phone { get; }
         string UserId { get; }
+        int BuildingId { get; }
         IBuilding Building { get; }
     }
 }

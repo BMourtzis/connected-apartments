@@ -51,9 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildingManagerFacade.cs" />
-    <Compile Include="BuildingRegister.cs" />
-    <Compile Include="Facade.cs" />
+    <Compile Include="Facades\AdminFacade.cs" />
+    <Compile Include="Facades\BuildingManagerFacade.cs" />
+    <Compile Include="Facades\IDisposableFacade.cs" />
+    <Compile Include="Registers\BuildingRegister.cs" />
+    <Compile Include="Facades\Facade.cs" />
     <Compile Include="Model Classes\Apartment.cs" />
     <Compile Include="Model Classes\Building.cs" />
     <Compile Include="Model Classes\BuildingManager.cs" />
@@ -68,13 +70,14 @@
     <Compile Include="Model Classes\Person.cs" />
     <Compile Include="Model Classes\Tenant.cs" />
     <Compile Include="ConnApsContext.cs" />
-    <Compile Include="PersonRegister.cs" />
+    <Compile Include="Registers\PersonRegister.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TenantFacade.cs" />
+    <Compile Include="Facades\TenantFacade.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

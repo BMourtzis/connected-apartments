@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +12,14 @@ namespace ConnApsDomain
     {
         private int tenantsAllowed;
         private string facingDirection;
-
-        internal virtual Tenant Tenant { get; set; }
+        
+        internal virtual ICollection<Tenant> Tenants { get; set; }
 
         #region Constructors
 
         protected Apartment(): base() { }
 
-        public Apartment(string newLevel, string newNumber, int tenantsallowed, string facingdirection, Building building): base(newLevel, newNumber, building)
+        public Apartment(string newLevel, string newNumber, int tenantsallowed, string facingdirection, int buildingid): base(newLevel, newNumber, buildingid)
         {
             tenantsAllowed = tenantsallowed;
             facingDirection = facingdirection;
@@ -27,27 +29,37 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Required]
         public int TenantsAllowed
         {
             get
             {
                 return tenantsAllowed;
             }
+            set
+            {
+                tenantsAllowed = value;
+            }
         }
 
+        [Required]
         public string FacingDirection
         {
             get
             {
                 return facingDirection;
             }
+            set
+            {
+                facingDirection = value;
+            }
         }
 
-        ITenant IApartment.Tenant
+        IEnumerable<ITenant> IApartment.Tenants
         {
             get
             {
-                return Tenant;
+                return Tenants;
             }
         }
 
@@ -63,7 +75,12 @@ namespace ConnApsDomain
 
         #region Functions
 
-
+        public void UpdateApartment(string level, string number, int tenantsallowed, string facingdirection)
+        {
+            UpdateLocation(level, number);
+            TenantsAllowed = tenantsallowed;
+            FacingDirection = facingdirection;
+        }
 
         #endregion
     }

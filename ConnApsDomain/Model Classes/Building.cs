@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +10,12 @@ namespace ConnApsDomain
 {
     internal class Building: IBuilding
     {
+        private int id;
         private string buildingName;
         private string address;
 
-        internal virtual ICollection<Location> Locations { get; set; }
-        internal virtual BuildingManager Manager { get; set; }
+        internal List<Location> Locations { get; set; }
+        internal List<BuildingManager> Managers { get; set; }
 
         #region Constructors
 
@@ -28,35 +31,66 @@ namespace ConnApsDomain
 
         #region Properties
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        [Required]
         public string BuildingName
         {
             get
             {
                 return buildingName;
             }
+            set
+            {
+                buildingName = value;
+            }
         }
 
+        [Required]
         public string Address
         {
             get
             {
                 return address;
             }
-        }
-
-        IEnumerable<ILocation> IBuilding.Locations
-        {
-            get
+            set
             {
-                return Locations;
+                address = value;
             }
         }
 
-        IBuildingManager IBuilding.BuildingManager
+        public IEnumerable<IApartment> Apartments
         {
             get
             {
-                return Manager;
+                if(Locations != null )
+                {
+                    return Locations.OfType<Apartment>();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        IEnumerable<IBuildingManager> IBuilding.BuildingManagers
+        {
+            get
+            {
+                return Managers;
             }
         }
 
@@ -65,9 +99,16 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public Apartment createApartment()
+        public void UpdateBuilding(string buildingName, string address)
         {
-            return null;
+            BuildingName = buildingName;
+            Address = address;
+        }
+
+        public Apartment CreateApartment(string Level, string Number, int TenantsAllowed, string FacingDirection)
+        {
+            Apartment ap = new Apartment(Level, Number, TenantsAllowed, FacingDirection, Id);
+            return ap;
         }
 
         #endregion
