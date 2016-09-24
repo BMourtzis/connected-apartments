@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ConnApsDomain.ConnApsContext" Collapsed="true">
+    <Position X="13.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAIAAAIAAAAIgAAAAEAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>ConnApsContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConnApsDomain.AdminFacade" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAACAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Facades\AdminFacade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConnApsDomain.BuildingManagerFacade" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAQAAAgABAYQACAAAAAAQAQAAAAAAABBAAAAAAAAAAA=</HashCode>
+      <FileName>Facades\BuildingManagerFacade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConnApsDomain.Facade" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAiAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Facades\Facade.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.TenantFacade" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Facades\TenantFacade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConnApsDomain.Apartment" Collapsed="true">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAEAAIIAAAAAIAAAAAAAAAABAAAAAAAAgAEA=</HashCode>
+      <FileName>Model Classes\Apartment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.Building" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACBAAAAAAQAAAAAAIgAAQAAAIAAAACAAAAAAAQAgQ=</HashCode>
+      <FileName>Model Classes\Building.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ConnApsDomain.BuildingManager" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAA=</HashCode>
+      <FileName>Model Classes\BuildingManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.Facility" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Model Classes\Facility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ConnApsDomain.Location" Collapsed="true">
+    <Position X="6.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAQgAAAEAAAAAAAAEACAABAQAAAAEAAgA=</HashCode>
+      <FileName>Model Classes\Location.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.Person" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACCAEAAAABAAAAACAAAAAgACAAAAAAgAAAAKAAAAgg=</HashCode>
+      <FileName>Model Classes\Person.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.Tenant" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAAAAAAAAABAQAAAAAgAAAAAAAQAEAAAA=</HashCode>
+      <FileName>Model Classes\Tenant.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConnApsDomain.BuildingRegister" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAADAAAAACAQAAAAAAAAQAQAAQAAAABAAAAABABAAAA=</HashCode>
+      <FileName>Registers\BuildingRegister.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ConnApsDomain.PersonRegister" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQCAAgABCYAACAAAEAAAAQIAAAAAgAAQAAAAAAAAAA=</HashCode>
+      <FileName>Registers\PersonRegister.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="ConnApsDomain.IDisposableFacade" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Facades\IDisposableFacade.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.IApartment" Collapsed="true">
+    <Position X="10.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACQBAAAAAAIIAAAEAAAAAAAAAAAAABAAAAAAEAAAA=</HashCode>
+      <FileName>Interfaces\IApartment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.IBuilding" Collapsed="true">
+    <Position X="12" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAgAAAAAAAAAAACAAAAAAAAAAU=</HashCode>
+      <FileName>Interfaces\IBuilding.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.IBuildingManager" Collapsed="true">
+    <Position X="13.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAFAAAAAAAAAAAAAAAAgACAAAAAAAAAAAIAEAAAg=</HashCode>
+      <FileName>Interfaces\IBuildingManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.ILocation" Collapsed="true">
+    <Position X="12" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAAEAAAAAAAAAAAAABAAAAAAEAAAA=</HashCode>
+      <FileName>Interfaces\ILocation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.IPerson" Collapsed="true">
+    <Position X="13.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAgACAAAAAAAAAAAIAAAAAg=</HashCode>
+      <FileName>Interfaces\IPerson.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ConnApsDomain.ITenant" Collapsed="true">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAEAAAAAAAAAAAAAAAAgACAAAAAAAAAAAYAEAAAg=</HashCode>
+      <FileName>Interfaces\ITenant.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

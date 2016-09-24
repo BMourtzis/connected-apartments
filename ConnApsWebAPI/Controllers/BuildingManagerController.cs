@@ -119,7 +119,7 @@ namespace ConnApsWebAPI.Controllers
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public ITenant UpdateTenant(TenantUpdateModel model)
+        public ITenant UpdateTenant(BMTenantUpdateModel model)
         {
             var tenant = CAD.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
             return tenant;

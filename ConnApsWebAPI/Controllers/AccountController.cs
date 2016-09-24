@@ -326,15 +326,15 @@ namespace ConnApsWebAPI.Controllers
         }
 
         //POST api/Account/AddRoles
-        //[AllowAnonymous]
-        //[Route("AddRoles")]
-        //public async Task<IHttpActionResult> AddRoles()
-        //{
-        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-        //    var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
-        //    var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
-        //    return Ok();
-        //}
+        [AllowAnonymous]
+        [Route("AddRoles")]
+        public async Task<IHttpActionResult> AddRoles()
+        {
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+            var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+            var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+            return Ok();
+        }
 
         // DELETE api/Account/Delete
         //[AllowAnonymous]

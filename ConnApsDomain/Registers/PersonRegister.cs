@@ -9,7 +9,6 @@ namespace ConnApsDomain
     internal class PersonRegister: IDisposable
     {
 
-
         #region Constructors
 
         public PersonRegister() { }
@@ -105,7 +104,7 @@ namespace ConnApsDomain
 
         private Tenant getTenant(string userId)
         {
-            Tenant tenant = context.Tenants
+            Tenant tenant = context.Tenants.Include("Apartment")
                                    .Where(t => t.UserId.Equals(userId))
                                    .FirstOrDefault();
             return tenant;

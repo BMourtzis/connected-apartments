@@ -16,6 +16,12 @@ namespace ConnApsDomain
             return tenant;
         }
 
+        public ITenant UpdateTenant(string userId, string firstName, string lastName, DateTime dob, string phone)
+        {
+            var tenant = personRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
+            return tenant;
+        }
+
         #endregion
     }
 }
