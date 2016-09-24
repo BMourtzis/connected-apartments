@@ -296,6 +296,10 @@
       <Project>{9d3e2b05-084a-4904-bdd3-85e76f9f9925}</Project>
       <Name>ConnApsDomain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ConnApsEmailService\ConnApsEmailService.csproj">
+      <Project>{9e4a0541-8dc1-4eeb-b2b7-d8ba8301f398}</Project>
+      <Name>ConnApsEmailService</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

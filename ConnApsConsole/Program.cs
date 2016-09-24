@@ -11,11 +11,22 @@ namespace ConnApsConsole
     {
         static void Main(string[] args)
         {
-            var af = new AdminFacade();
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
 
-            //var tenant = bmf.UpdateTenant(2, "Michael", "Condon", new DateTime(1994, 6, 9), "0123456789", 1);
+            //for (int i = 0; i < 6 * random.NextDouble() + 8; i++)
+            //{
+            //    ch = Convert.ToChar(Convert.ToInt32(Math.Floor(93 * random.NextDouble() + 33)));
+            //    builder.Append(ch);
+            //}
 
-            int i = 0;
+            for(int i = 0; i < 94; i++)
+            {
+                Console.WriteLine(i +" - "+ Convert.ToChar(Convert.ToInt32(i + 33)));
+            }
+
+            Console.ReadKey();
         }
     }
 }

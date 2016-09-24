@@ -18,6 +18,8 @@ using ConnApsWebAPI.Providers;
 using ConnApsWebAPI.Results;
 using ConnApsDomain;
 using System.Web.Http.Results;
+using System.Text;
+using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -396,6 +398,8 @@ namespace ConnApsWebAPI.Controllers
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
+            model.Password = generatePassword();
+
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -412,7 +416,9 @@ namespace ConnApsWebAPI.Controllers
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
                 }
-                return Ok();
+
+                EmailService.SendTenantCreationEmail(model.Email, model.Password);
+                return Ok<RegisterTenantModel>(model);
             }
             else
             {
@@ -470,13 +476,6 @@ namespace ConnApsWebAPI.Controllers
         {
             get { return Request.GetOwinContext().Authentication; }
         }
-
-        //private async Task SignInAsync(ApplicationUser user, bool isPersistent)
-        //{
-        //    Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-        //    var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-        //    Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
-        //}
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
@@ -574,6 +573,34 @@ namespace ConnApsWebAPI.Controllers
                 _random.GetBytes(data);
                 return HttpServerUtility.UrlTokenEncode(data);
             }
+        }
+
+        private String generatePassword()
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            double length = 6 * random.NextDouble() + 5;
+
+            for (int i = 0; i < length; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(93 * random.NextDouble() + 33)));
+                builder.Append(ch);
+            }
+            
+            //Insert Number
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(9 * random.NextDouble() + 48))));
+            length++;
+
+            //Insert Upper Character
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(25 * random.NextDouble() + 65))));
+            length++;
+
+            //Insert Lower Character
+            builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(25 * random.NextDouble() + 97))));
+            length++;
+
+            return builder.ToString();
         }
 
         #endregion
