@@ -41,7 +41,17 @@ namespace ConnApsEmailService
             MailMessage mail = new MailMessage(ServiceEmail, email);
 
             mail.Subject = "You are now connected to Connected Apartments";
-            mail.Body = "<html><body><h1> Welcome to Connected Apartments </h1><p> Your tenant account has been created.Your Credentials are: </p><p> Username:"+email+" </p>< p > Password:"+password+" </p></body></html> ";
+            mail.Body = "Welcome to Connected Apartments. Your tenant account has been created.Your Credentials are: Username: "+email+" Password:"+password;
+
+            SendEmail(mail);
+        }
+
+        public static void SendBuildingCreationEmail(String email)
+        {
+            MailMessage mail = new MailMessage(ServiceEmail, email);
+
+            mail.Subject = "Welcome to Connected Apartments";
+            mail.Body = "<html><body><h1> Welcome to Connected Apartments </h1><p> Your Building Manager account has been created. The next step to take is to create new Apartment.</p></body></html> ";
 
             SendEmail(mail);
         }

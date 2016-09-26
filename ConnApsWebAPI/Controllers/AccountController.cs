@@ -375,7 +375,9 @@ namespace ConnApsWebAPI.Controllers
                     return BadRequest(e.Message);
 
                 }
-                return Ok();
+
+                EmailService.SendBuildingCreationEmail(model.Email);
+                return Ok<RegisterBuildingModel>(model);
             }
             else
             {
