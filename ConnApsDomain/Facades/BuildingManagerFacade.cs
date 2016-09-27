@@ -23,7 +23,7 @@ namespace ConnApsDomain
             return bm;
         }
 
-        public int GetBuildingId(string  userId)
+        public int GetBuildingId(string userId)
         {
             var id = FetchBuildingManager(userId).BuildingId;
             return id;

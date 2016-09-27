@@ -60,17 +60,19 @@ namespace ConnApsWebAPI.Controllers
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UserInfo")]
-        public UserInfoViewModel GetUserInfo()
+        public IHttpActionResult GetUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
-            return new UserInfoViewModel
+            var model = new UserInfoViewModel
             {
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
                 LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null,
                 Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
+
+            return Ok<Response<UserInfoViewModel>>(getResponse<UserInfoViewModel>(model));
         }
 
         // POST api/Account/Logout
@@ -326,15 +328,15 @@ namespace ConnApsWebAPI.Controllers
         }
 
         //POST api/Account/AddRoles
-        [AllowAnonymous]
-        [Route("AddRoles")]
-        public async Task<IHttpActionResult> AddRoles()
-        {
-            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-            var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
-            var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
-            return Ok();
-        }
+        //[AllowAnonymous]
+        //[Route("AddRoles")]
+        //public async Task<IHttpActionResult> AddRoles()
+        //{
+        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+        //    var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+        //    var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+        //    return Ok();
+        //}
 
         // DELETE api/Account/Delete
         //[AllowAnonymous]
@@ -359,6 +361,7 @@ namespace ConnApsWebAPI.Controllers
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            model.Password = "";
             if(result.Succeeded)
             {
                 try
@@ -393,6 +396,7 @@ namespace ConnApsWebAPI.Controllers
         [Route("RegisterTenant")]
         public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -400,9 +404,9 @@ namespace ConnApsWebAPI.Controllers
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
-            model.Password = generatePassword();
+            var password = generatePassword();
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            IdentityResult result = await UserManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
                 try
@@ -415,12 +419,12 @@ namespace ConnApsWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    UserManager.Delete(user);
-                    return BadRequest(e.Message);
+                    UserManager.Delete(user);             
+                    return Content<Response<RegisterTenantModel>>(System.Net.HttpStatusCode.InternalServerError, getBadResponse<RegisterTenantModel>(e.Message));
                 }
 
-                EmailService.SendTenantCreationEmail(model.Email, model.Password);
-                return Ok<RegisterTenantModel>(model);
+                EmailService.SendTenantCreationEmail(model.Email, password);
+                return Ok<Response<RegisterTenantModel>>(getResponse<RegisterTenantModel>(model));
             }
             else
             {
@@ -582,7 +586,7 @@ namespace ConnApsWebAPI.Controllers
             StringBuilder builder = new StringBuilder();
             Random random = new Random();
             char ch;
-            double length = 6 * random.NextDouble() + 5;
+            double length = 3 * random.NextDouble() + 5;
 
             for (int i = 0; i < length; i++)
             {

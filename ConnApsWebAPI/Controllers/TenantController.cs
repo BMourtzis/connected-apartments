@@ -26,19 +26,35 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/TenantInfo
         [HttpGet]
         [Route("TenantInfo")]
-        public ITenant FetchTenant()
+        public Response<ITenant> FetchTenant()
         {
-            var t = CAD.FetchTenant(User.Identity.GetUserId());
-            return t;
+            ITenant t;
+            try
+            {
+                t = CAD.FetchTenant(User.Identity.GetUserId());
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<ITenant>(e.Message);
+            }
+            return getResponse<ITenant>(t);
         }
 
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public ITenant UpdateTenant(TenantUpdateModel model)
+        public Response<ITenant> UpdateTenant(TenantUpdateModel model)
         {
-            var t = CAD.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
-            return t;
+            ITenant t;
+            try
+            {
+                t = CAD.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<ITenant>(e.Message);
+            }
+            return getResponse<ITenant>(t);
         }
 
         #endregion

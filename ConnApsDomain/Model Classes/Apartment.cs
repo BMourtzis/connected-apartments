@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
+    /// <summary>
+    /// Represents an instance of an apartment
+    /// Inherets from Location
+    /// </summary>
     internal class Apartment: Location, IApartment
     {
         private int tenantsAllowed;
@@ -17,9 +21,21 @@ namespace ConnApsDomain
 
         #region Constructors
 
+        /// <summary>
+        /// Initialises an empty instance of the Apartment structure
+        /// Used by Entity Framework
+        /// </summary>
         protected Apartment(): base() { }
 
-        public Apartment(string newLevel, string newNumber, int tenantsallowed, string facingdirection, int buildingid): base(newLevel, newNumber, buildingid)
+        /// <summary>
+        /// Initialises a new instance an Apartment Strcture
+        /// </summary>
+        /// <param name="Level">The Level that the apartment is on</param>
+        /// <param name="Number">The Number of the Apartment</param>
+        /// <param name="tenantsallowed">The Number of tenants allowed to live in the apartment</param>
+        /// <param name="facingdirection">The primary direction that the apartment is facing</param>
+        /// <param name="buildingid">The Building Id the apartment is in</param>
+        public Apartment(string Level, string Number, int tenantsallowed, string facingdirection, int buildingid): base(Level, Number, buildingid)
         {
             tenantsAllowed = tenantsallowed;
             facingDirection = facingdirection;
@@ -29,6 +45,9 @@ namespace ConnApsDomain
 
         #region Properties
 
+        /// <summary>
+        /// The Number of tenants allowed to live in the apartment
+        /// </summary>
         [Required]
         public int TenantsAllowed
         {
@@ -42,6 +61,9 @@ namespace ConnApsDomain
             }
         }
 
+        /// <summary>
+        /// The primary direction that the apartment is facing
+        /// </summary>
         [Required]
         public string FacingDirection
         {
@@ -55,6 +77,9 @@ namespace ConnApsDomain
             }
         }
 
+        /// <summary>
+        /// A List of the Tenants living in the Apartment
+        /// </summary>
         IEnumerable<ITenant> IApartment.Tenants
         {
             get
@@ -63,6 +88,9 @@ namespace ConnApsDomain
             }
         }
 
+        /// <summary>
+        /// The Building that the apartment is in
+        /// </summary>
         IBuilding IApartment.Building
         {
             get
@@ -75,6 +103,13 @@ namespace ConnApsDomain
 
         #region Functions
 
+        /// <summary>
+        /// Updates the properties of the Apartment Structure
+        /// </summary>
+        /// <param name="level">The Level that the apartment is on</param>
+        /// <param name="number">The Number of the Apartment</param>
+        /// <param name="tenantsallowed">The Number of tenants allowed to live in the apartment</param>
+        /// <param name="facingdirection">The primary direction that the apartment is facing</param>
         public void UpdateApartment(string level, string number, int tenantsallowed, string facingdirection)
         {
             UpdateLocation(level, number);
