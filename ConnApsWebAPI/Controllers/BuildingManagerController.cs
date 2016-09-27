@@ -90,7 +90,7 @@ namespace ConnApsWebAPI.Controllers
         [Route("CreateApartment")]
         public IApartment CreateApartment(ApartmentBindingModel model)
         {
-            var apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, model.BuildingId);
+            var apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, CAD.GetBuildingId(User.Identity.GetUserId()));
             return apt;
         }
 

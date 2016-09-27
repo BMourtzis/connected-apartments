@@ -19,9 +19,6 @@ namespace ConnApsWebAPI.Models
 
         [Required]
         public string FacingDirection { get; set; }
-
-        [Required]
-        public int BuildingId { get; set; }
     }
 
     public class ApartmentUpdateModel
