@@ -51,7 +51,7 @@ namespace ConnApsEmailService
             MailMessage mail = new MailMessage(ServiceEmail, email);
 
             mail.Subject = "Welcome to Connected Apartments";
-            mail.Body = "<html><body><h1> Welcome to Connected Apartments </h1><p> Your Building Manager account has been created. The next step to take is to create new Apartment.</p></body></html> ";
+            mail.Body = "Welcome to Connected Apartments. Your Building Manager account has been created. The next step to take is to create new Apartment.";
 
             SendEmail(mail);
         }
