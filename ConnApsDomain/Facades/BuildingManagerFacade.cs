@@ -87,6 +87,17 @@ namespace ConnApsDomain
 
         #endregion
 
+        #region
+
+        public IFacility CreateFacility(string userId, string Level, string Number)
+        {
+            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = buildingRegister.CreateFacility(buildingId, Level, Number);
+            return facility;
+        }
+
+        #endregion
+
         #region Tenant
 
         public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConnApsDomain
 {
@@ -12,6 +13,7 @@ namespace ConnApsDomain
         string UserId { get; }
         int BuildingId { get; }
         IApartment Apartment { get; }
+        IEnumerable<IBooking> Bookings { get; }
 
     }
 }

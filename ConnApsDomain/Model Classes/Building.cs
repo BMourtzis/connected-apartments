@@ -71,7 +71,7 @@ namespace ConnApsDomain
             }
         }
 
-        public IEnumerable<IApartment> Apartments
+        public IEnumerable<Apartment> Apartments
         {
             get
             {
@@ -83,6 +83,37 @@ namespace ConnApsDomain
                 {
                     return null;
                 }
+            }
+        }
+
+        public IEnumerable<Facility> Facilities
+        {
+            get
+            {
+                if (Locations != null)
+                {
+                    return Locations.OfType<Facility>();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        IEnumerable<IApartment> IBuilding.Apartments
+        {
+            get
+            {
+                return Apartments;
+            }
+        }
+
+        IEnumerable<IFacility> IBuilding.Facilities
+        {
+            get
+            {
+                return Facilities;
             }
         }
 
@@ -109,6 +140,19 @@ namespace ConnApsDomain
         {
             Apartment ap = new Apartment(Level, Number, TenantsAllowed, FacingDirection, Id);
             return ap;
+        }
+
+        public Facility CreateFacility(string Level, string Number)
+        {
+            Facility f = new Facility(Level, Number, Id);
+            return f;
+        }
+
+        public Booking CreateBooking(int facilityId, int personId, DateTime startTime, DateTime endTime)
+        {
+            var facility = Facilities.Where(f => f.Id == facilityId).FirstOrDefault();
+            var booking = facility.CreateBooking(personId, startTime, endTime);
+            return booking;
         }
 
         #endregion

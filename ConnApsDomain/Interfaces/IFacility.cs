@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
-    public interface IBuildingManager
+    public interface IFacility
     {
-        string FirstName { get; }
-        string LastName { get; }
-        DateTime DoB { get; }
-        string Phone { get; }
-        string UserId { get; }
+        int Id { get; }
+        string Level { get; }
+        string Number { get; }
         int BuildingId { get; }
         IBuilding Building { get; }
         IEnumerable<IBooking> Bookings { get; }

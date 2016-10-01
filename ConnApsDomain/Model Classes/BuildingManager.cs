@@ -50,6 +50,14 @@ namespace ConnApsDomain
             }
         }
 
+        IEnumerable<IBooking> IBuildingManager.Bookings
+        {
+            get
+            {
+                return Bookings;
+            }
+        }
+
         #endregion
 
         #region Functions

@@ -54,11 +54,14 @@
     <Compile Include="Facades\AdminFacade.cs" />
     <Compile Include="Facades\BuildingManagerFacade.cs" />
     <Compile Include="Facades\IDisposableFacade.cs" />
+    <Compile Include="Interfaces\IBooking.cs" />
+    <Compile Include="Interfaces\IFacility.cs" />
     <Compile Include="Migrations\201609190321490_InitialCreate.cs" />
     <Compile Include="Migrations\201609190321490_InitialCreate.Designer.cs">
       <DependentUpon>201609190321490_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model Classes\Booking.cs" />
     <Compile Include="Registers\BuildingRegister.cs" />
     <Compile Include="Facades\Facade.cs" />
     <Compile Include="Model Classes\Apartment.cs" />

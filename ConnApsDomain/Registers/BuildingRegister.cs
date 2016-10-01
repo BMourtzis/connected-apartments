@@ -112,5 +112,16 @@ namespace ConnApsDomain
         }
 
         #endregion
+
+        #region Facility
+
+        public IFacility CreateFacility(int BuildingId, string Level, string Number)
+        {
+            var building = getBuilding(BuildingId);
+            var facility = building.CreateFacility(Level, Number);
+            return facility;
+        }
+
+        #endregion
     }
 }
