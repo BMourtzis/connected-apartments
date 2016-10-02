@@ -75,20 +75,23 @@ namespace ConnApsDomain
             return apt;
         }
 
-        public IApartment UpdateApartment(int apartmentId, string level, string number, int tenantsAllowed, string facingDirection)
+        public IApartment UpdateApartment(int apartmentId, int buildingId, string level, string number, int tenantsAllowed, string facingDirection)
         {
-            Apartment apt = getApartment(apartmentId);
+            Building building = context.Buildings.Include("Locations")
+                                                 .Where(b => b.Id == buildingId)
+                                                 .FirstOrDefault();
+            Apartment apt = building.FetchApartment(apartmentId);
             apt.UpdateApartment(level, number, tenantsAllowed, facingDirection);
             context.SaveChanges();
             return apt;
         }
 
-        public IApartment FetchApartment(int apartmentId)
+        public IApartment FetchApartment(int buildingId, int apartmentId)
         {
-            Apartment apt = context.Apartments
-                                   .Include("Tenants")
-                                   .Where(a => a.Id.Equals(apartmentId))
-                                   .FirstOrDefault();
+            Building building = context.Buildings.Include("Locations")
+                                                 .Where(b => b.Id == buildingId)
+                                                 .FirstOrDefault();
+            Apartment apt = building.FetchApartment(apartmentId);
             return apt;
         }
 
@@ -119,6 +122,18 @@ namespace ConnApsDomain
         {
             var building = getBuilding(BuildingId);
             var facility = building.CreateFacility(Level, Number);
+            context.Facilities.Add(facility);
+            context.SaveChanges();
+            return facility;
+        }
+
+        public IFacility FetchFacility(int BuildingId, int FacilityId)
+        {
+            var building = context.Buildings
+                                  .Include("Locations")
+                                  .Where(b => b.Id == BuildingId)
+                                  .FirstOrDefault();
+            var facility = building.FetchFacility(FacilityId);
             return facility;
         }
 

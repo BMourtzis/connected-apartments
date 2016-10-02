@@ -61,27 +61,31 @@ namespace ConnApsDomain
 
         #region Apartment
 
-        public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, int buildingId)
+        public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var apt = buildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, buildingId);
+            var bid = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, bid);
             return apt;
         }
 
-        public IApartment UpdateApartment(int aptId, string level, string number, int tenantsAllowed, string facingDirection)
+        public IApartment UpdateApartment(int aptId, string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var apt = buildingRegister.UpdateApartment(aptId, level, number, tenantsAllowed, facingDirection);
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.UpdateApartment(aptId, buildingId, level, number, tenantsAllowed, facingDirection);
             return apt;
         }
 
-        public IApartment FetchApartment(int apartmentId)
+        public IApartment FetchApartment(int apartmentId, string userId)
         {
-            var apt = buildingRegister.FetchApartment(apartmentId);
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.FetchApartment(buildingId, apartmentId);
             return apt;
         }
 
         public IEnumerable<IApartment> FetchApartments(string userId)
         {
-            var apt = buildingRegister.FetchApartments(personRegister.FetchBuildingManagerBuildingId(userId));
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.FetchApartments(buildingId);
             return apt;
         }
 
@@ -93,6 +97,13 @@ namespace ConnApsDomain
         {
             int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
             var facility = buildingRegister.CreateFacility(buildingId, Level, Number);
+            return facility;
+        }
+
+        public IFacility FetchFacility(string userId, int FacilityId)
+        {
+            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = buildingRegister.FetchFacility(buildingId, FacilityId);
             return facility;
         }
 

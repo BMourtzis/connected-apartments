@@ -129,7 +129,7 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.FetchApartment(aptId);
+                apt = CAD.FetchApartment(aptId, User.Identity.GetUserId());
             }
             catch (Exception e )
             {
@@ -146,7 +146,7 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, CAD.GetBuildingId(User.Identity.GetUserId()));
+                apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -163,13 +163,49 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection);
+                apt = CAD.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
             }
             catch (Exception e)
             {
                 return getBadResponse<IApartment>(e.Message);
             }
             return getResponse<IApartment>(apt);
+        }
+
+        #endregion
+
+        #region Facility
+
+        [HttpPost]
+        [Route("CreateFacility")]
+        public Response<IFacility> CreateFacility(FaciltyRegisterModel model)
+        {
+            IFacility facility;
+            try
+            {
+                facility = CAD.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IFacility>(e.Message);
+            }
+            return getResponse<IFacility>(facility);
+        }
+
+        [HttpGet]
+        [Route("FetchFacility")]
+        public Response<IFacility> FetchFacility(int facilityId)
+        {
+            IFacility facility;
+            try
+            {
+                facility = CAD.FetchFacility(User.Identity.GetUserId(), facilityId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IFacility>(e.Message);
+            }
+            return getResponse<IFacility>(facility);
         }
 
         #endregion

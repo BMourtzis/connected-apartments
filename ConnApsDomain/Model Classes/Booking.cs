@@ -74,6 +74,7 @@ namespace ConnApsDomain
             }
         }
 
+        [Required]
         public DateTime StartTime
         {
             get
@@ -86,6 +87,7 @@ namespace ConnApsDomain
             }
         }
 
+        [Required]
         public DateTime EndTime
         {
             get

@@ -39,6 +39,14 @@ namespace ConnApsWebAPI.Models
         public string FacingDirection { get; set; }
     }
 
+    public class FaciltyRegisterModel
+    {
+        [Required]
+        public string Level { get; set; }
+        [Required]
+        public string Number { get; set; }
+    }
+
     public class BMTenantUpdateModel
     {
         [Required]

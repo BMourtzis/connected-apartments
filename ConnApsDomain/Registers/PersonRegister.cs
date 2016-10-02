@@ -88,6 +88,12 @@ namespace ConnApsDomain
             return tenant;
         }
 
+        public int FetchTenantBuildingId(string userId)
+        {
+            ITenant tenant = FetchTenant(userId);
+            return tenant.BuildingId;
+        }
+
         public ITenant FetchTenant(string userId)
         {
             Tenant tenant = context.Tenants.Include("Apartment")

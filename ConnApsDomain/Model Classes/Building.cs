@@ -142,10 +142,22 @@ namespace ConnApsDomain
             return ap;
         }
 
+        public Apartment FetchApartment(int aptId)
+        {
+            var apartment = Apartments.Where(a => a.Id == aptId).FirstOrDefault();
+            return apartment;
+        }
+
         public Facility CreateFacility(string Level, string Number)
         {
             Facility f = new Facility(Level, Number, Id);
             return f;
+        }
+
+        public Facility FetchFacility(int FacilityId)
+        {
+            var facility = Facilities.Where(f => f.Id == FacilityId).FirstOrDefault();
+            return facility;
         }
 
         public Booking CreateBooking(int facilityId, int personId, DateTime startTime, DateTime endTime)
