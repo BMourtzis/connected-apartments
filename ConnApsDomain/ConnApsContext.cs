@@ -15,6 +15,7 @@ namespace ConnApsDomain
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Tenant>().HasRequired(t => t.Apartment).WithMany(a => a.Tenants).WillCascadeOnDelete(false);
+            modelBuilder.Entity<Booking>().HasRequired(b => b.Facility).WithMany(f => f.Bookings).WillCascadeOnDelete(false);
             modelBuilder.Entity<Building>().HasMany(b => b.Locations);
             modelBuilder.Entity<Building>().HasMany(b => b.Managers);
             modelBuilder.Entity<Apartment>().HasMany(a => a.Tenants);
