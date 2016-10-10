@@ -98,10 +98,21 @@ namespace ConnApsWebAPI.Models
         public string Address { get; set; }
     }
 
-    public class BookingCreateModel
+    public class BookingCreateModel: IValidatableObject
     {
+        [Required]
         public int FacilityId { get; set; }
+        [Required]
         public DateTime StartTime { get; set; }
+        [Required]
         public DateTime EndTime { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if(EndTime < StartTime)
+            {
+                yield return new ValidationResult(errorMessage: "EndTime must be greater than StartDate", memberNames: new[] { "EndTime" });
+            }
+        }
     }
 }

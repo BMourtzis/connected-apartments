@@ -61,5 +61,14 @@ namespace ConnApsDomain
         }
 
         #endregion
+
+        public IEnumerable<IPerson> GetBuildingPeople(string userId)
+        {
+            var buildingId = personRegister.FetchTenantBuildingId(userId);
+            List<IPerson> people = new List<IPerson>();
+            people.AddRange(personRegister.FetchBuildingTenants(buildingId));
+            people.AddRange(personRegister.FetchBuildingBuildingManager(buildingId));
+            return people;
+        }
     }
 }

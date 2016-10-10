@@ -65,5 +65,10 @@ namespace ConnApsEmailService
 
             SendEmail(mail);
         }
+
+        public static void SendNewBookingEmail(String Email)
+        {
+
+        }
     }
 }

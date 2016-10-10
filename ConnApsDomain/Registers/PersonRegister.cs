@@ -68,6 +68,12 @@ namespace ConnApsDomain
             return bm.Building;
         }
 
+        public IEnumerable<IPerson> FetchBuildingBuildingManager(int buildingId)
+        {
+            var bms = context.BuildingManagers.Where(bm => bm.BuildingId == buildingId);
+            return bms;
+        }
+
         #endregion
 
         #region Tenant
@@ -124,15 +130,10 @@ namespace ConnApsDomain
             return tenant;
         }
 
-        public IEnumerable<ITenant> FetchBuildingTenants(int buildingId)
+        public IEnumerable<IPerson> FetchBuildingTenants(int buildingId)
         {
-            var apartments = context.Apartments.Include("Tenants").Where(t => t.BuildingId.Equals(buildingId));
-            var tenants = new List<ITenant>();
-
-            foreach(var apt in apartments)
-            {
-                tenants.AddRange(apt.Tenants);
-            }
+            var tenants = context.Tenants.Include("Apartments")
+                                 .Where(t => t.BuildingId.Equals(buildingId));
 
             return tenants;
         }

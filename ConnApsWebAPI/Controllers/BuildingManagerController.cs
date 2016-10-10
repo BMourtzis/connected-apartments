@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -216,6 +217,11 @@ namespace ConnApsWebAPI.Controllers
         [Route("CreateBooking")]
         public Response<IBooking> CreateBooking(BookingCreateModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return getBadResponse<IBooking>(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+            }
+
             IBooking booking;
             try
             {
@@ -242,6 +248,54 @@ namespace ConnApsWebAPI.Controllers
                 return getBadResponse<IBooking>(e.Message);
             }
             return getResponse<IBooking>(booking);
+        }
+
+        [HttpGet]
+        [Route("FetchFacilityBookings")]
+        public Response<IEnumerable<IBooking>> FetchFacilityBookings(int facilityId)
+        {
+            IEnumerable<IBooking> bookings;
+            try
+            {
+                bookings = CAD.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+            }
+            return getResponse<IEnumerable<IBooking>>(bookings);
+        }
+
+        [HttpGet]
+        [Route("FetchPersonBookings")]
+        public Response<IEnumerable<IBooking>> FetchPersonBookings()
+        {
+            IEnumerable<IBooking> bookings;
+            try
+            {
+                bookings = CAD.FetchPersonBookings(User.Identity.GetUserId());
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+            }
+            return getResponse<IEnumerable<IBooking>>(bookings);
+        }
+
+        [HttpDelete]
+        [Route("CancelBooking")]
+        public Response<IBooking> CancelBooking(int FacilityId, int BookingId)
+        {
+            IBooking bookings;
+            try
+            {
+                bookings = CAD.CancelBooking(User.Identity.GetUserId(), FacilityId, BookingId);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(bookings);
         }
 
         #endregion

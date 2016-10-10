@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConnApsDomain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -155,6 +156,7 @@ namespace ConnApsDomain
         
         public IBooking CreateBooking(int BuildingId, int FacilityId, int PersonId, DateTime StartTime, DateTime EndTime)
         {
+            CheckBookingAvailability(BuildingId, FacilityId, StartTime, EndTime);
             var building = context.Buildings
                       .Include("Locations")
                       .Where(b => b.Id == BuildingId)
@@ -195,6 +197,24 @@ namespace ConnApsDomain
 
             var booking = facilty.Bookings;
             return booking;
+        }
+
+        private void CheckBookingAvailability(int buildingId, int facilityId, DateTime startTime, DateTime endTime)
+        {
+            var facilty = context.Facilities
+                      .Include("Bookings")
+                      .Where(f => f.BuildingId == buildingId)
+                      .Where(f => f.Id == facilityId)
+                      .FirstOrDefault();
+
+            var bookings = facilty.Bookings;
+            foreach(var booking in bookings)
+            {
+                if((booking.StartTime >= startTime && booking.EndTime < startTime) || (booking.StartTime < endTime && booking.EndTime >= endTime ))
+                {
+                    throw new BookingOverlapingException();
+                }
+            }
         }
 
         #endregion

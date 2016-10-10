@@ -140,7 +140,8 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            GenericResponse gr = new GenericResponse() { IsSuccess = true };
+            return Ok<GenericResponse>(gr);
         }
 
         // POST api/Account/SetPassword
@@ -159,7 +160,8 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            GenericResponse gr = new GenericResponse() { IsSuccess = true };
+            return Ok<GenericResponse>(gr);
         }
 
         // POST api/Account/ResetPassword
