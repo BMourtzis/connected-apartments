@@ -139,6 +139,19 @@ namespace ConnApsDomain
 
         #endregion
 
+        #region Booking
+
+        public IEnumerable<IBooking> FetchPersonBookings(string userId)
+        {
+            var person = context.People.Include("Bookings")
+                                       .Where(p => p.UserId.Equals(userId))
+                                       .FirstOrDefault();
+            var bookings = person.Bookings;
+            return bookings;
+        }
+
+        #endregion
+
         public void Dispose()
         {
             context.Dispose();

@@ -5,6 +5,7 @@ namespace ConnApsDomain
 {
     public interface IBuildingManager
     {
+        int Id { get; }
         string FirstName { get; }
         string LastName { get; }
         DateTime DoB { get; }

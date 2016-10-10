@@ -160,6 +160,13 @@ namespace ConnApsDomain
             return facility;
         }
 
+        public Facility UpdateFacility(int FacilityId, string Level, string Number)
+        {
+            var facility = FetchFacility(FacilityId);
+            facility.UpdateFacility(Level, Number);
+            return facility;
+        }
+
         public Booking CreateBooking(int facilityId, int personId, DateTime startTime, DateTime endTime)
         {
             var facility = Facilities.Where(f => f.Id == facilityId).FirstOrDefault();

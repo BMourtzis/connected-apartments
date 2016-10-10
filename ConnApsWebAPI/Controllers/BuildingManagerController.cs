@@ -210,6 +210,42 @@ namespace ConnApsWebAPI.Controllers
 
         #endregion
 
+        #region Booking
+
+        [HttpPost]
+        [Route("CreateBooking")]
+        public Response<IBooking> CreateBooking(BookingCreateModel model)
+        {
+            IBooking booking;
+            try
+            {
+                booking = CAD.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(booking);
+        }
+
+        [HttpGet]
+        [Route("FetchBooking")]
+        public Response<IBooking> FetchBooking(int facilityId, int bookingId)
+        {
+            IBooking booking;
+            try
+            {
+                booking = CAD.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(booking);
+        }
+
+        #endregion
+
         #region Tenant
 
         // GET api/BuildingManager/FetchTenant

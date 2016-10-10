@@ -97,4 +97,11 @@ namespace ConnApsWebAPI.Models
         public string BuildingName { get; set; }
         public string Address { get; set; }
     }
+
+    public class BookingCreateModel
+    {
+        public int FacilityId { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+    }
 }

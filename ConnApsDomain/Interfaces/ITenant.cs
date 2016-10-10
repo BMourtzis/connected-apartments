@@ -5,6 +5,7 @@ namespace ConnApsDomain
 {
     public interface ITenant
     {
+        int Id { get; }
         string FirstName { get; }
         string LastName { get; }
         DateTime DoB { get; }

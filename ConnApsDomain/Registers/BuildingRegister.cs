@@ -127,6 +127,18 @@ namespace ConnApsDomain
             return facility;
         }
 
+        public IFacility UpdateFacility(int BuildingId, int FacilityId, string Level, string Number)
+        {
+            var building = context.Buildings
+                      .Include("Locations")
+                      .Where(b => b.Id == BuildingId)
+                      .FirstOrDefault();
+            var facility = building.UpdateFacility(FacilityId, Level, Number);
+            context.SaveChanges();
+            return facility;
+        }
+
+
         public IFacility FetchFacility(int BuildingId, int FacilityId)
         {
             var building = context.Buildings
@@ -135,6 +147,54 @@ namespace ConnApsDomain
                                   .FirstOrDefault();
             var facility = building.FetchFacility(FacilityId);
             return facility;
+        }
+
+        #endregion
+
+        #region Booking
+        
+        public IBooking CreateBooking(int BuildingId, int FacilityId, int PersonId, DateTime StartTime, DateTime EndTime)
+        {
+            var building = context.Buildings
+                      .Include("Locations")
+                      .Where(b => b.Id == BuildingId)
+                      .FirstOrDefault();
+            var booking = building.CreateBooking(FacilityId, PersonId, StartTime, EndTime);
+            context.Bookings.Add(booking);
+            context.SaveChanges();
+            return booking;
+        }
+
+        public IBooking FetchBooking(int BuildingId, int FacilityId, int BookingId)
+        {
+            var facilty = context.Facilities
+                                  .Include("Bookings")
+                                  .Where(f => f.BuildingId == BuildingId)
+                                  .Where(f => f.Id == FacilityId)
+                                  .FirstOrDefault();
+
+            var booking = facilty.FetchBooking(BookingId);
+            return booking;
+        }
+
+        public IBooking DeleteBooking(int BuildingId, int FacilityId, int BookingId)
+        {
+            var booking = (Booking)FetchBooking(BuildingId, FacilityId, BookingId);
+            context.Bookings.Remove(booking);
+            context.SaveChanges();
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchFacilityBookings(int BuildingId, int FacilityId)
+        {
+            var facilty = context.Facilities
+                                  .Include("Bookings")
+                                  .Where(f => f.BuildingId == BuildingId)
+                                  .Where(f => f.Id == FacilityId)
+                                  .FirstOrDefault();
+
+            var booking = facilty.Bookings;
+            return booking;
         }
 
         #endregion

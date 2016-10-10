@@ -23,5 +23,43 @@ namespace ConnApsDomain
         }
 
         #endregion
+
+        #region Booking
+
+        public IBooking CreateBooking(string userId, int FacilityId, DateTime StartTime, DateTime EndTime)
+        {
+            var t = personRegister.FetchTenant(userId);
+            var booking = buildingRegister.CreateBooking(t.BuildingId, FacilityId, t.Id, StartTime, EndTime);
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int FacilityId)
+        {
+            var buildingId = personRegister.FetchTenantBuildingId(userId);
+            var bookings = buildingRegister.FetchFacilityBookings(buildingId, FacilityId);
+            return bookings;
+        }
+
+        public IBooking FetchBooking(string userId, int FacilityId, int BookingId)
+        {
+            var buildingId = personRegister.FetchTenantBuildingId(userId);
+            var bookings = buildingRegister.FetchBooking(buildingId, FacilityId, BookingId);
+            return bookings;
+        }
+
+        public IBooking CancelBooking(string userId, int FacilityId, int BookingId)
+        {
+            var buildingId = personRegister.FetchTenantBuildingId(userId);
+            var booking = buildingRegister.DeleteBooking(buildingId, FacilityId, BookingId);
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchPersonBookings(string userId)
+        {
+            var bookings = personRegister.FetchPersonBookings(userId);
+            return bookings;
+        }
+
+        #endregion
     }
 }

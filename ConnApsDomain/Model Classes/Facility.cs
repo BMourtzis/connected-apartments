@@ -46,10 +46,21 @@ namespace ConnApsDomain
 
         #region Functions
 
-        public Booking CreateBooking(int personId, DateTime starttTme, DateTime endTime)
+        public Booking CreateBooking(int personId, DateTime startTme, DateTime endTime)
         {
-            var b = new Booking(Id, personId, starttTme, endTime);
+            var b = new Booking(Id, personId, startTme, endTime);
             return b;
+        }
+
+        public Booking FetchBooking(int BookingId)
+        {
+            var booking = Bookings.Where(b => b.Id == BookingId).FirstOrDefault();
+            return booking;
+        }
+
+        public void UpdateFacility(string level, string number)
+        {
+            UpdateLocation(level, number);
         }
 
         #endregion
