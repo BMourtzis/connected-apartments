@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConnApsDomain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,20 +76,23 @@ namespace ConnApsDomain
             return apt;
         }
 
-        public IApartment UpdateApartment(int apartmentId, string level, string number, int tenantsAllowed, string facingDirection)
+        public IApartment UpdateApartment(int apartmentId, int buildingId, string level, string number, int tenantsAllowed, string facingDirection)
         {
-            Apartment apt = getApartment(apartmentId);
+            Building building = context.Buildings.Include("Locations")
+                                                 .Where(b => b.Id == buildingId)
+                                                 .FirstOrDefault();
+            Apartment apt = building.FetchApartment(apartmentId);
             apt.UpdateApartment(level, number, tenantsAllowed, facingDirection);
             context.SaveChanges();
             return apt;
         }
 
-        public IApartment FetchApartment(int apartmentId)
+        public IApartment FetchApartment(int buildingId, int apartmentId)
         {
-            Apartment apt = context.Apartments
-                                   .Include("Tenants")
-                                   .Where(a => a.Id.Equals(apartmentId))
-                                   .FirstOrDefault();
+            Building building = context.Buildings.Include("Locations")
+                                                 .Where(b => b.Id == buildingId)
+                                                 .FirstOrDefault();
+            Apartment apt = building.FetchApartment(apartmentId);
             return apt;
         }
 
@@ -109,6 +113,108 @@ namespace ConnApsDomain
         public void Dispose()
         {
             context.Dispose();
+        }
+
+        #endregion
+
+        #region Facility
+
+        public IFacility CreateFacility(int BuildingId, string Level, string Number)
+        {
+            var building = getBuilding(BuildingId);
+            var facility = building.CreateFacility(Level, Number);
+            context.Facilities.Add(facility);
+            context.SaveChanges();
+            return facility;
+        }
+
+        public IFacility UpdateFacility(int BuildingId, int FacilityId, string Level, string Number)
+        {
+            var building = context.Buildings
+                      .Include("Locations")
+                      .Where(b => b.Id == BuildingId)
+                      .FirstOrDefault();
+            var facility = building.UpdateFacility(FacilityId, Level, Number);
+            context.SaveChanges();
+            return facility;
+        }
+
+
+        public IFacility FetchFacility(int BuildingId, int FacilityId)
+        {
+            var building = context.Buildings
+                                  .Include("Locations")
+                                  .Where(b => b.Id == BuildingId)
+                                  .FirstOrDefault();
+            var facility = building.FetchFacility(FacilityId);
+            return facility;
+        }
+
+        #endregion
+
+        #region Booking
+        
+        public IBooking CreateBooking(int BuildingId, int FacilityId, int PersonId, DateTime StartTime, DateTime EndTime)
+        {
+            CheckBookingAvailability(BuildingId, FacilityId, StartTime, EndTime);
+            var building = context.Buildings
+                      .Include("Locations")
+                      .Where(b => b.Id == BuildingId)
+                      .FirstOrDefault();
+            var booking = building.CreateBooking(FacilityId, PersonId, StartTime, EndTime);
+            context.Bookings.Add(booking);
+            context.SaveChanges();
+            return booking;
+        }
+
+        public IBooking FetchBooking(int BuildingId, int FacilityId, int BookingId)
+        {
+            var facilty = context.Facilities
+                                  .Include("Bookings")
+                                  .Where(f => f.BuildingId == BuildingId)
+                                  .Where(f => f.Id == FacilityId)
+                                  .FirstOrDefault();
+
+            var booking = facilty.FetchBooking(BookingId);
+            return booking;
+        }
+
+        public IBooking DeleteBooking(int BuildingId, int FacilityId, int BookingId)
+        {
+            var booking = (Booking)FetchBooking(BuildingId, FacilityId, BookingId);
+            context.Bookings.Remove(booking);
+            context.SaveChanges();
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchFacilityBookings(int BuildingId, int FacilityId)
+        {
+            var facilty = context.Facilities
+                                  .Include("Bookings")
+                                  .Where(f => f.BuildingId == BuildingId)
+                                  .Where(f => f.Id == FacilityId)
+                                  .FirstOrDefault();
+
+            var booking = facilty.Bookings;
+            return booking;
+        }
+
+        private void CheckBookingAvailability(int buildingId, int facilityId, DateTime startTime, DateTime endTime)
+        {
+            var facilty = context.Facilities
+                      .Include("Bookings")
+                      .Where(f => f.BuildingId == buildingId)
+                      .Where(f => f.Id == facilityId)
+                      .FirstOrDefault();
+
+            var bookings = facilty.Bookings;
+            foreach(var booking in bookings)
+            {
+                if((booking.StartTime >= startTime && booking.EndTime < startTime) || (booking.StartTime < endTime && booking.EndTime >= endTime ))
+                {
+                    throw new BookingOverlapingException();
+                }
+            }
         }
 
         #endregion

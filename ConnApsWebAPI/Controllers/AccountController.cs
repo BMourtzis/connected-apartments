@@ -140,7 +140,8 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            GenericResponse gr = new GenericResponse() { IsSuccess = true };
+            return Ok<GenericResponse>(gr);
         }
 
         // POST api/Account/SetPassword
@@ -159,7 +160,29 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            GenericResponse gr = new GenericResponse() { IsSuccess = true };
+            return Ok<GenericResponse>(gr);
+        }
+
+        // POST api/Account/ResetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ResetPassword")]
+        public async Task<Response<Boolean>> ResetPassord(String email)
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+            UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(context);
+            UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(store);
+            var userId = User.Identity.GetUserId();
+            var password = generatePassword();
+            var hashedPass = UserManager.PasswordHasher.HashPassword(password);
+            ApplicationUser cUser = await store.FindByEmailAsync(email);
+            await store.SetPasswordHashAsync(cUser, hashedPass);
+            await store.UpdateAsync(cUser);
+
+            EmailService.SendPasswordResetEmail(cUser.Email, password);
+
+            return getResponse<Boolean>(true);
         }
 
         // POST api/Account/AddExternalLogin
@@ -330,13 +353,13 @@ namespace ConnApsWebAPI.Controllers
         //POST api/Account/AddRoles
         //[AllowAnonymous]
         //[Route("AddRoles")]
-        //public async Task<IHttpActionResult> AddRoles()
-        //{
-        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-        //    var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
-        //    var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
-        //    return Ok();
-        //}
+        public async Task<IHttpActionResult> AddRoles()
+        {
+            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+            var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+            var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+            return Ok();
+        }
 
         // DELETE api/Account/Delete
         //[AllowAnonymous]
@@ -396,7 +419,7 @@ namespace ConnApsWebAPI.Controllers
         [Route("RegisterTenant")]
         public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
         {
-
+            ITenant tenant;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -413,7 +436,7 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (CAD)
                     {
-                        CAD.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                        tenant = CAD.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
@@ -424,7 +447,7 @@ namespace ConnApsWebAPI.Controllers
                 }
 
                 EmailService.SendTenantCreationEmail(model.Email, password);
-                return Ok<Response<RegisterTenantModel>>(getResponse<RegisterTenantModel>(model));
+                return Ok<Response<ITenant>>(getResponse<ITenant>(tenant));
             }
             else
             {

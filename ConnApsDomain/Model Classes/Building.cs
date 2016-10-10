@@ -71,7 +71,7 @@ namespace ConnApsDomain
             }
         }
 
-        public IEnumerable<IApartment> Apartments
+        public IEnumerable<Apartment> Apartments
         {
             get
             {
@@ -83,6 +83,37 @@ namespace ConnApsDomain
                 {
                     return null;
                 }
+            }
+        }
+
+        public IEnumerable<Facility> Facilities
+        {
+            get
+            {
+                if (Locations != null)
+                {
+                    return Locations.OfType<Facility>();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        IEnumerable<IApartment> IBuilding.Apartments
+        {
+            get
+            {
+                return Apartments;
+            }
+        }
+
+        IEnumerable<IFacility> IBuilding.Facilities
+        {
+            get
+            {
+                return Facilities;
             }
         }
 
@@ -109,6 +140,38 @@ namespace ConnApsDomain
         {
             Apartment ap = new Apartment(Level, Number, TenantsAllowed, FacingDirection, Id);
             return ap;
+        }
+
+        public Apartment FetchApartment(int aptId)
+        {
+            var apartment = Apartments.Where(a => a.Id == aptId).FirstOrDefault();
+            return apartment;
+        }
+
+        public Facility CreateFacility(string Level, string Number)
+        {
+            Facility f = new Facility(Level, Number, Id);
+            return f;
+        }
+
+        public Facility FetchFacility(int FacilityId)
+        {
+            var facility = Facilities.Where(f => f.Id == FacilityId).FirstOrDefault();
+            return facility;
+        }
+
+        public Facility UpdateFacility(int FacilityId, string Level, string Number)
+        {
+            var facility = FetchFacility(FacilityId);
+            facility.UpdateFacility(Level, Number);
+            return facility;
+        }
+
+        public Booking CreateBooking(int facilityId, int personId, DateTime startTime, DateTime endTime)
+        {
+            var facility = Facilities.Where(f => f.Id == facilityId).FirstOrDefault();
+            var booking = facility.CreateBooking(personId, startTime, endTime);
+            return booking;
         }
 
         #endregion

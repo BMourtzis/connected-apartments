@@ -17,6 +17,8 @@ namespace ConnApsDomain
         private string phone;
         private string userId;
 
+        internal virtual ICollection<Booking> Bookings { get; set; }
+
         #region Constructors
 
         protected Person() { }
@@ -109,6 +111,14 @@ namespace ConnApsDomain
             set
             {
                 userId = value;
+            }
+        }
+
+        IEnumerable<IBooking> IPerson.Bookings
+        {
+            get
+            {
+                return Bookings;
             }
         }
 

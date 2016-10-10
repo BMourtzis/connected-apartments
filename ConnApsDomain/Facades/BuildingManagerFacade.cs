@@ -61,28 +61,95 @@ namespace ConnApsDomain
 
         #region Apartment
 
-        public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, int buildingId)
+        public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var apt = buildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, buildingId);
+            var bid = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, bid);
             return apt;
         }
 
-        public IApartment UpdateApartment(int aptId, string level, string number, int tenantsAllowed, string facingDirection)
+        public IApartment UpdateApartment(int aptId, string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var apt = buildingRegister.UpdateApartment(aptId, level, number, tenantsAllowed, facingDirection);
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.UpdateApartment(aptId, buildingId, level, number, tenantsAllowed, facingDirection);
             return apt;
         }
 
-        public IApartment FetchApartment(int apartmentId)
+        public IApartment FetchApartment(int apartmentId, string userId)
         {
-            var apt = buildingRegister.FetchApartment(apartmentId);
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.FetchApartment(buildingId, apartmentId);
             return apt;
         }
 
         public IEnumerable<IApartment> FetchApartments(string userId)
         {
-            var apt = buildingRegister.FetchApartments(personRegister.FetchBuildingManagerBuildingId(userId));
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = buildingRegister.FetchApartments(buildingId);
             return apt;
+        }
+
+        #endregion 
+
+        #region Facility
+
+        public IFacility CreateFacility(string userId, string Level, string Number)
+        {
+            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = buildingRegister.CreateFacility(buildingId, Level, Number);
+            return facility;
+        }
+
+        public IFacility UpdateFacility(string userId, int FacilityId, string Level, string Number)
+        {
+            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = buildingRegister.UpdateFacility(buildingId, FacilityId, Level, Number);
+            return facility;
+        }
+
+        public IFacility FetchFacility(string userId, int FacilityId)
+        {
+            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = buildingRegister.FetchFacility(buildingId, FacilityId);
+            return facility;
+        }
+
+        #endregion
+
+        #region Booking
+        
+        public IBooking CreateBooking(string userId, int FacilityId, DateTime StartTime, DateTime EndTime)
+        {
+            var bm = personRegister.FetchBuildingManager(userId);
+            var booking = buildingRegister.CreateBooking(bm.BuildingId, FacilityId, bm.Id, StartTime, EndTime);
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int FacilityId)
+        {
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var bookings = buildingRegister.FetchFacilityBookings(buildingId, FacilityId);
+            return bookings;
+        }
+
+        public IBooking FetchBooking(string userId, int FacilityId, int BookingId)
+        {
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var bookings = buildingRegister.FetchBooking(buildingId, FacilityId, BookingId);
+            return bookings;
+        }
+
+        public IBooking CancelBooking(string userId, int FacilityId, int BookingId)
+        {
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var booking = buildingRegister.DeleteBooking(buildingId, FacilityId, BookingId);
+            return booking;
+        }
+
+        public IEnumerable<IBooking> FetchPersonBookings(string userId)
+        {
+            var bookings = personRegister.FetchPersonBookings(userId);
+            return bookings;
         }
 
         #endregion
@@ -121,5 +188,13 @@ namespace ConnApsDomain
 
         #endregion
 
+        public IEnumerable<IPerson> GetBuildingPeople(string userId)
+        {
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            List<IPerson> people = new List<IPerson>();
+            people.AddRange(personRegister.FetchBuildingTenants(buildingId));
+            people.AddRange(personRegister.FetchBuildingBuildingManager(buildingId));
+            return people;
+        }
     }
 }

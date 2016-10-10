@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -129,7 +130,7 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.FetchApartment(aptId);
+                apt = CAD.FetchApartment(aptId, User.Identity.GetUserId());
             }
             catch (Exception e )
             {
@@ -146,7 +147,7 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, CAD.GetBuildingId(User.Identity.GetUserId()));
+                apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -163,13 +164,138 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                apt = CAD.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection);
+                apt = CAD.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
             }
             catch (Exception e)
             {
                 return getBadResponse<IApartment>(e.Message);
             }
             return getResponse<IApartment>(apt);
+        }
+
+        #endregion
+
+        #region Facility
+
+        [HttpPost]
+        [Route("CreateFacility")]
+        public Response<IFacility> CreateFacility(FaciltyRegisterModel model)
+        {
+            IFacility facility;
+            try
+            {
+                facility = CAD.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IFacility>(e.Message);
+            }
+            return getResponse<IFacility>(facility);
+        }
+
+        [HttpGet]
+        [Route("FetchFacility")]
+        public Response<IFacility> FetchFacility(int facilityId)
+        {
+            IFacility facility;
+            try
+            {
+                facility = CAD.FetchFacility(User.Identity.GetUserId(), facilityId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IFacility>(e.Message);
+            }
+            return getResponse<IFacility>(facility);
+        }
+
+        #endregion
+
+        #region Booking
+
+        [HttpPost]
+        [Route("CreateBooking")]
+        public Response<IBooking> CreateBooking(BookingCreateModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return getBadResponse<IBooking>(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+            }
+
+            IBooking booking;
+            try
+            {
+                booking = CAD.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(booking);
+        }
+
+        [HttpGet]
+        [Route("FetchBooking")]
+        public Response<IBooking> FetchBooking(int facilityId, int bookingId)
+        {
+            IBooking booking;
+            try
+            {
+                booking = CAD.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(booking);
+        }
+
+        [HttpGet]
+        [Route("FetchFacilityBookings")]
+        public Response<IEnumerable<IBooking>> FetchFacilityBookings(int facilityId)
+        {
+            IEnumerable<IBooking> bookings;
+            try
+            {
+                bookings = CAD.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+            }
+            return getResponse<IEnumerable<IBooking>>(bookings);
+        }
+
+        [HttpGet]
+        [Route("FetchPersonBookings")]
+        public Response<IEnumerable<IBooking>> FetchPersonBookings()
+        {
+            IEnumerable<IBooking> bookings;
+            try
+            {
+                bookings = CAD.FetchPersonBookings(User.Identity.GetUserId());
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+            }
+            return getResponse<IEnumerable<IBooking>>(bookings);
+        }
+
+        [HttpDelete]
+        [Route("CancelBooking")]
+        public Response<IBooking> CancelBooking(int FacilityId, int BookingId)
+        {
+            IBooking bookings;
+            try
+            {
+                bookings = CAD.CancelBooking(User.Identity.GetUserId(), FacilityId, BookingId);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse<IBooking>(e.Message);
+            }
+            return getResponse<IBooking>(bookings);
         }
 
         #endregion

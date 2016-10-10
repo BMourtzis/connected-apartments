@@ -55,5 +55,20 @@ namespace ConnApsEmailService
 
             SendEmail(mail);
         }
+
+        public static void SendPasswordResetEmail(String email, string password)
+        {
+            MailMessage mail = new MailMessage(ServiceEmail, email);
+
+            mail.Subject = "Your password has been reset";
+            mail.Body = "Your new password is "+password;
+
+            SendEmail(mail);
+        }
+
+        public static void SendNewBookingEmail(String Email)
+        {
+
+        }
     }
 }

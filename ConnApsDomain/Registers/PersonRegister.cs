@@ -68,6 +68,12 @@ namespace ConnApsDomain
             return bm.Building;
         }
 
+        public IEnumerable<IPerson> FetchBuildingBuildingManager(int buildingId)
+        {
+            var bms = context.BuildingManagers.Where(bm => bm.BuildingId == buildingId);
+            return bms;
+        }
+
         #endregion
 
         #region Tenant
@@ -86,6 +92,12 @@ namespace ConnApsDomain
             tenant.UpdateTenant(firstName, lastName, dob, phone);
             context.SaveChanges();
             return tenant;
+        }
+
+        public int FetchTenantBuildingId(string userId)
+        {
+            ITenant tenant = FetchTenant(userId);
+            return tenant.BuildingId;
         }
 
         public ITenant FetchTenant(string userId)
@@ -118,17 +130,25 @@ namespace ConnApsDomain
             return tenant;
         }
 
-        public IEnumerable<ITenant> FetchBuildingTenants(int buildingId)
+        public IEnumerable<IPerson> FetchBuildingTenants(int buildingId)
         {
-            var apartments = context.Apartments.Include("Tenants").Where(t => t.BuildingId.Equals(buildingId));
-            var tenants = new List<ITenant>();
-
-            foreach(var apt in apartments)
-            {
-                tenants.AddRange(apt.Tenants);
-            }
+            var tenants = context.Tenants.Include("Apartments")
+                                 .Where(t => t.BuildingId.Equals(buildingId));
 
             return tenants;
+        }
+
+        #endregion
+
+        #region Booking
+
+        public IEnumerable<IBooking> FetchPersonBookings(string userId)
+        {
+            var person = context.People.Include("Bookings")
+                                       .Where(p => p.UserId.Equals(userId))
+                                       .FirstOrDefault();
+            var bookings = person.Bookings;
+            return bookings;
         }
 
         #endregion

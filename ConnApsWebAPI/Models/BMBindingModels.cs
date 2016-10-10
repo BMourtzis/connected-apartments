@@ -39,6 +39,14 @@ namespace ConnApsWebAPI.Models
         public string FacingDirection { get; set; }
     }
 
+    public class FaciltyRegisterModel
+    {
+        [Required]
+        public string Level { get; set; }
+        [Required]
+        public string Number { get; set; }
+    }
+
     public class BMTenantUpdateModel
     {
         [Required]
@@ -88,5 +96,23 @@ namespace ConnApsWebAPI.Models
     {
         public string BuildingName { get; set; }
         public string Address { get; set; }
+    }
+
+    public class BookingCreateModel: IValidatableObject
+    {
+        [Required]
+        public int FacilityId { get; set; }
+        [Required]
+        public DateTime StartTime { get; set; }
+        [Required]
+        public DateTime EndTime { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if(EndTime < StartTime)
+            {
+                yield return new ValidationResult(errorMessage: "EndTime must be greater than StartDate", memberNames: new[] { "EndTime" });
+            }
+        }
     }
 }
