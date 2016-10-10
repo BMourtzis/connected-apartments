@@ -130,7 +130,7 @@ namespace ConnApsDomain
             return tenant;
         }
 
-        public IEnumerable<IPerson> FetchBuildingTenants(int buildingId)
+        public IEnumerable<ITenant> FetchBuildingTenants(int buildingId)
         {
             var tenants = context.Tenants.Include("Apartments")
                                  .Where(t => t.BuildingId.Equals(buildingId));
