@@ -19,12 +19,29 @@ namespace ConnApsWebAPI.Controllers
             };
         }
 
+        protected GenericResponse getBadResponse(String message)
+        {
+            return new GenericResponse
+            {
+                IsSuccess = false,
+                Message = message
+            };
+        }
+
         protected Response<T> getResponse<T>(T result)
         {
             return new Response<T>()
             {
                 IsSuccess = true,
                 Result = result
+            };
+        }
+
+        protected GenericResponse getResponse()
+        {
+            return new GenericResponse
+            {
+                IsSuccess = true
             };
         }
     }

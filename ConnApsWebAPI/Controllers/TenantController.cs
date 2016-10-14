@@ -43,7 +43,7 @@ namespace ConnApsWebAPI.Controllers
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public Response<ITenant> UpdateTenant(TenantUpdateModel model)
+        public GenericResponse UpdateTenant(TenantUpdateModel model)
         {
             ITenant t;
             try
@@ -52,9 +52,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<ITenant>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<ITenant>(t);
+            return getResponse();
         }
 
         #endregion
@@ -63,11 +63,11 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateBooking")]
-        public Response<IBooking> CreateBooking(BookingCreateModel model)
+        public GenericResponse CreateBooking(BookingCreateModel model)
         {
             if (!ModelState.IsValid)
             {
-                return getBadResponse<IBooking>(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+                return getBadResponse(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
             }
 
             IBooking booking;
@@ -77,11 +77,11 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return getBadResponse(e.Message);
             }
 
 
-            return getResponse<IBooking>(booking);
+            return getResponse();
         }
 
         [HttpGet]
@@ -134,7 +134,7 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpDelete]
         [Route("CancelBooking")]
-        public Response<IBooking> CancelBooking(int FacilityId, int BookingId)
+        public GenericResponse CancelBooking(int FacilityId, int BookingId)
         {
             IBooking bookings;
             try
@@ -143,9 +143,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IBooking>(bookings);
+            return getResponse();
         }
 
         #endregion

@@ -44,7 +44,7 @@ namespace ConnApsWebAPI.Controllers
         // Post api/BuildingManager/UpdateBuildingManager
         [HttpPut]
         [Route("UpdateBuildingManager")]
-        public Response<IBuildingManager> UpdateBuildingManager(BuildingManagerBindingModel model)
+        public GenericResponse UpdateBuildingManager(BuildingManagerBindingModel model)
         {
             IBuildingManager bm;
             try
@@ -53,9 +53,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IBuildingManager>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IBuildingManager>(bm);
+            return getResponse();
         }
 
         #endregion
@@ -82,7 +82,7 @@ namespace ConnApsWebAPI.Controllers
         // Post api/BuildingManager/UpdateBuilding
         [HttpPut]
         [Route("UpdateBuilding")]
-        public Response<IBuilding> UpdateBuilding(BuildingBindingModel model)
+        public GenericResponse UpdateBuilding(BuildingBindingModel model)
         {
             IBuilding building;
             try
@@ -91,9 +91,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IBuilding>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IBuilding>(building);
+            return getResponse();
         }
 
         #endregion
@@ -142,7 +142,7 @@ namespace ConnApsWebAPI.Controllers
         // POST api/BuildingManager/CreateApartment
         [HttpPost]
         [Route("CreateApartment")]
-        public Response<IApartment> CreateApartment(ApartmentBindingModel model)
+        public GenericResponse CreateApartment(ApartmentBindingModel model)
         {
             IApartment apt;
             try
@@ -151,15 +151,15 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IApartment>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IApartment>(apt);
+            return getResponse();
         }
 
         // POST api/BuildingManager/UpdateApartment
         [HttpPut]
         [Route("UpdateApartment")]
-        public Response<IApartment> UpdateApartment(ApartmentUpdateModel model)
+        public GenericResponse UpdateApartment(ApartmentUpdateModel model)
         {
             IApartment apt;
             try
@@ -168,9 +168,10 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IApartment>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IApartment>(apt);
+
+            return getResponse();
         }
 
         #endregion
@@ -179,7 +180,7 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateFacility")]
-        public Response<IFacility> CreateFacility(FaciltyRegisterModel model)
+        public GenericResponse CreateFacility(FaciltyRegisterModel model)
         {
             IFacility facility;
             try
@@ -188,9 +189,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IFacility>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IFacility>(facility);
+            return getResponse();
         }
 
         [HttpGet]
@@ -215,11 +216,11 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateBooking")]
-        public Response<IBooking> CreateBooking(BookingCreateModel model)
+        public GenericResponse CreateBooking(BookingCreateModel model)
         {
             if(!ModelState.IsValid)
             {
-                return getBadResponse<IBooking>(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+                return getBadResponse(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
             }
 
             IBooking booking;
@@ -229,9 +230,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch(Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IBooking>(booking);
+            return getResponse();
         }
 
         [HttpGet]
@@ -284,7 +285,7 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpDelete]
         [Route("CancelBooking")]
-        public Response<IBooking> CancelBooking(int FacilityId, int BookingId)
+        public GenericResponse CancelBooking(int FacilityId, int BookingId)
         {
             IBooking bookings;
             try
@@ -293,9 +294,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<IBooking>(bookings);
+            return getResponse();
         }
 
         #endregion
@@ -322,7 +323,7 @@ namespace ConnApsWebAPI.Controllers
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public Response<ITenant> UpdateTenant(BMTenantUpdateModel model)
+        public GenericResponse UpdateTenant(BMTenantUpdateModel model)
         {
             ITenant t;
             try
@@ -331,15 +332,15 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<ITenant>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<ITenant>(t);
+            return getResponse();
         }
 
         // PUT api/BuildingManager/ChangeApartment
         [HttpPut]
         [Route("ChangeApartment")]
-        public Response<ITenant> ChangeApartment(ChangeApartmentModel model)
+        public GenericResponse ChangeApartment(ChangeApartmentModel model)
         {
             ITenant t;
             try
@@ -348,9 +349,9 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse<ITenant>(e.Message);
+                return getBadResponse(e.Message);
             }
-            return getResponse<ITenant>(t);
+            return getResponse();
         }
 
         // GET api/BuildingManager/FetchBuildingTenants

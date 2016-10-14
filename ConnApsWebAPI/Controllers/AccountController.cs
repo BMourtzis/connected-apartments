@@ -140,8 +140,7 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            GenericResponse gr = new GenericResponse() { IsSuccess = true };
-            return Ok<GenericResponse>(gr);
+            return Ok<GenericResponse>(getResponse());
         }
 
         // POST api/Account/SetPassword
@@ -160,29 +159,35 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            GenericResponse gr = new GenericResponse() { IsSuccess = true };
-            return Ok<GenericResponse>(gr);
+            return Ok<GenericResponse>(getResponse());
         }
 
         // POST api/Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [Route("ResetPassword")]
-        public async Task<Response<Boolean>> ResetPassord(String email)
+        public async Task<GenericResponse> ResetPassord(String email)
         {
-            ApplicationDbContext context = new ApplicationDbContext();
-            UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(context);
-            UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(store);
-            var userId = User.Identity.GetUserId();
-            var password = generatePassword();
-            var hashedPass = UserManager.PasswordHasher.HashPassword(password);
-            ApplicationUser cUser = await store.FindByEmailAsync(email);
-            await store.SetPasswordHashAsync(cUser, hashedPass);
-            await store.UpdateAsync(cUser);
+            try
+            {
+                ApplicationDbContext context = new ApplicationDbContext();
+                UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(context);
+                UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(store);
+                var userId = User.Identity.GetUserId();
+                var password = generatePassword();
+                var hashedPass = UserManager.PasswordHasher.HashPassword(password);
+                ApplicationUser cUser = await store.FindByEmailAsync(email);
+                await store.SetPasswordHashAsync(cUser, hashedPass);
+                await store.UpdateAsync(cUser);
 
-            EmailService.SendPasswordResetEmail(cUser.Email, password);
+                EmailService.SendPasswordResetEmail(cUser.Email, password);
+            }
+            catch (Exception e)
+            {
+                return getBadResponse(e.Message);
+            }
 
-            return getResponse<Boolean>(true);
+            return getResponse();
         }
 
         // POST api/Account/AddExternalLogin
@@ -403,7 +408,7 @@ namespace ConnApsWebAPI.Controllers
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
-                return Ok<RegisterBuildingModel>(model);
+                return Ok<GenericResponse>(getResponse());
             }
             else
             {
