@@ -195,6 +195,22 @@ namespace ConnApsWebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("FetchFacilities")]
+        public Response<IEnumerable<IFacility>> FetchFacilities()
+        {
+            IEnumerable<IFacility> facilities;
+            try
+            {
+                facilities = CAD.FetchFacilities(User.Identity.GetUserId());
+            }
+            catch(Exception e)
+            {
+                return getBadResponse<IEnumerable<IFacility>>(e.Message);
+            }
+            return getResponse<IEnumerable<IFacility>>(facilities);
+        }
+
+        [HttpGet]
         [Route("FetchFacility")]
         public Response<IFacility> FetchFacility(int facilityId)
         {

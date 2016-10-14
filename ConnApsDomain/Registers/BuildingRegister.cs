@@ -140,6 +140,15 @@ namespace ConnApsDomain
         }
 
 
+        public IEnumerable<IFacility> FetchFacilities(int BuildingId)
+        {
+            var building = context.Buildings.Include("Locations")
+                                            .Where(b => b.Id == BuildingId)
+                                            .FirstOrDefault();
+            var facilities = building.Facilities;
+            return facilities;
+        }
+
         public IFacility FetchFacility(int BuildingId, int FacilityId)
         {
             var building = context.Buildings

@@ -114,10 +114,17 @@ namespace ConnApsDomain
             return facility;
         }
 
+        public IEnumerable<IFacility> FetchFacilities(string userId)
+        {
+            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
+            var facilities = buildingRegister.FetchFacilities(buildingId);
+            return facilities;
+        }
+
         #endregion
 
         #region Booking
-        
+
         public IBooking CreateBooking(string userId, int FacilityId, DateTime StartTime, DateTime EndTime)
         {
             var bm = personRegister.FetchBuildingManager(userId);
