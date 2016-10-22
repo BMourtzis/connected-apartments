@@ -8,5 +8,4 @@ matrix:
         env: DOTNETCORE=1
         -mono: latest
 
-install: nuget restore ConnApsDomain.sln
 script: xbuild /p:Configursation=Release ConnApsDomain.sln
