@@ -1,6 +1,7 @@
 language: csharp
 solution: ConnApsDomain.sln
 
-mono: latest
+mono: none
+dotnet: 1.0.0-preview2-003121
 
 script: xbuild /p:Configuration=Release ConnApsDomain.sln
