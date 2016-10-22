@@ -7,5 +7,3 @@ matrix:
         mono: none
         env: DOTNETCORE=1
         -mono: latest
-
-script: xbuild /p:Configursation=Release ConnApsDomain.sln
