@@ -1,9 +1,7 @@
 language: csharp
-solution: ./src/ConnApsDomain.sln
-
+solution: ConnApsDomain.sln
 install:
-  - sudo apt-get install nunit-console
-  - nuget restore ./src/ConnApsDomain.sln
+  - nuget restore ConnApsDomain.sln
 
 script:
-  - xbuild ./src/ConnApsDomain.sln
+  - xbuild /p:Configuration=Release ConnApsDomain.sln
