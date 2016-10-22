@@ -1,0 +1,12 @@
+language: csharp
+solution: ConnApsDomain.sln
+
+matrix:
+    include:
+        -dotnet: 1.0.0-preview2-003121
+        mono: none
+        env: DOTNETCORE=1
+        -mono: latest
+
+install: nuget restore ConnApsDomain.sln
+script: xbuild /p:Configursation=Release ConnApsDomain.sln
