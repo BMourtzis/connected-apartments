@@ -11,7 +11,7 @@ namespace CommApsDomainUnitTest
         {
             int i = 3;
             i = i * 3;
-            Assert.AreEqual(9, i);
+            Assert.AreEqual(0, i);
         }
     }
 }
