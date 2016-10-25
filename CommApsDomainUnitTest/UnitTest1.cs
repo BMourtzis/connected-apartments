@@ -1,17 +1,17 @@
-﻿using NUnit.Framework;
+﻿using ConnApsDomain;
 using System;
+using Xunit;
 
 namespace CommApsDomainUnitTest
 {
-    [TestFixture]
     public class UnitTest1
     {
-        [TestCase]
+        [Fact]
         public void TestMethod1()
         {
             int i = 3;
             i = i * 3;
-            Assert.AreEqual(9, i);
+            Assert.Equal(9, i);
         }
     }
 }
