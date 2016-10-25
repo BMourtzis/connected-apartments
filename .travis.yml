@@ -8,4 +8,4 @@ install:
 
 script:
   - xbuild /p:Configuration=Release ConnApsDomain.sln /p:TargetFrameworkVersion="v4.5" /p:DebugSymbols=False
-  - mono ./testrunner/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./CommApsDomainUnitTest/bin/Release/CommApsDomainUnitTest.dll
+  - mono ./testrunner/xunit.runners.2.6.4/tools/xunit.console.clr4.exe ./CommApsDomainUnitTest/bin/Release/CommApsDomainUnitTest.dll
