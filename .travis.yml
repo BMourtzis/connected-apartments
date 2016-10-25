@@ -4,8 +4,8 @@ mono: latest
 
 install:
   - nuget restore ConnApsDomain.sln
-  - nuget install NUnit.Runners -Version 3.5.0 -OutputDirectory testrunner
+  - nuget install xuit.runners -Version 2.1.0 -OutputDirectory testrunner
 
 script:
   - xbuild /p:Configuration=Release ConnApsDomain.sln /p:TargetFrameworkVersion="v4.5" /p:DebugSymbols=False
-  - mono ./testrunner/NUnit.ConsoleRunner.3.5.0/tools/nunit3-console.exe ./CommApsDomainUnitTest/bin/Release/CommApsDomainUnitTest.dll
+  - mono ./testrunner/xunit.runner.2.1.0/tools/xunit.console.clr4.exe ./CommApsDomainUnitTest/bin/Release/CommApsDomainUnitTest.dll
