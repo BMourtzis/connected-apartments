@@ -72,22 +72,33 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAPI_Tests\TenantController_Tests\FetchTenantUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ConnApsDomain\ConnApsDomain.csproj">
+      <Project>{9d3e2b05-084a-4904-bdd3-85e76f9f9925}</Project>
+      <Name>ConnApsDomain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ConnApsWebAPI\ConnApsWebAPI.csproj">
       <Project>{49e96a08-ef62-4461-beb4-d3a2e8804872}</Project>
       <Name>ConnApsWebAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Domain_Tests\" />
+    <Folder Include="WebAPI_Tests\AdminController_Tests\" />
+    <Folder Include="WebAPI_Tests\BuildingManagerController_Tests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
