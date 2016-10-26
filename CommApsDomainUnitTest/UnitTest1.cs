@@ -1,4 +1,5 @@
-﻿using ConnApsDomain;
+﻿using ConnApsWebAPI;
+using Moq;
 using System;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace CommApsDomainUnitTest
         {
             int i = 3;
             i = i * 3;
-            Assert.Equal(7, i);
+            Assert.Equal(9, i);
         }
     }
 }
