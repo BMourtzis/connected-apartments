@@ -2,26 +2,6 @@
 
 ### What is this repository for? ###
 
-* Connected Apartments Server is the server component of the system built for UTS' SEP Subject/
-* Version: 0.1
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* The connected-apartments repo stores the server component of the Connected Apartments system built for UTS' SEP Subject. After the semester ended I decided to continue working on this project. The purpose of this project is to fix any bugs that exist, change the API to comply with any API standards that exist, create tests to test the system and lastly, expand the system to the idea the team had in mind.
+* Version: 0.8
+* [![Build Status](https://travis-ci.org/BMourtzis/connected-apartments.svg?branch=master)](https://travis-ci.org/BMourtzis/connected-apartments.svg?branch=master)
