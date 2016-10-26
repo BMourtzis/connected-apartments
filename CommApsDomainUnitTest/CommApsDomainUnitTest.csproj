@@ -81,13 +81,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConnApsDomain\ConnApsDomain.csproj">
-      <Project>{9d3e2b05-084a-4904-bdd3-85e76f9f9925}</Project>
-      <Name>ConnApsDomain</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\ConnApsWebAPI\ConnApsWebAPI.csproj">
+      <Project>{49e96a08-ef62-4461-beb4-d3a2e8804872}</Project>
+      <Name>ConnApsWebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
