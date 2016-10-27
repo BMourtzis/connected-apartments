@@ -14,7 +14,6 @@ namespace ConnApsWebAPI.Controllers
     [RoutePrefix("api/Tenant")]
     public class TenantController : BaseController
     {
-        protected TenantFacade CAD;
 
         public TenantController()
         {
@@ -26,33 +25,44 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/TenantInfo
         [HttpGet]
         [Route("TenantInfo")]
-        public Response<ITenant> FetchTenant()
+        public IHttpActionResult FetchTenant()
         {
             ITenant t;
             try
             {
-                t = CAD.FetchTenant(User.Identity.GetUserId());
+                using (var facade = (CAD as TenantFacade))
+                {
+                    t = facade.FetchTenant(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<ITenant>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<ITenant>(t);
+            return Ok<ITenant>(t);
         }
 
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public GenericResponse UpdateTenant(TenantUpdateModel model)
+        public IHttpActionResult UpdateTenant(TenantUpdateModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             ITenant t;
             try
             {
-                t = CAD.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                using (var facade = (CAD as TenantFacade))
+                {
+                    t = facade.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -63,18 +73,21 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpGet]
         [Route("FetchFacilities")]
-        public Response<IEnumerable<IFacility>> FetchFacilities()
+        public IHttpActionResult FetchFacilities()
         {
             IEnumerable<IFacility> facilities;
             try
             {
-                facilities = CAD.FetchFacilities(User.Identity.GetUserId());
+                using (var facade = (CAD as TenantFacade))
+                {
+                    facilities = facade.FetchFacilities(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IEnumerable<IFacility>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IFacility>>(facilities);
+            return Ok<IEnumerable<IFacility>>(facilities);
         }
 
         #endregion
@@ -83,87 +96,115 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateBooking")]
-        public GenericResponse CreateBooking(BookingCreateModel model)
+        public IHttpActionResult CreateBooking(BookingCreateModel model)
         {
             if (!ModelState.IsValid)
             {
-                return getBadResponse(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+                return BadRequest(ModelState);
             }
 
             IBooking booking;
             try
             {
-                booking = CAD.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                using (var facade = (CAD as TenantFacade))
+                {
+                    booking = facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
-
 
             return getResponse();
         }
 
         [HttpGet]
         [Route("FetchBooking")]
-        public Response<IBooking> FetchBooking(int facilityId, int bookingId)
+        public IHttpActionResult FetchBooking(int facilityId, int bookingId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             IBooking booking;
             try
             {
-                booking = CAD.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+                using (var facade = (CAD as TenantFacade))
+                {
+                    booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IBooking>(booking);
+            return Ok<IBooking>(booking);
         }
 
         [HttpGet]
         [Route("FetchFacilityBookings")]
-        public Response<IEnumerable<IBooking>> FetchFacilityBookings(int facilityId)
+        public IHttpActionResult FetchFacilityBookings(int facilityId)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             IEnumerable<IBooking> bookings;
             try
             {
-                bookings = CAD.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+                using (var facade = (CAD as TenantFacade))
+                {
+                    bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IBooking>>(bookings);
+            return Ok<IEnumerable<IBooking>>(bookings);
         }
 
         [HttpGet]
         [Route("FetchPersonBookings")]
-        public Response<IEnumerable<IBooking>> FetchPersonBookings()
+        public IHttpActionResult FetchPersonBookings()
         {
             IEnumerable<IBooking> bookings;
             try
             {
-                bookings = CAD.FetchPersonBookings(User.Identity.GetUserId());
+                using (var facade = (CAD as TenantFacade))
+                {
+                    bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IBooking>>(bookings);
+            return Ok<IEnumerable<IBooking>>(bookings);
         }
 
         [HttpDelete]
         [Route("CancelBooking")]
-        public GenericResponse CancelBooking(int FacilityId, int BookingId)
+        public IHttpActionResult CancelBooking(BookingCancelModel model)
         {
-            IBooking bookings;
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                bookings = CAD.CancelBooking(User.Identity.GetUserId(), FacilityId, BookingId);
+                using (var facade = (CAD as TenantFacade))
+                {
+                    facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }

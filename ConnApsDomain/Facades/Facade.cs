@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain
 {
-    public abstract class Facade: IDisposable, IDisposableFacade
+    public class Facade: IDisposable, IDisposableFacade
     {
         internal BuildingRegister buildingRegister;
         internal PersonRegister personRegister;

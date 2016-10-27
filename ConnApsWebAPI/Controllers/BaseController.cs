@@ -1,4 +1,5 @@
-﻿using ConnApsWebAPI.Models;
+﻿using ConnApsDomain;
+using ConnApsWebAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,39 +11,25 @@ namespace ConnApsWebAPI.Controllers
 {
     public class BaseController : ApiController
     {
-        protected Response<T> getBadResponse<T>(String message)
+        protected Facade CAD;
+
+        protected BaseController()
         {
-            return new Response<T>
-            {
-                IsSuccess = false,
-                Message = message
-            };
+            CAD = new Facade();
         }
 
-        protected GenericResponse getBadResponse(String message)
+        protected BaseController(Facade facade)
         {
-            return new GenericResponse
-            {
-                IsSuccess = false,
-                Message = message
-            };
+            CAD = facade;
         }
 
-        protected Response<T> getResponse<T>(T result)
+        protected IHttpActionResult getResponse()
         {
-            return new Response<T>()
-            {
-                IsSuccess = true,
-                Result = result
-            };
-        }
-
-        protected GenericResponse getResponse()
-        {
-            return new GenericResponse
+            var response = new GenericResponse
             {
                 IsSuccess = true
             };
+            return Ok<GenericResponse>(response);
         }
     }
 }

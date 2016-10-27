@@ -15,45 +15,54 @@ namespace ConnApsWebAPI.Controllers
     [RoutePrefix("api/BuildingManager")]
     public class BuildingManagerController : BaseController
     {
-        protected BuildingManagerFacade CAD;
 
-        public BuildingManagerController()
-        {
-            CAD = new BuildingManagerFacade();
-        }
+        public BuildingManagerController(): base() {}
+
+        public BuildingManagerController(Facade facade): base(facade) { }
 
         #region Building Manager
 
         // GET api/BuildingManager/BuildingManagerInfo
         [HttpGet]
         [Route("BuildingManagerInfo")]
-        public Response<IBuildingManager> FetchBuildingManagerInfo()
+        public IHttpActionResult FetchBuildingManagerInfo()
         {
             IBuildingManager bm;
             try
             {
-                bm = CAD.FetchBuildingManager(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    bm = facade.FetchBuildingManager(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IBuildingManager>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IBuildingManager>(bm);
+            return Ok<IBuildingManager>(bm);
         }
 
         // Post api/BuildingManager/UpdateBuildingManager
         [HttpPut]
         [Route("UpdateBuildingManager")]
-        public GenericResponse UpdateBuildingManager(BuildingManagerBindingModel model)
+        public IHttpActionResult UpdateBuildingManager(BuildingManagerBindingModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             IBuildingManager bm;
             try
             {
-                bm = CAD.UpdateBuildingManager(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    bm = facade.UpdateBuildingManager(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -65,33 +74,44 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/BuildingInfo
         [HttpGet]
         [Route("BuildingInfo")]
-        public Response<IBuilding> FetchBuildingInfo()
+        public IHttpActionResult FetchBuildingInfo()
         {
             IBuilding building;
             try
             {
-                building = CAD.FetchBuildingManagerBuilding(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    building = facade.FetchBuildingManagerBuilding(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IBuilding>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IBuilding>(building);
+            return Ok<IBuilding>(building);
         }
 
         // Post api/BuildingManager/UpdateBuilding
         [HttpPut]
         [Route("UpdateBuilding")]
-        public GenericResponse UpdateBuilding(BuildingBindingModel model)
+        public IHttpActionResult UpdateBuilding(BuildingBindingModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             IBuilding building;
             try
             {
-                building = CAD.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    building = facade.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -108,50 +128,64 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/FetchApartments
         [HttpGet]
         [Route("FetchApartments")]
-        public Response<IEnumerable<IApartment>> FetchApartments()
+        public IHttpActionResult FetchApartments()
         {
             IEnumerable<IApartment> apt;
             try
             {
-                apt = CAD.FetchApartments(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    apt = facade.FetchApartments(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IEnumerable<IApartment>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IApartment>>(apt);
+
+            return Ok<IEnumerable<IApartment>>(apt);
         }
 
         // GET api/BuildingManager/FetchApartment
         [HttpGet]
         [Route("FetchApartment")]
-        public Response<IApartment> FetchApartment(int aptId)
+        public IHttpActionResult FetchApartment(int aptId)
         {
             IApartment apt;
             try
             {
-                apt = CAD.FetchApartment(aptId, User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    apt = facade.FetchApartment(aptId, User.Identity.GetUserId());
+                }
             }
             catch (Exception e )
             {
-                return getBadResponse<IApartment>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IApartment>(apt);
+            return Ok<IApartment>(apt);
         }
 
         // POST api/BuildingManager/CreateApartment
         [HttpPost]
         [Route("CreateApartment")]
-        public GenericResponse CreateApartment(ApartmentBindingModel model)
+        public IHttpActionResult CreateApartment(ApartmentBindingModel model)
         {
-            IApartment apt;
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                apt = CAD.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -159,16 +193,23 @@ namespace ConnApsWebAPI.Controllers
         // POST api/BuildingManager/UpdateApartment
         [HttpPut]
         [Route("UpdateApartment")]
-        public GenericResponse UpdateApartment(ApartmentUpdateModel model)
+        public IHttpActionResult UpdateApartment(ApartmentUpdateModel model)
         {
-            IApartment apt;
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                apt = CAD.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
 
             return getResponse();
@@ -180,50 +221,63 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateFacility")]
-        public GenericResponse CreateFacility(FaciltyRegisterModel model)
+        public IHttpActionResult CreateFacility(FaciltyRegisterModel model)
         {
-            IFacility facility;
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                facility = CAD.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
 
         [HttpGet]
         [Route("FetchFacilities")]
-        public Response<IEnumerable<IFacility>> FetchFacilities()
+        public IHttpActionResult FetchFacilities()
         {
             IEnumerable<IFacility> facilities;
             try
             {
-                facilities = CAD.FetchFacilities(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facilities = facade.FetchFacilities(User.Identity.GetUserId());
+                }
             }
             catch(Exception e)
             {
-                return getBadResponse<IEnumerable<IFacility>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IFacility>>(facilities);
+            return Ok<IEnumerable<IFacility>>(facilities);
         }
 
         [HttpGet]
         [Route("FetchFacility")]
-        public Response<IFacility> FetchFacility(int facilityId)
+        public IHttpActionResult FetchFacility(int facilityId)
         {
             IFacility facility;
             try
             {
-                facility = CAD.FetchFacility(User.Identity.GetUserId(), facilityId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facility = facade.FetchFacility(User.Identity.GetUserId(), facilityId);
+                }
             }
             catch(Exception e)
             {
-                return getBadResponse<IFacility>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IFacility>(facility);
+            return Ok<IFacility>(facility);
         }
 
         #endregion
@@ -232,85 +286,98 @@ namespace ConnApsWebAPI.Controllers
 
         [HttpPost]
         [Route("CreateBooking")]
-        public GenericResponse CreateBooking(BookingCreateModel model)
+        public IHttpActionResult CreateBooking(BookingCreateModel model)
         {
             if(!ModelState.IsValid)
             {
-                return getBadResponse(ModelState.Values.FirstOrDefault().Errors.FirstOrDefault().ErrorMessage);
+                return BadRequest(ModelState);
             }
 
-            IBooking booking;
             try
             {
-                booking = CAD.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                }
             }
             catch(Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
 
         [HttpGet]
         [Route("FetchBooking")]
-        public Response<IBooking> FetchBooking(int facilityId, int bookingId)
+        public IHttpActionResult FetchBooking(int facilityId, int bookingId)
         {
             IBooking booking;
             try
             {
-                booking = CAD.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
+                }
             }
             catch(Exception e)
             {
-                return getBadResponse<IBooking>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IBooking>(booking);
+            return Ok<IBooking>(booking);
         }
 
         [HttpGet]
         [Route("FetchFacilityBookings")]
-        public Response<IEnumerable<IBooking>> FetchFacilityBookings(int facilityId)
+        public IHttpActionResult FetchFacilityBookings(int facilityId)
         {
             IEnumerable<IBooking> bookings;
             try
             {
-                bookings = CAD.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
+                }
             }
             catch(Exception e)
             {
-                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IBooking>>(bookings);
+            return Ok<IEnumerable<IBooking>>(bookings);
         }
 
         [HttpGet]
         [Route("FetchPersonBookings")]
-        public Response<IEnumerable<IBooking>> FetchPersonBookings()
+        public IHttpActionResult FetchPersonBookings()
         {
             IEnumerable<IBooking> bookings;
             try
             {
-                bookings = CAD.FetchPersonBookings(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<IEnumerable<IBooking>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<IBooking>>(bookings);
+            return Ok<IEnumerable<IBooking>>(bookings);
         }
 
         [HttpDelete]
         [Route("CancelBooking")]
-        public GenericResponse CancelBooking(int FacilityId, int BookingId)
+        public IHttpActionResult CancelBooking(BookingCancelModel model)
         {
-            IBooking bookings;
             try
             {
-                bookings = CAD.CancelBooking(User.Identity.GetUserId(), FacilityId, BookingId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -322,33 +389,44 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/FetchTenant
         [HttpGet]
         [Route("FetchTenant")]
-        public Response<ITenant> FetchTenant(string userId)
+        public IHttpActionResult FetchTenant(string userId)
         {
             ITenant t;
             try
             {
-                t = CAD.FetchTenant(userId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    t = facade.FetchTenant(userId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse<ITenant>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<ITenant>(t);
+            return Ok<ITenant>(t);
         }
 
         // PUT api/BuildingManager/UpdateTenant
         [HttpPut]
         [Route("UpdateTenant")]
-        public GenericResponse UpdateTenant(BMTenantUpdateModel model)
+        public IHttpActionResult UpdateTenant(BMTenantUpdateModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             ITenant t;
             try
             {
-                t = CAD.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    t = facade.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -356,16 +434,23 @@ namespace ConnApsWebAPI.Controllers
         // PUT api/BuildingManager/ChangeApartment
         [HttpPut]
         [Route("ChangeApartment")]
-        public GenericResponse ChangeApartment(ChangeApartmentModel model)
+        public IHttpActionResult ChangeApartment(ChangeApartmentModel model)
         {
-            ITenant t;
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                t = CAD.ChangeApartment(model.UserId, model.ApartmentId);
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    facade.ChangeApartment(model.UserId, model.ApartmentId);
+                }
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
             return getResponse();
         }
@@ -373,19 +458,22 @@ namespace ConnApsWebAPI.Controllers
         // GET api/BuildingManager/FetchBuildingTenants
         [HttpGet]
         [Route("FetchBuildingTenants")]
-        public Response<IEnumerable<ITenant>> FetchBuildingTenants()
+        public IHttpActionResult FetchBuildingTenants()
         {
             IEnumerable<ITenant> t;
             try
             {
-                t = CAD.FetchBuildingTenants(User.Identity.GetUserId());
+                using (var facade = (CAD as BuildingManagerFacade))
+                {
+                    t = facade.FetchBuildingTenants(User.Identity.GetUserId());
+                }
             }
             catch (Exception e)
             {
 
-                return getBadResponse<IEnumerable<ITenant>>(e.Message);
+                return BadRequest(e.Message);
             }
-            return getResponse<IEnumerable<ITenant>>(t);
+            return Ok<IEnumerable<ITenant>>(t);
         }
 
         #endregion

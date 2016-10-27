@@ -29,12 +29,10 @@ namespace ConnApsWebAPI.Controllers
     {
         private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
-        protected AdminFacade CAD;
 
-        public AccountController()
-        {
-            CAD = new AdminFacade();
-        }
+        public AccountController(): base() {}
+
+        public AccountController(Facade facade): base(facade) { }
 
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
@@ -72,7 +70,7 @@ namespace ConnApsWebAPI.Controllers
                 Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
 
-            return Ok<Response<UserInfoViewModel>>(getResponse<UserInfoViewModel>(model));
+            return Ok<UserInfoViewModel>(model);
         }
 
         // POST api/Account/Logout
@@ -140,7 +138,7 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok<GenericResponse>(getResponse());
+            return getResponse();
         }
 
         // POST api/Account/SetPassword
@@ -159,15 +157,20 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok<GenericResponse>(getResponse());
+            return getResponse();
         }
 
         // POST api/Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [Route("ResetPassword")]
-        public async Task<GenericResponse> ResetPassord(String email)
+        public async Task<IHttpActionResult> ResetPassord(ResetPasswordModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 ApplicationDbContext context = new ApplicationDbContext();
@@ -176,7 +179,7 @@ namespace ConnApsWebAPI.Controllers
                 var userId = User.Identity.GetUserId();
                 var password = generatePassword();
                 var hashedPass = UserManager.PasswordHasher.HashPassword(password);
-                ApplicationUser cUser = await store.FindByEmailAsync(email);
+                ApplicationUser cUser = await store.FindByEmailAsync(model.Email);
                 await store.SetPasswordHashAsync(cUser, hashedPass);
                 await store.UpdateAsync(cUser);
 
@@ -184,7 +187,7 @@ namespace ConnApsWebAPI.Controllers
             }
             catch (Exception e)
             {
-                return getBadResponse(e.Message);
+                return BadRequest(e.Message);
             }
 
             return getResponse();
@@ -358,13 +361,13 @@ namespace ConnApsWebAPI.Controllers
         //POST api/Account/AddRoles
         //[AllowAnonymous]
         //[Route("AddRoles")]
-        public async Task<IHttpActionResult> AddRoles()
-        {
-            var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-            var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
-            var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
-            return Ok();
-        }
+        //public async Task<IHttpActionResult> AddRoles()
+        //{
+        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+        //    var bmresult = RoleManager.Create(new IdentityRole("BuildingManager"));
+        //    var tnresult = RoleManager.Create(new IdentityRole("Tenant"));
+        //    return Ok();
+        //}
 
         // DELETE api/Account/Delete
         //[AllowAnonymous]
@@ -375,6 +378,7 @@ namespace ConnApsWebAPI.Controllers
         //    UserManager.Delete(user);
         //    return Ok();
         //}
+
 
         // POST api/Account/RegisterBuilding
         [AllowAnonymous]
@@ -396,7 +400,7 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (CAD)
                     {
-                        CAD.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                        (CAD as AdminFacade).CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
                     }
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
@@ -408,14 +412,12 @@ namespace ConnApsWebAPI.Controllers
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
-                return Ok<GenericResponse>(getResponse());
+                return getResponse();
             }
             else
             {
                 return GetErrorResult(result);
             }
-
-            
         }
 
 
@@ -441,18 +443,18 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (CAD)
                     {
-                        tenant = CAD.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                        tenant = (CAD as AdminFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
                 catch (Exception e)
                 {
-                    UserManager.Delete(user);             
-                    return Content<Response<RegisterTenantModel>>(System.Net.HttpStatusCode.InternalServerError, getBadResponse<RegisterTenantModel>(e.Message));
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
                 }
 
                 EmailService.SendTenantCreationEmail(model.Email, password);
-                return Ok<Response<ITenant>>(getResponse<ITenant>(tenant));
+                return Ok<ITenant>(tenant);
             }
             else
             {

@@ -9,6 +9,12 @@ namespace ConnApsDomain
     public class BuildingManagerFacade: Facade
     {
 
+        #region Constructors
+
+        public BuildingManagerFacade(): base() {}
+
+        #endregion
+
         #region BuildingManager
 
         public IBuildingManager FetchBuildingManager(string userId)
