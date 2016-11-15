@@ -12,10 +12,9 @@ using ConnApsEmailService;
 namespace ConnApsWebAPI.Controllers
 {
     [Authorize(Roles = "BuildingManager")]
-    [RoutePrefix("api/BuildingManager")]
+    [RoutePrefix("api/Manager")]
     public class BuildingManagerController : BaseController
     {
-
         public BuildingManagerController(): base() {}
 
         public BuildingManagerController(Facade facade): base(facade) { }

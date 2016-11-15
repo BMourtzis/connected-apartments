@@ -103,12 +103,11 @@ namespace ConnApsWebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            IBooking booking;
             try
             {
                 using (var facade = (CAD as TenantFacade))
                 {
-                    booking = facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                    facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
                 }
             }
             catch (Exception e)
