@@ -1,26 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConnApsDomain.Registers;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Facades
 {
     public class Facade: IDisposable, IDisposableFacade
     {
-        internal BuildingRegister buildingRegister;
-        internal PersonRegister personRegister;
+        internal readonly BuildingRegister BuildingRegister;
+        internal readonly PersonRegister PersonRegister;
 
         public Facade()
         {
-            buildingRegister = new BuildingRegister();
-            personRegister = new PersonRegister();
+            BuildingRegister = new BuildingRegister();
+            PersonRegister = new PersonRegister();
         }
+
+
 
         public void Dispose()
         {
-            buildingRegister.Dispose();
-            personRegister.Dispose();
+            BuildingRegister.Dispose();
+            PersonRegister.Dispose();
         }
     }
 }

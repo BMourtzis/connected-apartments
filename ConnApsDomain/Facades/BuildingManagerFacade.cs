@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConnApsDomain.Models;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Facades
 {
     public class BuildingManagerFacade: Facade
     {
@@ -19,13 +17,13 @@ namespace ConnApsDomain
 
         public IBuildingManager FetchBuildingManager(string userId)
         {
-            var bm = personRegister.FetchBuildingManager(userId);
+            var bm = PersonRegister.FetchBuildingManager(userId);
             return bm;
         }
 
         public IBuildingManager UpdateBuildingManager(string userId, string firstname, string lastname, DateTime dateofbirth, string newPhone)
         {
-            var bm = personRegister.UpdateBuildingManager(userId, firstname, lastname, dateofbirth, newPhone);
+            var bm = PersonRegister.UpdateBuildingManager(userId, firstname, lastname, dateofbirth, newPhone);
             return bm;
         }
 
@@ -41,25 +39,25 @@ namespace ConnApsDomain
 
         public IBuilding UpdateBuilding(string userId, string buildingName, string address)
         {
-            var building = buildingRegister.UpdateBuilding(personRegister.FetchBuildingManagerBuildingId(userId), buildingName, address);
+            var building = BuildingRegister.UpdateBuilding(PersonRegister.FetchBuildingManagerBuildingId(userId), buildingName, address);
             return building;
         }
 
         public IBuilding FetchBuilding(int buildingId)
         {
-            var building = buildingRegister.FetchBuilding(buildingId);
+            var building = BuildingRegister.FetchBuilding(buildingId);
             return building;
         }
 
         public IBuilding GetTenantBuilding(string userId)
         {
-            var building = buildingRegister.FetchBuilding(personRegister.FetchTenant(userId).BuildingId);
+            var building = BuildingRegister.FetchBuilding(PersonRegister.FetchTenant(userId).BuildingId);
             return building;
         }
 
         public IBuilding FetchBuildingManagerBuilding(string userId)
         {
-            var building = buildingRegister.FetchBuilding(personRegister.FetchBuildingManagerBuildingId(userId));
+            var building = BuildingRegister.FetchBuilding(PersonRegister.FetchBuildingManagerBuildingId(userId));
             return building;
         }
 
@@ -69,29 +67,29 @@ namespace ConnApsDomain
 
         public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var bid = personRegister.FetchBuildingManagerBuildingId(userId);
-            var apt = buildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, bid);
+            var bid = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = BuildingRegister.CreateApartment(level, number, tenantsAllowed, facingDirection, bid);
             return apt;
         }
 
         public IApartment UpdateApartment(int aptId, string level, string number, int tenantsAllowed, string facingDirection, string userId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var apt = buildingRegister.UpdateApartment(aptId, buildingId, level, number, tenantsAllowed, facingDirection);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = BuildingRegister.UpdateApartment(aptId, buildingId, level, number, tenantsAllowed, facingDirection);
             return apt;
         }
 
         public IApartment FetchApartment(int apartmentId, string userId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var apt = buildingRegister.FetchApartment(buildingId, apartmentId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = BuildingRegister.FetchApartment(buildingId, apartmentId);
             return apt;
         }
 
         public IEnumerable<IApartment> FetchApartments(string userId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var apt = buildingRegister.FetchApartments(buildingId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var apt = BuildingRegister.FetchApartments(buildingId);
             return apt;
         }
 
@@ -99,31 +97,31 @@ namespace ConnApsDomain
 
         #region Facility
 
-        public IFacility CreateFacility(string userId, string Level, string Number)
+        public IFacility CreateFacility(string userId, string level, string number)
         {
-            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var facility = buildingRegister.CreateFacility(buildingId, Level, Number);
+            int buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = BuildingRegister.CreateFacility(buildingId, level, number);
             return facility;
         }
 
-        public IFacility UpdateFacility(string userId, int FacilityId, string Level, string Number)
+        public IFacility UpdateFacility(string userId, int facilityId, string level, string number)
         {
-            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var facility = buildingRegister.UpdateFacility(buildingId, FacilityId, Level, Number);
+            int buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = BuildingRegister.UpdateFacility(buildingId, facilityId, level, number);
             return facility;
         }
 
-        public IFacility FetchFacility(string userId, int FacilityId)
+        public IFacility FetchFacility(string userId, int facilityId)
         {
-            int buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var facility = buildingRegister.FetchFacility(buildingId, FacilityId);
+            int buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var facility = BuildingRegister.FetchFacility(buildingId, facilityId);
             return facility;
         }
 
         public IEnumerable<IFacility> FetchFacilities(string userId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var facilities = buildingRegister.FetchFacilities(buildingId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var facilities = BuildingRegister.FetchFacilities(buildingId);
             return facilities;
         }
 
@@ -131,37 +129,37 @@ namespace ConnApsDomain
 
         #region Booking
 
-        public IBooking CreateBooking(string userId, int FacilityId, DateTime StartTime, DateTime EndTime)
+        public IBooking CreateBooking(string userId, int facilityId, DateTime startTime, DateTime endTime)
         {
-            var bm = personRegister.FetchBuildingManager(userId);
-            var booking = buildingRegister.CreateBooking(bm.BuildingId, FacilityId, bm.Id, StartTime, EndTime);
+            var bm = PersonRegister.FetchBuildingManager(userId);
+            var booking = BuildingRegister.CreateBooking(bm.BuildingId, facilityId, bm.Id, startTime, endTime);
             return booking;
         }
 
-        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int FacilityId)
+        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int facilityId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var bookings = buildingRegister.FetchFacilityBookings(buildingId, FacilityId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var bookings = BuildingRegister.FetchFacilityBookings(buildingId, facilityId);
             return bookings;
         }
 
-        public IBooking FetchBooking(string userId, int FacilityId, int BookingId)
+        public IBooking FetchBooking(string userId, int facilityId, int bookingId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var bookings = buildingRegister.FetchBooking(buildingId, FacilityId, BookingId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var bookings = BuildingRegister.FetchBooking(buildingId, facilityId, bookingId);
             return bookings;
         }
 
-        public IBooking CancelBooking(string userId, int FacilityId, int BookingId)
+        public IBooking CancelBooking(string userId, int facilityId, int bookingId)
         {
-            var buildingId = personRegister.FetchBuildingManagerBuildingId(userId);
-            var booking = buildingRegister.DeleteBooking(buildingId, FacilityId, BookingId);
+            var buildingId = PersonRegister.FetchBuildingManagerBuildingId(userId);
+            var booking = BuildingRegister.DeleteBooking(buildingId, facilityId, bookingId);
             return booking;
         }
 
         public IEnumerable<IBooking> FetchPersonBookings(string userId)
         {
-            var bookings = personRegister.FetchPersonBookings(userId);
+            var bookings = PersonRegister.FetchPersonBookings(userId);
             return bookings;
         }
 
@@ -169,33 +167,34 @@ namespace ConnApsDomain
 
         #region Tenant
 
-        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)
+        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId, string managerId)
         {
-            var tenant = personRegister.CreateTenant(firstName, lastName, dob, phone, userId, apartmentId);
+            int buildingId = GetBuildingId(managerId);
+            var tenant = PersonRegister.CreateTenant(firstName, lastName, dob, phone, userId, apartmentId, buildingId);
             return tenant;
         }
 
         public ITenant FetchTenant(string userId)
         {
-            var tenant = personRegister.FetchTenant(userId);
+            var tenant = PersonRegister.FetchTenant(userId);
             return tenant;
         }
 
         public ITenant UpdateTenant(string userId, string firstName, string lastName, DateTime dob, string phone)
         {
-            var tenant = personRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
+            var tenant = PersonRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
             return tenant;
         }
 
         public ITenant ChangeApartment(string userId, int apartmentId)
         {
-            var tenant = personRegister.ChangeApartment(userId, apartmentId);
+            var tenant = PersonRegister.ChangeApartment(userId, apartmentId);
             return tenant;
         }
 
         public IEnumerable<ITenant> FetchBuildingTenants(string userId)
         {
-            var tenants = personRegister.FetchBuildingTenants(personRegister.FetchBuildingManagerBuildingId(userId));
+            var tenants = PersonRegister.FetchBuildingTenants(PersonRegister.FetchBuildingManagerBuildingId(userId));
             return tenants;
         }
 

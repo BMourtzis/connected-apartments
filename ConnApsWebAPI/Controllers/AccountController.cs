@@ -19,6 +19,8 @@ using ConnApsWebAPI.Results;
 using ConnApsDomain;
 using System.Web.Http.Results;
 using System.Text;
+using ConnApsDomain.Facades;
+using ConnApsDomain.Models;
 using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
@@ -138,7 +140,7 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return getResponse();
+            return GetResponse();
         }
 
         // POST api/Account/SetPassword
@@ -157,7 +159,7 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
 
-            return getResponse();
+            return GetResponse();
         }
 
         // POST api/Account/ResetPassword
@@ -190,7 +192,7 @@ namespace ConnApsWebAPI.Controllers
                 return BadRequest(e.Message);
             }
 
-            return getResponse();
+            return GetResponse();
         }
 
         // POST api/Account/AddExternalLogin
@@ -412,7 +414,7 @@ namespace ConnApsWebAPI.Controllers
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
-                return getResponse();
+                return GetResponse();
             }
             else
             {
@@ -426,7 +428,6 @@ namespace ConnApsWebAPI.Controllers
         [Route("RegisterTenant")]
         public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
         {
-            ITenant tenant;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -439,11 +440,12 @@ namespace ConnApsWebAPI.Controllers
             IdentityResult result = await UserManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
+                ITenant tenant;
                 try
                 {
                     using (Cad)
                     {
-                        tenant = (Cad as AdminFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                        tenant = (Cad as BuildingManagerFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }

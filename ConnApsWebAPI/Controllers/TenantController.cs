@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ConnApsDomain.Facades;
+using ConnApsDomain.Models;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
 
@@ -64,7 +66,7 @@ namespace ConnApsWebAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
-            return getResponse();
+            return GetResponse();
         }
 
         #endregion
@@ -115,7 +117,7 @@ namespace ConnApsWebAPI.Controllers
                 return BadRequest(e.Message);
             }
 
-            return getResponse();
+            return GetResponse();
         }
 
         [HttpGet]
@@ -205,7 +207,7 @@ namespace ConnApsWebAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
-            return getResponse();
+            return GetResponse();
         }
 
         #endregion

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ConnApsDomain.Facades;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -23,7 +24,7 @@ namespace ConnApsWebAPI.Controllers
             Cad = facade;
         }
 
-        protected IHttpActionResult getResponse()
+        protected IHttpActionResult GetResponse()
         {
             var response = new GenericResponse
             {

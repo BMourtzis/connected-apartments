@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConnApsDomain.Models;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Facades
 {
     public class AdminFacade: Facade
     {
@@ -14,8 +11,8 @@ namespace ConnApsDomain
 
         public IBuilding CreateBuilding(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, string buildingname, string newAddress)
         {
-            var building = buildingRegister.CreateBuilding(buildingname, newAddress);
-            var bm = personRegister.CreateBuildingManager(firstname, lastname, dateofbirth, newPhone, userid, building.Id);
+            var building = BuildingRegister.CreateBuilding(buildingname, newAddress);
+            var bm = PersonRegister.CreateBuildingManager(firstname, lastname, dateofbirth, newPhone, userid, building.Id);
             return building;
         }
 
@@ -25,19 +22,13 @@ namespace ConnApsDomain
 
         public IBuildingManager FetchBuildingManager(string userId)
         {
-            var manager = personRegister.FetchBuildingManager(userId);
+            var manager = PersonRegister.FetchBuildingManager(userId);
             return manager;
         }
 
         #endregion
 
         #region Tenant
-
-        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)
-        {
-            var tenant = personRegister.CreateTenant(firstName, lastName, dob, phone, userId, apartmentId);
-            return tenant;
-        }
 
         #endregion
     }

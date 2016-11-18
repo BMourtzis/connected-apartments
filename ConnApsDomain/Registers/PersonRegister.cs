@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConnApsDomain.Models;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Registers
 {
     internal class PersonRegister: IDisposable
     {
 
         #region Constructors
 
-        public PersonRegister() { }
+        public PersonRegister()
+        {
+            _context = new ConnApsContext();
+        }
 
         #endregion
 
         #region Properties
 
-        ConnApsContext context = new ConnApsContext();
+        private readonly ConnApsContext _context;
 
         #endregion
 
@@ -25,52 +28,49 @@ namespace ConnApsDomain
 
         public IBuildingManager CreateBuildingManager(string firstname, string lastname, DateTime dateofbirth, string newPhone, string userid, int buildingId)
         {
-            BuildingManager bm = new BuildingManager(firstname, lastname, dateofbirth, newPhone, userid, buildingId);
-            context.BuildingManagers.Add(bm);
-            context.SaveChanges();
+            var bm = new BuildingManager(firstname, lastname, dateofbirth, newPhone, userid, buildingId);
+            _context.BuildingManagers.Add(bm);
+            _context.SaveChanges();
             return bm;
         }
 
         public IBuildingManager UpdateBuildingManager(string userId, string firstname, string lastname, DateTime dateofbirth, string newPhone)
         {
-            BuildingManager bm = getBuildingManager(userId);
+            var bm = GetBuildingManager(userId);
             bm.UpdateBuildingManager(firstname, lastname, dateofbirth, newPhone);
-            context.SaveChanges();
+            _context.SaveChanges();
             return bm;
         }
 
         public IBuildingManager FetchBuildingManager(string userId)
         {
-            BuildingManager bm = context.BuildingManagers.Include("Building")
-                                        .Where(m => m.UserId.Equals(userId))
-                                        .FirstOrDefault();
+            var bm = _context.BuildingManagers.FirstOrDefault(m => m.UserId.Equals(userId));
             return bm;
 
         }
 
-        private BuildingManager getBuildingManager(string userId)
+        private BuildingManager GetBuildingManager(string userId)
         {
-            BuildingManager bm = context.BuildingManagers
-                                        .Where(m => m.UserId.Equals(userId))
-                                        .FirstOrDefault();
+            var bm = _context.BuildingManagers.FirstOrDefault(m => m.UserId.Equals(userId));
             return bm;
         }
 
         public int FetchBuildingManagerBuildingId(string userId)
         {
-            var bm = getBuildingManager(userId);
+            var bm = GetBuildingManager(userId);
             return bm.BuildingId;
         }
 
         public IBuilding FetchBuildingManagerBuilding(string userId)
         {
-            var bm = FetchBuildingManager(userId);
-            return bm.Building;
+            throw new NotImplementedException();
+            //var bm = FetchBuildingManager(userId);
+            //return bm.Building;
         }
 
         public IEnumerable<IPerson> FetchBuildingBuildingManager(int buildingId)
         {
-            var bms = context.BuildingManagers.Where(bm => bm.BuildingId == buildingId);
+            var bms = _context.BuildingManagers.Where(bm => bm.BuildingId == buildingId);
             return bms;
         }
 
@@ -78,63 +78,57 @@ namespace ConnApsDomain
 
         #region Tenant
 
-        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId)
+        public ITenant CreateTenant(string firstName, string lastName, DateTime dob, string phone, string userId, int apartmentId, int buildingId)
         {
-            Tenant tenant = new Tenant(firstName, lastName, dob, phone, userId, apartmentId);
-            context.Tenants.Add(tenant);
-            context.SaveChanges();
+            var tenant = new Tenant(firstName, lastName, dob, phone, userId, apartmentId, buildingId);
+            _context.Tenants.Add(tenant);
+            _context.SaveChanges();
             return tenant;
         }
 
         public ITenant UpdateTenant(string userId, string firstName, string lastName, DateTime dob, string phone)
         {
-            Tenant tenant = getTenant(userId);
+            var tenant = GetTenant(userId);
             tenant.UpdateTenant(firstName, lastName, dob, phone);
-            context.SaveChanges();
+            _context.SaveChanges();
             return tenant;
         }
 
         public int FetchTenantBuildingId(string userId)
         {
-            ITenant tenant = FetchTenant(userId);
+            var tenant = FetchTenant(userId);
             return tenant.BuildingId;
         }
 
         public ITenant FetchTenant(string userId)
         {
-            Tenant tenant = context.Tenants.Include("Apartment")
-                                   .Where(t => t.UserId.Equals(userId))
-                                   .FirstOrDefault();
+            var tenant = _context.Tenants.FirstOrDefault(t => t.UserId.Equals(userId));
             return tenant;
         }
 
         public IEnumerable<ITenant> FetchTenants()
         {
-            var tenants = context.Tenants.Include("Apartments");
+            var tenants = _context.Tenants;
             return tenants;
         }
 
-        private Tenant getTenant(string userId)
+        private Tenant GetTenant(string userId)
         {
-            Tenant tenant = context.Tenants.Include("Apartment")
-                                   .Where(t => t.UserId.Equals(userId))
-                                   .FirstOrDefault();
+            Tenant tenant = _context.Tenants.FirstOrDefault(t => t.UserId.Equals(userId));
             return tenant;
         }
 
-        public ITenant ChangeApartment(string userId, int ApartmentId)
+        public ITenant ChangeApartment(string userId, int apartmentId)
         {
-            var tenant = getTenant(userId);
-            tenant.ChangeApartment(ApartmentId);
-            context.SaveChanges();
+            var tenant = GetTenant(userId);
+            tenant.ChangeApartment(apartmentId);
+            _context.SaveChanges();
             return tenant;
         }
 
         public IEnumerable<ITenant> FetchBuildingTenants(int buildingId)
         {
-            var tenants = context.Tenants.Include("Apartments")
-                                 .Where(t => t.BuildingId.Equals(buildingId));
-
+            var tenants = _context.Tenants.Where(t => t.BuildingId.Equals(buildingId));
             return tenants;
         }
 
@@ -144,9 +138,9 @@ namespace ConnApsDomain
 
         public IEnumerable<IBooking> FetchPersonBookings(string userId)
         {
-            var person = context.People.Include("Bookings")
-                                       .Where(p => p.UserId.Equals(userId))
-                                       .FirstOrDefault();
+            var person = _context.People
+                                .Include(p => p.Bookings)
+                                .FirstOrDefault(p => p.UserId.Equals(userId));
             var bookings = person.Bookings;
             return bookings;
         }
@@ -155,7 +149,7 @@ namespace ConnApsDomain
 
         public void Dispose()
         {
-            context.Dispose();
+            _context.Dispose();
         }
     }
 }

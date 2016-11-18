@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConnApsDomain.Models;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Facades
 {
     public class TenantFacade: Facade
     {
@@ -12,13 +10,13 @@ namespace ConnApsDomain
 
         public ITenant FetchTenant(string userId)
         {
-            var tenant = personRegister.FetchTenant(userId);
+            var tenant = PersonRegister.FetchTenant(userId);
             return tenant;
         }
 
         public ITenant UpdateTenant(string userId, string firstName, string lastName, DateTime dob, string phone)
         {
-            var tenant = personRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
+            var tenant = PersonRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
             return tenant;
         }
 
@@ -28,8 +26,8 @@ namespace ConnApsDomain
         
         public IEnumerable<IFacility> FetchFacilities(string userId)
         {
-            var buildingId = personRegister.FetchTenantBuildingId(userId);
-            var facilities = buildingRegister.FetchFacilities(buildingId);
+            var buildingId = PersonRegister.FetchTenantBuildingId(userId);
+            var facilities = BuildingRegister.FetchFacilities(buildingId);
             return facilities;
         }
 
@@ -37,37 +35,37 @@ namespace ConnApsDomain
 
         #region Booking
 
-        public IBooking CreateBooking(string userId, int FacilityId, DateTime StartTime, DateTime EndTime)
+        public IBooking CreateBooking(string userId, int facilityId, DateTime startTime, DateTime endTime)
         {
-            var t = personRegister.FetchTenant(userId);
-            var booking = buildingRegister.CreateBooking(t.BuildingId, FacilityId, t.Id, StartTime, EndTime);
+            var t = PersonRegister.FetchTenant(userId);
+            var booking = BuildingRegister.CreateBooking(t.BuildingId, facilityId, t.Id, startTime, endTime);
             return booking;
         }
 
-        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int FacilityId)
+        public IEnumerable<IBooking> FetchFacilityBookings(string userId, int facilityId)
         {
-            var buildingId = personRegister.FetchTenantBuildingId(userId);
-            var bookings = buildingRegister.FetchFacilityBookings(buildingId, FacilityId);
+            var buildingId = PersonRegister.FetchTenantBuildingId(userId);
+            var bookings = BuildingRegister.FetchFacilityBookings(buildingId, facilityId);
             return bookings;
         }
 
-        public IBooking FetchBooking(string userId, int FacilityId, int BookingId)
+        public IBooking FetchBooking(string userId, int facilityId, int bookingId)
         {
-            var buildingId = personRegister.FetchTenantBuildingId(userId);
-            var bookings = buildingRegister.FetchBooking(buildingId, FacilityId, BookingId);
+            var buildingId = PersonRegister.FetchTenantBuildingId(userId);
+            var bookings = BuildingRegister.FetchBooking(buildingId, facilityId, bookingId);
             return bookings;
         }
 
-        public IBooking CancelBooking(string userId, int FacilityId, int BookingId)
+        public IBooking CancelBooking(string userId, int facilityId, int bookingId)
         {
-            var buildingId = personRegister.FetchTenantBuildingId(userId);
-            var booking = buildingRegister.DeleteBooking(buildingId, FacilityId, BookingId);
+            var buildingId = PersonRegister.FetchTenantBuildingId(userId);
+            var booking = BuildingRegister.DeleteBooking(buildingId, facilityId, bookingId);
             return booking;
         }
 
         public IEnumerable<IBooking> FetchPersonBookings(string userId)
         {
-            var bookings = personRegister.FetchPersonBookings(userId);
+            var bookings = PersonRegister.FetchPersonBookings(userId);
             return bookings;
         }
 
