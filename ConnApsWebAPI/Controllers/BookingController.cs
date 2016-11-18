@@ -7,9 +7,12 @@ using System.Web.Http;
 
 namespace ConnApsWebAPI.Controllers
 {
-    [Authorize]
-    [RoutePrefix("api/Bookings")]
+    [Authorize, RoutePrefix("api/Bookings")]
     public class BookingController : BaseController
     {
+        public BookingController()
+        {
+            
+        }
     }
 }

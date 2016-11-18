@@ -17,7 +17,7 @@ namespace ConnApsWebAPI.Controllers
 
         public TenantController()
         {
-            CAD = new TenantFacade();
+            Cad = new TenantFacade();
         }
 
         #region Tenant
@@ -30,7 +30,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     t = facade.FetchTenant(User.Identity.GetUserId());
                 }
@@ -55,7 +55,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     t = facade.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
                 }
@@ -78,7 +78,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IFacility> facilities;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     facilities = facade.FetchFacilities(User.Identity.GetUserId());
                 }
@@ -105,7 +105,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
                 }
@@ -130,7 +130,7 @@ namespace ConnApsWebAPI.Controllers
             IBooking booking;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
                 }
@@ -154,7 +154,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
                 }
@@ -173,7 +173,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
                 }
@@ -196,7 +196,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as TenantFacade))
+                using (var facade = (Cad as TenantFacade))
                 {
                     facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
                 }

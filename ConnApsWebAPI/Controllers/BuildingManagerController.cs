@@ -11,8 +11,7 @@ using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
-    [Authorize(Roles = "BuildingManager")]
-    [RoutePrefix("api/Manager")]
+    [Authorize(Roles = "BuildingManager"), RoutePrefix("api/Manager")]
     public class BuildingManagerController : BaseController
     {
         public BuildingManagerController(): base() {}
@@ -22,14 +21,13 @@ namespace ConnApsWebAPI.Controllers
         #region Building Manager
 
         // GET api/BuildingManager/BuildingManagerInfo
-        [HttpGet]
-        [Route("BuildingManagerInfo")]
+        [HttpGet, Route("BuildingManagerInfo")]
         public IHttpActionResult FetchBuildingManagerInfo()
         {
             IBuildingManager bm;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     bm = facade.FetchBuildingManager(User.Identity.GetUserId());
                 }
@@ -42,8 +40,7 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // Post api/BuildingManager/UpdateBuildingManager
-        [HttpPut]
-        [Route("UpdateBuildingManager")]
+        [HttpPut, Route("UpdateBuildingManager")]
         public IHttpActionResult UpdateBuildingManager(BuildingManagerBindingModel model)
         {
             if(!ModelState.IsValid)
@@ -54,7 +51,7 @@ namespace ConnApsWebAPI.Controllers
             IBuildingManager bm;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     bm = facade.UpdateBuildingManager(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
                 }
@@ -78,7 +75,7 @@ namespace ConnApsWebAPI.Controllers
             IBuilding building;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     building = facade.FetchBuildingManagerBuilding(User.Identity.GetUserId());
                 }
@@ -103,7 +100,7 @@ namespace ConnApsWebAPI.Controllers
             IBuilding building;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     building = facade.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
                 }
@@ -132,7 +129,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IApartment> apt;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     apt = facade.FetchApartments(User.Identity.GetUserId());
                 }
@@ -153,7 +150,7 @@ namespace ConnApsWebAPI.Controllers
             IApartment apt;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     apt = facade.FetchApartment(aptId, User.Identity.GetUserId());
                 }
@@ -177,7 +174,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
                 }
@@ -201,7 +198,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
                 }
@@ -229,7 +226,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
                 }
@@ -248,7 +245,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IFacility> facilities;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facilities = facade.FetchFacilities(User.Identity.GetUserId());
                 }
@@ -267,7 +264,7 @@ namespace ConnApsWebAPI.Controllers
             IFacility facility;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facility = facade.FetchFacility(User.Identity.GetUserId(), facilityId);
                 }
@@ -294,7 +291,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
                 }
@@ -313,7 +310,7 @@ namespace ConnApsWebAPI.Controllers
             IBooking booking;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
                 }
@@ -332,7 +329,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
                 }
@@ -351,7 +348,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
                 }
@@ -369,7 +366,7 @@ namespace ConnApsWebAPI.Controllers
         {
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
                 }
@@ -393,7 +390,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     t = facade.FetchTenant(userId);
                 }
@@ -418,7 +415,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     t = facade.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
                 }
@@ -442,7 +439,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     facade.ChangeApartment(model.UserId, model.ApartmentId);
                 }
@@ -462,7 +459,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<ITenant> t;
             try
             {
-                using (var facade = (CAD as BuildingManagerFacade))
+                using (var facade = (Cad as BuildingManagerFacade))
                 {
                     t = facade.FetchBuildingTenants(User.Identity.GetUserId());
                 }

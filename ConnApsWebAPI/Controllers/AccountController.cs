@@ -398,9 +398,9 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    using (CAD)
+                    using (Cad)
                     {
-                        (CAD as AdminFacade).CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                        (Cad as AdminFacade).CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
                     }
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
@@ -441,9 +441,9 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    using (CAD)
+                    using (Cad)
                     {
-                        tenant = (CAD as AdminFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
+                        tenant = (Cad as AdminFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId);
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }

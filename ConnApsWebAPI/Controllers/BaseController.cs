@@ -11,16 +11,16 @@ namespace ConnApsWebAPI.Controllers
 {
     public class BaseController : ApiController
     {
-        protected Facade CAD;
+        protected Facade Cad;
 
         protected BaseController()
         {
-            CAD = new Facade();
+            Cad = new Facade();
         }
 
         protected BaseController(Facade facade)
         {
-            CAD = facade;
+            Cad = facade;
         }
 
         protected IHttpActionResult getResponse()
