@@ -25,8 +25,7 @@ namespace ConnApsDomain.Models
 
         #region Properties
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -92,6 +91,18 @@ namespace ConnApsDomain.Models
             {
                 throw new NotImplementedException();
             }
+        }
+
+        public Booking FetchBooking(int facilityId, int bookingId)
+        {
+            var booking = Facilities.FirstOrDefault(f => f.Id == facilityId).FetchBooking(bookingId);
+            return booking;
+        }
+
+        public IEnumerable<Booking> FetcBookings(int facilityId)
+        {
+            var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
+            return facility.Bookings;
         }
 
         #endregion

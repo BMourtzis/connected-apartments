@@ -19,7 +19,6 @@ using ConnApsWebAPI.Results;
 using ConnApsDomain;
 using System.Web.Http.Results;
 using System.Text;
-using ConnApsDomain.Facades;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 
@@ -58,8 +57,7 @@ namespace ConnApsWebAPI.Controllers
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
         // GET api/Account/UserInfo
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("UserInfo")]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Route("UserInfo")]
         public IHttpActionResult GetUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
@@ -163,9 +161,7 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // POST api/Account/ResetPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("ResetPassword")]
+        [HttpPost, AllowAnonymous, Route("ResetPassword")]
         public async Task<IHttpActionResult> ResetPassord(ResetPasswordModel model)
         {
             if(!ModelState.IsValid)
@@ -263,10 +259,8 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // GET api/Account/ExternalLogin
-        [OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
-        [AllowAnonymous]
-        [Route("ExternalLogin", Name = "ExternalLogin")]
+        [OverrideAuthentication, HostAuthentication(DefaultAuthenticationTypes.ExternalCookie), 
+            AllowAnonymous, Route("ExternalLogin", Name = "ExternalLogin")]
         public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
         {
             if (error != null)
@@ -320,8 +314,7 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
-        [AllowAnonymous]
-        [Route("ExternalLogins")]
+        [AllowAnonymous, Route("ExternalLogins")]
         public IEnumerable<ExternalLoginViewModel> GetExternalLogins(string returnUrl, bool generateState = false)
         {
             IEnumerable<AuthenticationDescription> descriptions = Authentication.GetExternalAuthenticationTypes();
@@ -383,8 +376,7 @@ namespace ConnApsWebAPI.Controllers
 
 
         // POST api/Account/RegisterBuilding
-        [AllowAnonymous]
-        [Route("RegisterBuilding")]
+        [AllowAnonymous, Route("RegisterBuilding")]
         public async Task<IHttpActionResult> RegisterBuilding(RegisterBuildingModel model)
         {
             if (!ModelState.IsValid)
@@ -394,16 +386,13 @@ namespace ConnApsWebAPI.Controllers
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            var result = await UserManager.CreateAsync(user, model.Password);
             model.Password = "";
             if(result.Succeeded)
             {
                 try
                 {
-                    using (Cad)
-                    {
-                        (Cad as AdminFacade).CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
-                    }
+                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
                 catch (Exception e)
@@ -424,8 +413,7 @@ namespace ConnApsWebAPI.Controllers
 
 
         // POST api/Account/RegisterTenant
-        [Authorize(Roles = "BuildingManager")]
-        [Route("RegisterTenant")]
+        [Authorize(Roles = "BuildingManager"), Route("RegisterTenant")]
         public async Task<IHttpActionResult> RegisterTenant(RegisterTenantModel model)
         {
             if (!ModelState.IsValid)
@@ -445,7 +433,7 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (Cad)
                     {
-                        tenant = (Cad as BuildingManagerFacade).CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
+                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
@@ -465,9 +453,8 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // POST api/Account/RegisterExternal
-        [OverrideAuthentication]
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("RegisterExternal")]
+        [OverrideAuthentication, HostAuthentication(DefaultAuthenticationTypes.ExternalBearer),
+            Route("RegisterExternal")]
         public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
         {
             if (!ModelState.IsValid)
@@ -510,10 +497,7 @@ namespace ConnApsWebAPI.Controllers
 
         #region Helpers
 
-        private IAuthenticationManager Authentication
-        {
-            get { return Request.GetOwinContext().Authentication; }
-        }
+        private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
@@ -565,12 +549,7 @@ namespace ConnApsWebAPI.Controllers
 
             public static ExternalLoginData FromIdentity(ClaimsIdentity identity)
             {
-                if (identity == null)
-                {
-                    return null;
-                }
-
-                Claim providerKeyClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                Claim providerKeyClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
 
                 if (providerKeyClaim == null || String.IsNullOrEmpty(providerKeyClaim.Issuer)
                     || String.IsNullOrEmpty(providerKeyClaim.Value))
@@ -594,7 +573,7 @@ namespace ConnApsWebAPI.Controllers
 
         private static class RandomOAuthStateGenerator
         {
-            private static RandomNumberGenerator _random = new RNGCryptoServiceProvider();
+            private static readonly RandomNumberGenerator Random = new RNGCryptoServiceProvider();
 
             public static string Generate(int strengthInBits)
             {
@@ -608,21 +587,20 @@ namespace ConnApsWebAPI.Controllers
                 int strengthInBytes = strengthInBits / bitsPerByte;
 
                 byte[] data = new byte[strengthInBytes];
-                _random.GetBytes(data);
+                Random.GetBytes(data);
                 return HttpServerUtility.UrlTokenEncode(data);
             }
         }
 
-        private String generatePassword()
+        private string generatePassword()
         {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            double length = 3 * random.NextDouble() + 5;
+            var builder = new StringBuilder();
+            var random = new Random();
+            var length = 3 * random.NextDouble() + 5;
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(93 * random.NextDouble() + 33)));
+                var ch = Convert.ToChar(Convert.ToInt32(Math.Floor(93 * random.NextDouble() + 33)));
                 builder.Append(ch);
             }
             
@@ -636,7 +614,6 @@ namespace ConnApsWebAPI.Controllers
 
             //Insert Lower Character
             builder.Insert((int)(random.NextDouble() * length), Convert.ToChar(Convert.ToInt32(Math.Floor(25 * random.NextDouble() + 97))));
-            length++;
 
             return builder.ToString();
         }

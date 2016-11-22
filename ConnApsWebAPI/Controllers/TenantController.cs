@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using ConnApsDomain.Facades;
 using ConnApsDomain.Models;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
@@ -19,7 +18,12 @@ namespace ConnApsWebAPI.Controllers
 
         public TenantController()
         {
-            Cad = new TenantFacade();
+            Cad = new Facade();
+        }
+
+        public TenantController(Facade facade)
+        {
+            Cad = facade;
         }
 
         #region Tenant
@@ -32,10 +36,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    t = facade.FetchTenant(User.Identity.GetUserId());
-                }
+                t = Cad.FetchTenant(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -57,10 +58,7 @@ namespace ConnApsWebAPI.Controllers
             ITenant t;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    t = facade.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
-                }
+                t = Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
             }
             catch (Exception e)
             {
@@ -80,10 +78,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IFacility> facilities;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facilities = facade.FetchFacilities(User.Identity.GetUserId());
-                }
+                facilities = Cad.FetchFacilities(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -107,10 +102,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
-                }
+                Cad.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
             }
             catch (Exception e)
             {
@@ -132,10 +124,7 @@ namespace ConnApsWebAPI.Controllers
             IBooking booking;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
-                }
+                booking = Cad.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
             }
             catch (Exception e)
             {
@@ -156,10 +145,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
-                }
+                bookings = Cad.FetchBookings(User.Identity.GetUserId(), facilityId);
             }
             catch (Exception e)
             {
@@ -175,10 +161,7 @@ namespace ConnApsWebAPI.Controllers
             IEnumerable<IBooking> bookings;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
-                }
+                bookings = Cad.FetchBookings(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -198,10 +181,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
-                }
+                Cad.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
             }
             catch (Exception e)
             {
