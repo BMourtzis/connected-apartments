@@ -1,36 +1,22 @@
-﻿using ConnApsDomain;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
 using ConnApsDomain.Models;
+using ConnApsEmailService;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace ConnApsWebAPI.Controllers
 {
-    [Authorize(Roles = "Tenant")]
-    [RoutePrefix("api/Tenant")]
+    [Authorize, RoutePrefix("api/Tenant")]
     public class TenantController : BaseController
     {
-
-        public TenantController()
-        {
-            Cad = new Facade();
-        }
-
-        public TenantController(Facade facade)
-        {
-            Cad = facade;
-        }
-
-        #region Tenant
-
-        // GET api/BuildingManager/TenantInfo
+        // GET api/Tenant
         [HttpGet]
-        [Route("TenantInfo")]
         public IHttpActionResult FetchTenant()
         {
             ITenant t;
@@ -45,9 +31,81 @@ namespace ConnApsWebAPI.Controllers
             return Ok<ITenant>(t);
         }
 
-        // PUT api/BuildingManager/UpdateTenant
-        [HttpPut]
-        [Route("UpdateTenant")]
+        // GET api/Tenant
+        [HttpGet]
+        public IHttpActionResult FetchTenant(string userId)
+        {
+            ITenant t;
+            try
+            {
+                t = Cad.FetchTenant(userId);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            return Ok<ITenant>(t);
+        }
+
+        // GET api/Tenant/Building
+        [HttpGet, Route("Building")]
+        public IHttpActionResult FetchBuildingTenants()
+        {
+            IEnumerable<ITenant> t;
+            try
+            {
+                t = Cad.FetchTenants(User.Identity.GetUserId());
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+            return Ok<IEnumerable<ITenant>>(t);
+        }
+
+        //POST api/Tenant/Create
+        [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
+        public async Task<IHttpActionResult> CreateTenant(RegisterTenantModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var password = GeneratePassword();
+
+            var result = await UserManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                ITenant tenant;
+                try
+                {
+                    using (Cad)
+                    {
+                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
+                    }
+                    UserManager.AddToRole(user.Id, "Tenant");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
+                }
+
+                EmailService.SendTenantCreationEmail(model.Email, password);
+                return Ok<ITenant>(tenant);
+            }
+            else
+            {
+                return GetErrorResult(result);
+            }
+        }
+
+        // PUT api/Tenant/Update
+        [HttpPut, Route("Update")]
         public IHttpActionResult UpdateTenant(TenantUpdateModel model)
         {
             if(!ModelState.IsValid)
@@ -55,10 +113,9 @@ namespace ConnApsWebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            ITenant t;
             try
             {
-                t = Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
             }
             catch (Exception e)
             {
@@ -67,33 +124,9 @@ namespace ConnApsWebAPI.Controllers
             return GetResponse();
         }
 
-        #endregion
-
-        #region Facility
-
-        [HttpGet]
-        [Route("FetchFacilities")]
-        public IHttpActionResult FetchFacilities()
-        {
-            IEnumerable<IFacility> facilities;
-            try
-            {
-                facilities = Cad.FetchFacilities(User.Identity.GetUserId());
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IEnumerable<IFacility>>(facilities);
-        }
-
-        #endregion
-
-        #region Booking
-
-        [HttpPost]
-        [Route("CreateBooking")]
-        public IHttpActionResult CreateBooking(BookingCreateModel model)
+        // PUT api/Tenant/Update
+        [HttpPut, Route("Update")]
+        public IHttpActionResult UpdateTenant(BMTenantUpdateModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -102,86 +135,27 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
+                Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
             return GetResponse();
         }
 
-        [HttpGet]
-        [Route("FetchBooking")]
-        public IHttpActionResult FetchBooking(int facilityId, int bookingId)
+        // PUT api/Tenant/ChangeApartment
+        [Authorize(Roles = "BuildingManager"), HttpPut, Route("ChangeApartment")]
+        public IHttpActionResult ChangeApartment(ChangeApartmentModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IBooking booking;
             try
             {
-                booking = Cad.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IBooking>(booking);
-        }
-
-        [HttpGet]
-        [Route("FetchFacilityBookings")]
-        public IHttpActionResult FetchFacilityBookings(int facilityId)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IEnumerable<IBooking> bookings;
-            try
-            {
-                bookings = Cad.FetchBookings(User.Identity.GetUserId(), facilityId);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IEnumerable<IBooking>>(bookings);
-        }
-
-        [HttpGet]
-        [Route("FetchPersonBookings")]
-        public IHttpActionResult FetchPersonBookings()
-        {
-            IEnumerable<IBooking> bookings;
-            try
-            {
-                bookings = Cad.FetchBookings(User.Identity.GetUserId());
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IEnumerable<IBooking>>(bookings);
-        }
-
-        [HttpDelete]
-        [Route("CancelBooking")]
-        public IHttpActionResult CancelBooking(BookingCancelModel model)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                Cad.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
+                Cad.ChangeApartment(model.UserId, model.ApartmentId);
             }
             catch (Exception e)
             {
@@ -189,8 +163,5 @@ namespace ConnApsWebAPI.Controllers
             }
             return GetResponse();
         }
-
-        #endregion
-
     }
 }
