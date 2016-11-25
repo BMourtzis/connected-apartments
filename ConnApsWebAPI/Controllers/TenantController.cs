@@ -115,7 +115,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
+                Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DateofBirth, model.Phone);
             }
             catch (Exception e)
             {
@@ -126,7 +126,7 @@ namespace ConnApsWebAPI.Controllers
 
         // PUT api/Tenant/Update
         [HttpPut, Route("Update")]
-        public IHttpActionResult UpdateTenant(BMTenantUpdateModel model)
+        public IHttpActionResult UpdateTenant(BmTenantUpdateModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DoB, model.Phone);
+                Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DateofBirth, model.Phone);
             }
             catch (Exception e)
             {

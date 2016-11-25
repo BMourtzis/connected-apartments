@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Linq;
 using System.Web;
 
 namespace ConnApsWebAPI.Models
 {
-
-    public class BuildingManagerRegisterModel
+    public class RegisterBuildingModel
     {
         [Required, EmailAddress]
         public string Email { get; set; }
@@ -32,26 +32,16 @@ namespace ConnApsWebAPI.Models
         [Required, StringLength(10, ErrorMessage = "The phones length needs to be {0} digits long")]
         public string Phone { get; set; }
 
-        [Required]
-        public int BuildingId { get; set; }
+        [Required, StringLength(100, ErrorMessage = "The limit is {0} characters")]
+        public string BuildingName { get; set; }
+
+        [Required, StringLength(100, ErrorMessage = "The limit is {0} characters")]
+        public string Address { get; set; }
     }
 
-    public class BuildingManagerBindingModel: IValidatableObject
+    public class BuildingBindingModel 
     {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public DateTime DateOfBirth { get; set; }
-
-        public string Phone { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (FirstName == null && LastName == null && Phone == null && DateOfBirth == DateTime.MinValue)
-            {
-                yield return new ValidationResult(errorMessage: "All of the fields are empty. Please fill them in.");
-            }
-        }
+        public string BuildingName { get; set; }
+        public string Address { get; set; }
     }
 }
