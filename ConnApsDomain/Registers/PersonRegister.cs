@@ -38,6 +38,12 @@ namespace ConnApsDomain.Registers
             return person;
         }
 
+        public void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string phone, string userId)
+        {
+            var person = FetchPerson(userId);
+            person.UpdatePerson(firstname, lastname, dateofbirth, phone);
+        }
+
         #endregion
 
         #region BuildingManager
@@ -53,7 +59,7 @@ namespace ConnApsDomain.Registers
         public BuildingManager UpdateBuildingManager(string userId, string firstname, string lastname, DateTime dateofbirth, string newPhone)
         {
             var bm = FetchBuildingManager(userId);
-            bm.UpdateBuildingManager(firstname, lastname, dateofbirth, newPhone);
+            bm.UpdatePerson(firstname, lastname, dateofbirth, newPhone);
             _context.SaveChanges();
             return bm;
         }
@@ -85,7 +91,7 @@ namespace ConnApsDomain.Registers
         public Tenant UpdateTenant(string userId, string firstName, string lastName, DateTime dob, string phone)
         {
             var tenant = FetchTenant(userId);
-            tenant.UpdateTenant(firstName, lastName, dob, phone);
+            tenant.UpdatePerson(firstName, lastName, dob, phone);
             _context.SaveChanges();
             return tenant;
         }
@@ -129,11 +135,31 @@ namespace ConnApsDomain.Registers
             return bookings;
         }
 
+        public IBooking FetchBooking(string userId, int bookingId)
+        {
+            var person = _context.People.Include(p => p.Bookings)
+                                 .FirstOrDefault(p => p.UserId.Equals(userId));
+            return person.FetchBooking(bookingId);
+        }
+
         public void CancelBooking(string userId, int bookingId)
         {
-            var booking = FetchBookings(userId).FirstOrDefault(b => b.Id == bookingId);
-            _context.Bookings.Remove(booking);
+            var person = _context.People.Include(p => p.Bookings)
+                                 .FirstOrDefault(p => p.UserId.Equals(userId));
+            person.CancelBooking(bookingId);
+            _context.SaveChanges();
+        }
 
+        #endregion
+
+        #region Apartment
+
+        public IApartment FetchApartment(string userId)
+        {
+            var tennant = _context.People.OfType<Tenant>()
+                              .Include(a => a.Apartment)
+                              .FirstOrDefault(a => a.UserId.Equals(userId));
+            return tennant.Apartment;
         }
 
         #endregion

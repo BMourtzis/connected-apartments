@@ -212,8 +212,8 @@
     <Compile Include="Controllers\BuildingController.cs" />
     <Compile Include="Controllers\BuildingManagerController.cs" />
     <Compile Include="Controllers\FacilityController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TenantController.cs" />
+    <Compile Include="Controllers\ΗομεController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -224,6 +224,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BuildingBindingModels.cs" />
+    <Compile Include="Models\LocationsBindingModels.cs" />
     <Compile Include="Models\BMBindingModels.cs" />
     <Compile Include="Models\BookingBindingModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -297,6 +299,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\BuildingManager\" />
+    <Folder Include="Views\Ηομε\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

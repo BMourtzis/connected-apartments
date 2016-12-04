@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ConnApsDomain.Models;
@@ -16,7 +12,7 @@ namespace ConnApsWebAPI.Controllers
     public class BuildingController : BaseController
     {
         // GET api/Building
-        [HttpGet]
+        [HttpGet, Route()]
         public IHttpActionResult FetchBuildingInfo()
         {
             IBuilding building;
@@ -68,7 +64,7 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // POST api/Building/Update
-        [HttpPut, Route("Update")]
+        [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
         public IHttpActionResult UpdateBuilding(BuildingBindingModel model)
         {
             if (!ModelState.IsValid)

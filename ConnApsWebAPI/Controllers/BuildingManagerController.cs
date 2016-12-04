@@ -1,5 +1,4 @@
-﻿using ConnApsDomain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -14,19 +13,19 @@ namespace ConnApsWebAPI.Controllers
     public class BuildingManagerController : BaseController
     {
         // GET api/BuildingManager
-        [HttpGet]
-        public IHttpActionResult FetchBuildingManagerInfo()
+        [HttpGet, Route()]
+        public IHttpActionResult Index()
         {
-            IBuildingManager bm;
+            IEnumerable<IBuildingManager> bm;
             try
             {
-                bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
+                bm = Cad.FetchBuildingManagers(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            return Ok<IBuildingManager>(bm);
+            return Ok<IEnumerable<IBuildingManager>>(bm);
         }
 
         // POST api/BuildingManager/Create
@@ -65,9 +64,9 @@ namespace ConnApsWebAPI.Controllers
             }
         }
 
-        // POST api/BuildingManager/Update
+        // POST api/BuildingManager/Updateaaaa
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
-        public IHttpActionResult UpdateBuildingManager(BuildingManagerBindingModel model)
+        public IHttpActionResult UpdateBuildingManager(BuildingManagerUpdateModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -76,7 +75,7 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.UpdateBuildingManager(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DateOfBirth, model.Phone);
+                Cad.UpdateBuildingManager(model.UserId, model.FirstName, model.LastName, model.DateOfBirth, model.Phone);
             }
             catch (Exception e)
             {

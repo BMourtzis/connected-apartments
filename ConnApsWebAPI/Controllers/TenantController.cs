@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace ConnApsWebAPI.Controllers
 {
@@ -16,7 +13,7 @@ namespace ConnApsWebAPI.Controllers
     public class TenantController : BaseController
     {
         // GET api/Tenant
-        [HttpGet]
+        [Authorize(Roles = "Tenant"), HttpGet, Route()]
         public IHttpActionResult FetchTenant()
         {
             ITenant t;
@@ -31,8 +28,8 @@ namespace ConnApsWebAPI.Controllers
             return Ok<ITenant>(t);
         }
 
-        // GET api/Tenant
-        [HttpGet]
+        // GET api/Tenant?userId=string
+        [HttpGet, Route()]
         public IHttpActionResult FetchTenant(string userId)
         {
             ITenant t;
@@ -105,28 +102,8 @@ namespace ConnApsWebAPI.Controllers
         }
 
         // PUT api/Tenant/Update
-        [HttpPut, Route("Update")]
+        [Authorize(Roles = "BuildingManager"),HttpPut, Route("Update")]
         public IHttpActionResult UpdateTenant(TenantUpdateModel model)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                Cad.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DateofBirth, model.Phone);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return GetResponse();
-        }
-
-        // PUT api/Tenant/Update
-        [HttpPut, Route("Update")]
-        public IHttpActionResult UpdateTenant(BmTenantUpdateModel model)
         {
             if (!ModelState.IsValid)
             {

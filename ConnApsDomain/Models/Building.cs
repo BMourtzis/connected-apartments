@@ -93,9 +93,10 @@ namespace ConnApsDomain.Models
             }
         }
 
-        public Booking FetchBooking(int facilityId, int bookingId)
+        public Booking FetchBooking(int bookingId)
         {
-            var booking = Facilities.FirstOrDefault(f => f.Id == facilityId).FetchBooking(bookingId);
+            var booking = Facilities.Select(f => f.Bookings.FirstOrDefault(b => b.Id == bookingId)).FirstOrDefault();
+            //var booking = Facilities.FirstOrDefault(f => f.Id == facilityId).FetchBooking(bookingId);
             return booking;
         }
 
@@ -103,6 +104,12 @@ namespace ConnApsDomain.Models
         {
             var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
             return facility.Bookings;
+        }
+
+        public void CancelBooking(int facilityId, int bookingId)
+        {
+            var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
+            facility.CancelFacility(bookingId);
         }
 
         #endregion

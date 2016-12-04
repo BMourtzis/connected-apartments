@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using ConnApsDomain.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -19,7 +20,9 @@ namespace ConnApsWebAPI.Controllers
     {
         private const string LocalLoginProvider = "Local";
 
-        public AccountController() { }
+        public AccountController()
+        {
+        }
 
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
@@ -31,10 +34,10 @@ namespace ConnApsWebAPI.Controllers
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
         // GET api/Account
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize()]
         public IHttpActionResult GetUserInfo()
         {
-            ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+            var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
             var model = new UserInfoViewModel
             {
@@ -44,7 +47,40 @@ namespace ConnApsWebAPI.Controllers
                 Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
 
+            if (model.Roles[0] == "Tenant")
+            {
+                var tenant = Cad.FetchTenant(User.Identity.GetUserId());
+                var userinfo = new TenantInformationModel(model, tenant);
+                return Ok<TenantInformationModel>(userinfo);
+            }
+            else if (model.Roles[0] == "BuildingManager")
+            {
+                var bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
+                var userinfo = new PersonInformationModel(model, bm);
+                return Ok<PersonInformationModel>(userinfo);
+            }
+
             return Ok<UserInfoViewModel>(model);
+        }
+        
+        // PUT api/Account/Update
+        [HttpPut, Authorize, Route("Update")]
+        public IHttpActionResult EditAccount(EditAccountModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                BadRequest(ModelState);
+            }
+
+            try
+            {
+                Cad.UpdatePerson(model.FirstName, model.LastName, model.DoB, model.Phone, User.Identity.GetUserId());
+                return GetResponse();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // POST api/Account/ChangePassword
@@ -115,35 +151,6 @@ namespace ConnApsWebAPI.Controllers
         #region Helpers
 
         private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
-
-        private IHttpActionResult GetErrorResult(IdentityResult result)
-        {
-            if (result == null)
-            {
-                return InternalServerError();
-            }
-
-            if (!result.Succeeded)
-            {
-                if (result.Errors != null)
-                {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return null;
-        }
 
         private class ExternalLoginData
         {

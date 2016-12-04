@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace ConnApsDomain.Models
 {
@@ -51,12 +52,36 @@ namespace ConnApsDomain.Models
 
         #region Functions
 
-        protected void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string newPhone)
+        public void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string phone)
         {
-            FirstName = firstname;
-            LastName = lastname;
+            if (firstname != null)
+            {
+                FirstName = firstname;
+            }
+
+            if (lastname != null)
+            {
+                LastName = lastname;
+            }
+
             DoB = dateofbirth;
-            Phone = newPhone;
+
+            if (phone != null)
+            {
+                Phone = phone;
+            }
+        }
+
+        public Booking FetchBooking(int bookingId)
+        {
+            var booking = Bookings.FirstOrDefault(b => b.Id == bookingId);
+            return booking;
+        }
+
+        public void CancelBooking(int bookingId)
+        {
+            var booking = FetchBooking(bookingId);
+            Bookings.Remove(booking);
         }
 
         #endregion

@@ -27,8 +27,12 @@ namespace ConnApsWebAPI.Models
     public class BookingCancelModel
     {
         [Required]
-        public int FacilityId { get; set; }
-        [Required]
         public int BookingId { get; set; }
+    }
+
+    public class BMBookingCancelModel: BookingCancelModel
+    {
+        [Required]
+        public int FacilityId { get; set; }
     }
 }

@@ -38,6 +38,12 @@ namespace ConnApsDomain.Models
             UpdateLocation(level, number);
         }
 
+        public void CancelFacility(int bookingId)
+        {
+            var booking = FetchBooking(bookingId);
+            Bookings.Remove(booking);
+        }
+
         #endregion
     }
 

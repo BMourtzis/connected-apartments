@@ -89,7 +89,7 @@ namespace ConnApsDomain.Registers
             return building.Apartments;
         }
 
-        public IEnumerable<Apartment> FetApartments()
+        public IEnumerable<Apartment> FetchApartments()
         {
             var apts = _context.Apartments;
             return apts;
@@ -156,16 +156,18 @@ namespace ConnApsDomain.Registers
                                   .Include(b => b.Facilities.Select(f => f.Bookings))
                                   .FirstOrDefault(b => b.Id == buildingId);
 
-            var booking = building.FetchBooking(facilityId, bookingId);
+            var booking = building.FetchBooking(bookingId);
             return booking;
         }
 
-        public Booking DeleteBooking(int buildingId, int facilityId, int bookingId)
+        public void CancelBooking(int buildingId, int facilityId, int bookingId)
         {
-            var booking = FetchBooking(buildingId, facilityId, bookingId);
-            _context.Bookings.Remove(booking);
+            var building = _context.Buildings
+                                 .Include(b => b.Locations.OfType<Facility>())
+                                 .Include(b => b.Facilities.Select(f => f.Bookings))
+                                 .FirstOrDefault(b => b.Id == buildingId);
+            building.CancelBooking(facilityId, bookingId);
             _context.SaveChanges();
-            return booking;
         }
 
         public IEnumerable<Booking> FetchBookings(int buildingId, int facilityId)

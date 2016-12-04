@@ -28,11 +28,6 @@ namespace ConnApsDomain.Models
 
         #region Functions
 
-        public void UpdateTenant(string firstName, string lastName, DateTime dob, string phone)
-        {
-            UpdatePerson(firstName, lastName, dob, phone);
-        }
-
         public void ChangeApartment(int aptId)
         {
             ApartmentId = aptId;

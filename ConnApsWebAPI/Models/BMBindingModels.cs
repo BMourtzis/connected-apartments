@@ -36,8 +36,11 @@ namespace ConnApsWebAPI.Models
         public int BuildingId { get; set; }
     }
 
-    public class BuildingManagerBindingModel: IValidatableObject
+    public class BuildingManagerUpdateModel: IValidatableObject
     {
+        [Required]
+        public string UserId { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -48,7 +51,7 @@ namespace ConnApsWebAPI.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (FirstName == null && LastName == null && Phone == null && DateOfBirth == DateTime.MinValue)
+            if (FirstName == null && LastName == null && Phone == null && DateOfBirth == DateTime.Today)
             {
                 yield return new ValidationResult(errorMessage: "All of the fields are empty. Please fill them in.");
             }

@@ -20,6 +20,16 @@ namespace ConnApsDomain
 
         #endregion
 
+
+        #region Person
+
+        public void UpdatePerson(string firstname, string lastname, DateTime dateofbirth, string phone, string userId)
+        {
+            _personRegister.UpdatePerson(firstname, lastname,dateofbirth, phone, userId);
+        }
+
+        #endregion
+
         #region Apartment
 
         public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, string userId)
@@ -37,6 +47,12 @@ namespace ConnApsDomain
         public IApartment FetchApartment(int apartmentId, string userId)
         {
             var apt = _buildingRegister.FetchApartment(_personRegister.FetchBuildingId(userId), apartmentId);
+            return apt;
+        }
+
+        public IApartment FetchApartment(string userId)
+        {
+            var apt = _personRegister.FetchApartment(userId);
             return apt;
         }
 
@@ -64,10 +80,15 @@ namespace ConnApsDomain
             return bookings;
         }
 
+        public IBooking FetchBooking(string userId, int bookingId)
+        {
+            var bookings = _personRegister.FetchBooking(userId, bookingId);
+            return bookings;
+        }
+
         public IBooking FetchBooking(string userId, int facilityId, int bookingId)
         {
-            var buildingId = _personRegister.FetchBuildingId(userId);
-            var bookings = _buildingRegister.FetchBooking(buildingId, facilityId, bookingId);
+            var bookings = _buildingRegister.FetchBooking(_personRegister.FetchBuildingId(userId), facilityId, bookingId);
             return bookings;
         }
 
@@ -77,15 +98,14 @@ namespace ConnApsDomain
             return bookings;
         }
 
-        public void CancelBooking(string userId, int facilityId, int bookingId)
-        {
-            var buildingId = _personRegister.FetchBuildingId(userId);
-            _buildingRegister.DeleteBooking(buildingId, facilityId, bookingId);
-        }
-
         public void CancelBooking(string userId, int bookingId)
         {
             _personRegister.CancelBooking(userId, bookingId);
+        }
+
+        public void CancelBooking(string userId, int facilityId, int bookingId)
+        {
+            _buildingRegister.CancelBooking(_personRegister.FetchBuildingId(userId), facilityId, bookingId);
         }
 
         #endregion
@@ -113,7 +133,7 @@ namespace ConnApsDomain
 
         public IBuilding FetchBuilding(string userId)
         {
-            var building = _buildingRegister.FetchBuilding(_personRegister.FetchTenant(userId).BuildingId);
+            var building = _buildingRegister.FetchBuilding(_personRegister.FetchBuildingId(userId));
             return building;
         }
 
@@ -168,12 +188,6 @@ namespace ConnApsDomain
         public IEnumerable<IBuildingManager> FetchBuildingManagers(string userId)
         {
             var managers = _buildingRegister.FetchBuildingManagers(_personRegister.FetchBuildingId(userId));
-            return managers;
-        }
-
-        public IEnumerable<IBuildingManager> FetchBuildingManagers(int buildingId)
-        {
-            var managers = _buildingRegister.FetchBuildingManagers(buildingId);
             return managers;
         }
 

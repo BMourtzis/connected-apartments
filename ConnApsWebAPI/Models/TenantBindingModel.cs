@@ -38,6 +38,9 @@ namespace ConnApsWebAPI.Models
 
     public class TenantUpdateModel: IValidatableObject
     {
+        [Required]
+        public string UserId { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -54,11 +57,5 @@ namespace ConnApsWebAPI.Models
                 yield return new ValidationResult(errorMessage: "All of the fields are empty. Please fill them in.");
             }
         }
-    }
-
-    public class BmTenantUpdateModel: TenantUpdateModel
-    {
-        [Required]
-        public string UserId { get; set; }
     }
 }
