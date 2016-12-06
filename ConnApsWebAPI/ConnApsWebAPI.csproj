@@ -212,8 +212,8 @@
     <Compile Include="Controllers\BuildingController.cs" />
     <Compile Include="Controllers\BuildingManagerController.cs" />
     <Compile Include="Controllers\FacilityController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TenantController.cs" />
-    <Compile Include="Controllers\ΗομεController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
