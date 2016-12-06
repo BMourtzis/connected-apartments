@@ -2,6 +2,7 @@
 using Xunit;
 using Moq;
 using ConnApsDomain;
+using ConnApsDomain.Models;
 using ConnApsWebAPI.Controllers;
 
 namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
@@ -13,7 +14,7 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
         public void TestMethod1()
         {
             //Assemble
-            var tenantFacade = new Mock<TenantFacade>();
+            var facade = new Mock<Facade>();
             var tenant = new Mock<ITenant>();
             //tenantFacade.Setup(t => t.FetchTenant("")).Returns(tenant.Object);
             //TenantController controller = new TenantController(tenantFacade.Object);
