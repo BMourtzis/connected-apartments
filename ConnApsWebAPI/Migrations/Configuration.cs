@@ -1,3 +1,5 @@
+using Microsoft.AspNet.Identity.EntityFramework;
+
 namespace ConnApsWebAPI.Migrations
 {
     using System;
@@ -19,14 +21,13 @@ namespace ConnApsWebAPI.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+
+            context.Roles.AddOrUpdate(
+                p => p.Name,
+                new IdentityRole { Name = "Admin" },
+                new IdentityRole { Name = "Tenant" },
+                new IdentityRole { Name = "BuildingManager" }
+                );
         }
     }
 }

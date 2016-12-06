@@ -1,231 +1,216 @@
-﻿using ConnApsDomain.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.Entity;
+using ConnApsDomain.Exceptions;
+using ConnApsDomain.Models;
 
-namespace ConnApsDomain
+namespace ConnApsDomain.Registers
 {
     internal class BuildingRegister: IDisposable
     {
         #region Constructors
 
-        public BuildingRegister() { }
+        public BuildingRegister()
+        {
+            _context = new ConnApsContext();
+        }
 
         #endregion
 
         #region Properties
 
-        ConnApsContext context = new ConnApsContext();
+        private readonly ConnApsContext _context;
 
         #endregion
 
         #region Building
 
-        public IBuilding CreateBuilding(string buildingName, string address)
+        public Building CreateBuilding(string buildingName, string address)
         {
-            Building building = new Building(buildingName, address);
-            context.Buildings.Add(building);
-            context.SaveChanges();
+            var building = new Building(buildingName, address);
+            _context.Buildings.Add(building);
+            _context.SaveChanges();
             return building;
         }
 
-        public IBuilding UpdateBuilding(int buildingId, string buildingName, string address)
-        {
-            Building building = getBuilding(buildingId);
-            building.UpdateBuilding(buildingName, address);
-            context.SaveChanges();
-            return building;
-        }
-
-        public IBuilding FetchBuilding(int buildingId)
-        {
-            Building bu = context.Buildings
-                                 .Include("Locations")
-                                 .Include("Managers")
-                                 .Where(b => b.Id.Equals(buildingId))
-                                 .FirstOrDefault();
-            return bu;
-        }
-
-        private Building getBuilding(int buildingId)
-        {
-            Building bu = context.Buildings
-                                 .Where(b => b.Id.Equals(buildingId))
-                                 .FirstOrDefault();
-            return bu;
-        }
-
-        public IEnumerable<IApartment> GetBuildingApartments(int buildingId)
+        public Building UpdateBuilding(int buildingId, string buildingName, string address)
         {
             var building = FetchBuilding(buildingId);
-            return building.Apartments;
+            building.UpdateBuilding(buildingName, address);
+            _context.SaveChanges();
+            return building;
+        }
+
+        public Building FetchBuilding(int buildingId)
+        {
+            var building = _context.Buildings.FirstOrDefault(b => b.Id.Equals(buildingId));
+            return building;
+        }
+
+        public IEnumerable<Building> FetchBuildings()
+        {
+            var buildings = _context.Buildings;
+            return buildings;
         }
 
         #endregion
 
         #region Apartment
 
-        public IApartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, int buildingId)
+        public Apartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection, int buildingId)
         {
-            var building = getBuilding(buildingId);
-            Apartment apt = building.CreateApartment(level, number, tenantsAllowed, facingDirection);
-            context.Apartments.Add(apt);
-            context.SaveChanges();
+            var apt = FetchBuilding(buildingId).CreateApartment(level, number, tenantsAllowed, facingDirection);
+            _context.Apartments.Add(apt);
+            _context.SaveChanges();
             return apt;
         }
 
-        public IApartment UpdateApartment(int apartmentId, int buildingId, string level, string number, int tenantsAllowed, string facingDirection)
+        public Apartment UpdateApartment(int apartmentId, int buildingId, string level, string number, int tenantsAllowed, string facingDirection)
         {
-            Building building = context.Buildings.Include("Locations")
-                                                 .Where(b => b.Id == buildingId)
-                                                 .FirstOrDefault();
-            Apartment apt = building.FetchApartment(apartmentId);
+            var building = _context.Buildings.Include(b => b.Apartments).FirstOrDefault(b => b.Id == buildingId);
+            var apt = building.FetchApartment(apartmentId);
             apt.UpdateApartment(level, number, tenantsAllowed, facingDirection);
-            context.SaveChanges();
+            _context.SaveChanges();
             return apt;
         }
 
-        public IApartment FetchApartment(int buildingId, int apartmentId)
+        public Apartment FetchApartment(int buildingId, int apartmentId)
         {
-            Building building = context.Buildings.Include("Locations")
-                                                 .Where(b => b.Id == buildingId)
-                                                 .FirstOrDefault();
-            Apartment apt = building.FetchApartment(apartmentId);
+            var building = _context.Buildings.Include(b => b.Locations).FirstOrDefault(b => b.Id == buildingId);
+            var apt = building.FetchApartment(apartmentId);
             return apt;
         }
 
-        public IEnumerable<IApartment> FetchApartments(int buildingId)
+        public IEnumerable<Apartment> FetchApartments(int buildingId)
         {
-            var b = FetchBuilding(buildingId);
-            return b.Apartments;
+            var building = _context.Buildings.Include(b => b.Apartments)
+                                             .FirstOrDefault(b => b.Id == buildingId);
+            return building.Apartments;
         }
 
-        private Apartment getApartment(int apartmentId)
+        public IEnumerable<Apartment> FetchApartments()
         {
-            Apartment apt = context.Apartments
-                                   .Where(a => a.Id.Equals(apartmentId))
-                                   .FirstOrDefault();
-            return apt;
-        }
-
-        public void Dispose()
-        {
-            context.Dispose();
+            var apts = _context.Apartments;
+            return apts;
         }
 
         #endregion
 
         #region Facility
 
-        public IFacility CreateFacility(int BuildingId, string Level, string Number)
+        public Facility CreateFacility(int buildingId, string level, string number)
         {
-            var building = getBuilding(BuildingId);
-            var facility = building.CreateFacility(Level, Number);
-            context.Facilities.Add(facility);
-            context.SaveChanges();
+            var facility = FetchBuilding(buildingId).CreateFacility(level, number);
+            _context.Facilities.Add(facility);
+            _context.SaveChanges();
             return facility;
         }
 
-        public IFacility UpdateFacility(int BuildingId, int FacilityId, string Level, string Number)
+        public Facility UpdateFacility(int buildingId, int facilityId, string level, string number)
         {
-            var building = context.Buildings
-                      .Include("Locations")
-                      .Where(b => b.Id == BuildingId)
-                      .FirstOrDefault();
-            var facility = building.UpdateFacility(FacilityId, Level, Number);
-            context.SaveChanges();
+            var building = _context.Buildings.Include(b => b.Facilities).FirstOrDefault(b => b.Id == buildingId);
+            var facility = building.UpdateFacility(facilityId, level, number);
+            _context.SaveChanges();
             return facility;
         }
 
-
-        public IEnumerable<IFacility> FetchFacilities(int BuildingId)
+        public IEnumerable<Facility> FetchFacilities(int buildingId)
         {
-            var building = context.Buildings.Include("Locations")
-                                            .Where(b => b.Id == BuildingId)
-                                            .FirstOrDefault();
+            var building = _context.Buildings.Include(b => b.Facilities).FirstOrDefault(b => b.Id == buildingId);
             var facilities = building.Facilities;
             return facilities;
         }
 
-        public IFacility FetchFacility(int BuildingId, int FacilityId)
+        public Facility FetchFacility(int buildingId, int facilityId)
         {
-            var building = context.Buildings
-                                  .Include("Locations")
-                                  .Where(b => b.Id == BuildingId)
-                                  .FirstOrDefault();
-            var facility = building.FetchFacility(FacilityId);
+            var building = _context.Buildings.Include(b => b.Locations).FirstOrDefault(b => b.Id == buildingId);
+            var facility = building.FetchFacility(facilityId);
             return facility;
+        }
+
+        public IEnumerable<Facility> FetchFacilities()
+        {
+            var facilities = _context.Facilities;
+            return facilities;
         }
 
         #endregion
 
         #region Booking
         
-        public IBooking CreateBooking(int BuildingId, int FacilityId, int PersonId, DateTime StartTime, DateTime EndTime)
+        public Booking CreateBooking(int buildingId, int facilityId, int personId, DateTime startTime, DateTime endTime)
         {
-            CheckBookingAvailability(BuildingId, FacilityId, StartTime, EndTime);
-            var building = context.Buildings
-                      .Include("Locations")
-                      .Where(b => b.Id == BuildingId)
-                      .FirstOrDefault();
-            var booking = building.CreateBooking(FacilityId, PersonId, StartTime, EndTime);
-            context.Bookings.Add(booking);
-            context.SaveChanges();
+            CheckBookingAvailability(buildingId, facilityId, startTime, endTime);
+            var building = _context.Buildings.Include(b => b.Facilities).FirstOrDefault(b => b.Id == buildingId);
+            var booking = building.CreateBooking(facilityId, personId, startTime, endTime);
+            _context.Bookings.Add(booking);
+            _context.SaveChanges();
             return booking;
         }
 
-        public IBooking FetchBooking(int BuildingId, int FacilityId, int BookingId)
+        public Booking FetchBooking(int buildingId, int facilityId, int bookingId)
         {
-            var facilty = context.Facilities
-                                  .Include("Bookings")
-                                  .Where(f => f.BuildingId == BuildingId)
-                                  .Where(f => f.Id == FacilityId)
-                                  .FirstOrDefault();
+            var building = _context.Buildings
+                                  .Include(b => b.Locations.OfType<Facility>())
+                                  .Include(b => b.Facilities.Select(f => f.Bookings))
+                                  .FirstOrDefault(b => b.Id == buildingId);
 
-            var booking = facilty.FetchBooking(BookingId);
+            var booking = building.FetchBooking(bookingId);
             return booking;
         }
 
-        public IBooking DeleteBooking(int BuildingId, int FacilityId, int BookingId)
+        public void CancelBooking(int buildingId, int facilityId, int bookingId)
         {
-            var booking = (Booking)FetchBooking(BuildingId, FacilityId, BookingId);
-            context.Bookings.Remove(booking);
-            context.SaveChanges();
+            var building = _context.Buildings
+                                 .Include(b => b.Locations.OfType<Facility>())
+                                 .Include(b => b.Facilities.Select(f => f.Bookings))
+                                 .FirstOrDefault(b => b.Id == buildingId);
+            building.CancelBooking(facilityId, bookingId);
+            _context.SaveChanges();
+        }
+
+        public IEnumerable<Booking> FetchBookings(int buildingId, int facilityId)
+        {
+            var building = _context.Buildings
+                                  .Include(b => b.Locations.OfType<Facility>().Select(f => f.Bookings))
+                                  .FirstOrDefault(b => b.Id == buildingId);
+
+            var booking = building.FetcBookings(facilityId);
             return booking;
         }
 
-        public IEnumerable<IBooking> FetchFacilityBookings(int BuildingId, int FacilityId)
+        public IEnumerable<Booking> FetchBookings()
         {
-            var facilty = context.Facilities
-                                  .Include("Bookings")
-                                  .Where(f => f.BuildingId == BuildingId)
-                                  .Where(f => f.Id == FacilityId)
-                                  .FirstOrDefault();
-
-            var booking = facilty.Bookings;
-            return booking;
+            var bookings = _context.Bookings;
+            return bookings;
         }
 
         private void CheckBookingAvailability(int buildingId, int facilityId, DateTime startTime, DateTime endTime)
         {
-            var facilty = context.Facilities
-                      .Include("Bookings")
-                      .Where(f => f.BuildingId == buildingId)
-                      .Where(f => f.Id == facilityId)
-                      .FirstOrDefault();
+            var bookings = FetchBookings(buildingId, facilityId);
 
-            var bookings = facilty.Bookings;
-            foreach(var booking in bookings)
+            if (bookings.Any(booking => (booking.StartTime >= startTime && booking.EndTime < startTime) || (booking.StartTime < endTime && booking.EndTime >= endTime )))
             {
-                if((booking.StartTime >= startTime && booking.EndTime < startTime) || (booking.StartTime < endTime && booking.EndTime >= endTime ))
-                {
-                    throw new BookingOverlapingException();
-                }
+                throw new BookingOverlapingException();
             }
         }
 
         #endregion
+
+        #region BuildingManager
+
+        public IEnumerable<BuildingManager> FetchBuildingManagers(int buildingId)
+        {
+            var bms = _context.Buildings.Include(b => b.Managers).FirstOrDefault(b => b.Id == buildingId);
+            return bms.Managers;
+        }
+
+        #endregion
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
     }
 }

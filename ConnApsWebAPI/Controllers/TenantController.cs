@@ -1,39 +1,25 @@
-﻿using ConnApsDomain;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Models;
+using ConnApsEmailService;
 using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
 
 namespace ConnApsWebAPI.Controllers
 {
-    [Authorize(Roles = "Tenant")]
-    [RoutePrefix("api/Tenant")]
+    [Authorize, RoutePrefix("api/Tenant")]
     public class TenantController : BaseController
     {
-
-        public TenantController()
-        {
-            Cad = new TenantFacade();
-        }
-
-        #region Tenant
-
-        // GET api/BuildingManager/TenantInfo
-        [HttpGet]
-        [Route("TenantInfo")]
+        // GET api/Tenant
+        [Authorize(Roles = "Tenant"), HttpGet, Route()]
         public IHttpActionResult FetchTenant()
         {
             ITenant t;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    t = facade.FetchTenant(User.Identity.GetUserId());
-                }
+                t = Cad.FetchTenant(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
@@ -42,61 +28,82 @@ namespace ConnApsWebAPI.Controllers
             return Ok<ITenant>(t);
         }
 
-        // PUT api/BuildingManager/UpdateTenant
-        [HttpPut]
-        [Route("UpdateTenant")]
-        public IHttpActionResult UpdateTenant(TenantUpdateModel model)
+        // GET api/Tenant?userId=string
+        [HttpGet, Route()]
+        public IHttpActionResult FetchTenant(string userId)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             ITenant t;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    t = facade.UpdateTenant(User.Identity.GetUserId(), model.FirstName, model.LastName, model.DoB, model.Phone);
-                }
+                t = Cad.FetchTenant(userId);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            return getResponse();
+            return Ok<ITenant>(t);
         }
 
-        #endregion
-
-        #region Facility
-
-        [HttpGet]
-        [Route("FetchFacilities")]
-        public IHttpActionResult FetchFacilities()
+        // GET api/Tenant/Building
+        [HttpGet, Route("Building")]
+        public IHttpActionResult FetchBuildingTenants()
         {
-            IEnumerable<IFacility> facilities;
+            IEnumerable<ITenant> t;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facilities = facade.FetchFacilities(User.Identity.GetUserId());
-                }
+                t = Cad.FetchTenants(User.Identity.GetUserId());
             }
             catch (Exception e)
             {
+
                 return BadRequest(e.Message);
             }
-            return Ok<IEnumerable<IFacility>>(facilities);
+            return Ok<IEnumerable<ITenant>>(t);
         }
 
-        #endregion
+        //POST api/Tenant/Create
+        [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
+        public async Task<IHttpActionResult> CreateTenant(RegisterTenantModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        #region Booking
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var password = GeneratePassword();
 
-        [HttpPost]
-        [Route("CreateBooking")]
-        public IHttpActionResult CreateBooking(BookingCreateModel model)
+            var result = await UserManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                ITenant tenant;
+                try
+                {
+                    using (Cad)
+                    {
+                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
+                    }
+                    UserManager.AddToRole(user.Id, "Tenant");
+                }
+                catch (Exception e)
+                {
+                    UserManager.Delete(user);
+                    return BadRequest(e.Message);
+                }
+
+                EmailService.SendTenantCreationEmail(model.Email, password);
+                return Ok<ITenant>(tenant);
+            }
+            else
+            {
+                return GetErrorResult(result);
+            }
+        }
+
+        // PUT api/Tenant/Update
+        [Authorize(Roles = "BuildingManager"),HttpPut, Route("Update")]
+        public IHttpActionResult UpdateTenant(TenantUpdateModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -105,110 +112,33 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facade.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
-                }
+                Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DateofBirth, model.Phone);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            return getResponse();
+            return GetResponse();
         }
 
-        [HttpGet]
-        [Route("FetchBooking")]
-        public IHttpActionResult FetchBooking(int facilityId, int bookingId)
+        // PUT api/Tenant/ChangeApartment
+        [Authorize(Roles = "BuildingManager"), HttpPut, Route("ChangeApartment")]
+        public IHttpActionResult ChangeApartment(ChangeApartmentModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            IBooking booking;
             try
             {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    booking = facade.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
-                }
+                Cad.ChangeApartment(model.UserId, model.ApartmentId);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            return Ok<IBooking>(booking);
+            return GetResponse();
         }
-
-        [HttpGet]
-        [Route("FetchFacilityBookings")]
-        public IHttpActionResult FetchFacilityBookings(int facilityId)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            IEnumerable<IBooking> bookings;
-            try
-            {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    bookings = facade.FetchFacilityBookings(User.Identity.GetUserId(), facilityId);
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IEnumerable<IBooking>>(bookings);
-        }
-
-        [HttpGet]
-        [Route("FetchPersonBookings")]
-        public IHttpActionResult FetchPersonBookings()
-        {
-            IEnumerable<IBooking> bookings;
-            try
-            {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    bookings = facade.FetchPersonBookings(User.Identity.GetUserId());
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return Ok<IEnumerable<IBooking>>(bookings);
-        }
-
-        [HttpDelete]
-        [Route("CancelBooking")]
-        public IHttpActionResult CancelBooking(BookingCancelModel model)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                using (var facade = (Cad as TenantFacade))
-                {
-                    facade.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
-                }
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-            return getResponse();
-        }
-
-        #endregion
-
     }
 }
