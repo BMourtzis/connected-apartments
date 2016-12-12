@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
@@ -19,10 +20,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 booking = Cad.FetchBooking(User.Identity.GetUserId(), bookingId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IBooking>(booking);
         }
 
@@ -35,10 +41,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 booking = Cad.FetchBooking(User.Identity.GetUserId(), facilityId, bookingId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IBooking>(booking);
         }
 
@@ -51,10 +62,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 bookings = Cad.FetchBookings(User.Identity.GetUserId(), facilityId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+           
             return Ok<IEnumerable<IBooking>>(bookings);
         }
 
@@ -67,9 +83,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 bookings = Cad.FetchBookings(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IEnumerable<IBooking>>(bookings);
         }
@@ -87,10 +107,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.CreateBooking(User.Identity.GetUserId(), model.FacilityId, model.StartTime, model.EndTime);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return GetResponse();
         }
 
@@ -102,9 +127,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.CancelBooking(User.Identity.GetUserId(), model.BookingId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }
@@ -117,9 +146,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using ConnApsDomain.Exceptions;
 
 namespace ConnApsDomain.Models
 {
@@ -75,6 +76,12 @@ namespace ConnApsDomain.Models
         public Booking FetchBooking(int bookingId)
         {
             var booking = Bookings.FirstOrDefault(b => b.Id == bookingId);
+
+            if (booking == null)
+            {
+                throw new NotFoundException("Booking");
+            }
+
             return booking;
         }
 

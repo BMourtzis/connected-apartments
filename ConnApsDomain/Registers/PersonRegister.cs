@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 
 namespace ConnApsDomain.Registers
@@ -29,12 +30,24 @@ namespace ConnApsDomain.Registers
         public int FetchBuildingId(string userId)
         {
             var person = _context.People.FirstOrDefault(p => p.UserId.Equals(userId));
+
+            if (person == null)
+            {
+                throw new InternalException();
+            }
+
             return person.BuildingId;
         }
 
         public Person FetchPerson(string userId)
         {
             var person = _context.People.FirstOrDefault(p => p.UserId.Equals(userId));
+
+            if (person == null)
+            {
+                throw new InternalException();
+            }
+
             return person;
         }
 
@@ -66,7 +79,14 @@ namespace ConnApsDomain.Registers
 
         public BuildingManager FetchBuildingManager(string userId)
         {
+            //TODO: Check if all the BuildingManager Information is loaded.
             var bm = FetchPerson(userId) as BuildingManager;
+
+            if (bm == null)
+            {
+                throw new InternalException();
+            }
+
             return bm;
         }
 
@@ -98,7 +118,14 @@ namespace ConnApsDomain.Registers
 
         public Tenant FetchTenant(string userId)
         {
+            //TODO: Check if you get apartmentID
             var tenant = FetchPerson(userId) as Tenant;
+                
+            if (tenant == null)
+            {
+                throw new InternalException();
+            }
+
             return tenant;
         }
 
@@ -118,6 +145,7 @@ namespace ConnApsDomain.Registers
 
         public IEnumerable<Tenant> FetchTenants(int buildingId)
         {
+            //TODO: Maybe put that in Building Register
             var tenants = _context.Tenants.Where(t => t.BuildingId.Equals(buildingId));
             return tenants; 
         }
@@ -131,6 +159,12 @@ namespace ConnApsDomain.Registers
             var person = _context.People
                                  .Include(p => p.Bookings)
                                  .FirstOrDefault(p => p.UserId.Equals(userId));
+
+            if (person == null)
+            {
+                throw new InternalException();
+            }
+
             var bookings = person.Bookings;
             return bookings;
         }
@@ -139,6 +173,12 @@ namespace ConnApsDomain.Registers
         {
             var person = _context.People.Include(p => p.Bookings)
                                  .FirstOrDefault(p => p.UserId.Equals(userId));
+
+            if (person == null)
+            {
+                throw new InternalException();
+            }
+
             return person.FetchBooking(bookingId);
         }
 
@@ -146,6 +186,12 @@ namespace ConnApsDomain.Registers
         {
             var person = _context.People.Include(p => p.Bookings)
                                  .FirstOrDefault(p => p.UserId.Equals(userId));
+
+            if (person == null)
+            {
+                throw new InternalException();    
+            }
+
             person.CancelBooking(bookingId);
             _context.SaveChanges();
         }
@@ -156,10 +202,16 @@ namespace ConnApsDomain.Registers
 
         public IApartment FetchApartment(string userId)
         {
-            var tennant = _context.People.OfType<Tenant>()
+            var tenant = _context.People.OfType<Tenant>()
                               .Include(a => a.Apartment)
                               .FirstOrDefault(a => a.UserId.Equals(userId));
-            return tennant.Apartment;
+
+            if (tenant == null)
+            {
+                throw new InternalException();
+            }
+
+            return tenant.Apartment;
         }
 
         #endregion

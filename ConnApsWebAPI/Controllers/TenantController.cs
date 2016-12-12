@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 using Microsoft.AspNet.Identity;
@@ -21,9 +22,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 t = Cad.FetchTenant(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<ITenant>(t);
         }
@@ -37,9 +42,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 t = Cad.FetchTenant(userId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<ITenant>(t);
         }
@@ -53,10 +62,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 t = Cad.FetchTenants(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
-
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IEnumerable<ITenant>>(t);
         }
@@ -82,16 +94,21 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (Cad)
                     {
-                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
+                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id,
+                            model.ApartmentId, User.Identity.GetUserId());
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
-                catch (Exception e)
+                catch (ConnectedApartmentsException e)
                 {
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
                 }
-
+                catch (Exception)
+                {
+                    return InternalServerError();
+                }
+               
                 EmailService.SendTenantCreationEmail(model.Email, password);
                 return Ok<ITenant>(tenant);
             }
@@ -114,9 +131,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DateofBirth, model.Phone);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }
@@ -134,10 +155,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.ChangeApartment(model.UserId, model.ApartmentId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return GetResponse();
         }
     }

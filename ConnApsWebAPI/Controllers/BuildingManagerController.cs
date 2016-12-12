@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 using Microsoft.AspNet.Identity;
@@ -21,9 +22,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 bm = Cad.FetchBuildingManagers(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IEnumerable<IBuildingManager>>(bm);
         }
@@ -45,14 +50,18 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    Cad.CreateBuildingManager(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingId);
+                    Cad.CreateBuildingManager(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id,
+                        model.BuildingId);
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
-                catch (Exception e)
+                catch (ConnectedApartmentsException e)
                 {
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
-
+                }
+                catch (Exception)
+                {
+                    return InternalServerError();
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
@@ -77,10 +86,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateBuildingManager(model.UserId, model.FirstName, model.LastName, model.DateOfBirth, model.Phone);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return GetResponse();
         }
 

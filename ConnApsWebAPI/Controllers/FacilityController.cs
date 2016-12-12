@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
@@ -19,10 +20,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 facilities = Cad.FetchFacilities(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IEnumerable<IFacility>>(facilities);
         }
 
@@ -35,10 +41,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 facility = Cad.FetchFacility(User.Identity.GetUserId(), facilityId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IFacility>(facility);
         }
 
@@ -55,9 +66,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.CreateFacility(User.Identity.GetUserId(), model.Level, model.Number);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }
@@ -70,9 +85,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateFacility(User.Identity.GetUserId(), model.Id, model.Level, model.Number);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }

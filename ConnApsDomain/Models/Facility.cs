@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ConnApsDomain.Exceptions;
 
 namespace ConnApsDomain.Models
 {
@@ -24,24 +25,32 @@ namespace ConnApsDomain.Models
 
         public Booking CreateBooking(int personId, DateTime startTme, DateTime endTime)
         {
-            return new Booking(Id, personId, startTme, endTime);
+            var booking = new Booking(Id, personId, startTme, endTime);
+            Bookings.Add(booking);
+            return booking;
         }
 
         public Booking FetchBooking(int bookingId)
         {
             var booking = Bookings.FirstOrDefault(b => b.Id == bookingId);
+
+            if (booking == null)
+            {
+                throw new NotFoundException("Booking");
+            }
+
             return booking;
+        }
+
+        public void CancelBooking(int bookingId)
+        {
+            var booking = FetchBooking(bookingId);
+            Bookings.Remove(booking);
         }
 
         public void UpdateFacility(string level, string number)
         {
             UpdateLocation(level, number);
-        }
-
-        public void CancelFacility(int bookingId)
-        {
-            var booking = FetchBooking(bookingId);
-            Bookings.Remove(booking);
         }
 
         #endregion

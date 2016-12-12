@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 using ConnApsWebAPI.Models;
@@ -20,10 +21,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 building = Cad.FetchBuilding(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IBuilding>(building);
         }
 
@@ -44,14 +50,18 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id,
+                        model.BuildingName, model.Address);
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
-                catch (Exception e)
+                catch (ConnectedApartmentsException e)
                 {
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
-
+                }
+                catch (Exception)
+                {
+                    return InternalServerError();
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
@@ -76,9 +86,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }

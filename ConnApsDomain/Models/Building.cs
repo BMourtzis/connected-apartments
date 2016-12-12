@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using ConnApsDomain.Exceptions;
 
 namespace ConnApsDomain.Models
 {
@@ -50,25 +51,47 @@ namespace ConnApsDomain.Models
 
         public Apartment CreateApartment(string level, string number, int tenantsAllowed, string facingDirection)
         {
-            var ap = new Apartment(level, number, tenantsAllowed, facingDirection, Id);
-            return ap;
+            var apt = new Apartment(level, number, tenantsAllowed, facingDirection, Id);
+            Locations.Add(apt);
+            return apt;
         }
 
         public Apartment FetchApartment(int aptId)
         {
             var apartment = Apartments.FirstOrDefault(a => a.Id == aptId);
+
+            if (apartment == null)
+            {
+                throw new NotFoundException("Apartment");
+            }
+
             return apartment;
+        }
+
+        public Apartment UpdateApartment(int apartmentId, string level, string number, int tenantsAllowed,
+            string facingDirection)
+        {
+            var apt = FetchApartment(apartmentId);
+            apt.UpdateApartment(level, number, tenantsAllowed, facingDirection);
+            return apt;
         }
 
         public Facility CreateFacility(string level, string number)
         {
-            Facility f = new Facility(level, number, Id);
+            var f = new Facility(level, number, Id);
+            Locations.Add(f);
             return f;
         }
 
         public Facility FetchFacility(int facilityId)
         {
             var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
+
+            if (facility == null)
+            {
+                throw new NotFoundException("Facility");    
+            }
+
             return facility;
         }
 
@@ -81,20 +104,14 @@ namespace ConnApsDomain.Models
 
         public Booking CreateBooking(int facilityId, int personId, DateTime startTime, DateTime endTime)
         {
-            var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
-            if (facility != null)
-            {
-                var booking = facility.CreateBooking(personId, startTime, endTime);
-                return booking;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            var facility = FetchFacility(facilityId);
+            var booking = facility.CreateBooking(personId, startTime, endTime);
+            return booking;
         }
 
         public Booking FetchBooking(int bookingId)
         {
+            //Need to test this. Most probably an exception will be thrown
             var booking = Facilities.Select(f => f.Bookings.FirstOrDefault(b => b.Id == bookingId)).FirstOrDefault();
             //var booking = Facilities.FirstOrDefault(f => f.Id == facilityId).FetchBooking(bookingId);
             return booking;
@@ -102,14 +119,14 @@ namespace ConnApsDomain.Models
 
         public IEnumerable<Booking> FetcBookings(int facilityId)
         {
-            var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
+            var facility = FetchFacility(facilityId);
             return facility.Bookings;
         }
 
         public void CancelBooking(int facilityId, int bookingId)
         {
-            var facility = Facilities.FirstOrDefault(f => f.Id == facilityId);
-            facility.CancelFacility(bookingId);
+            var facility = FetchFacility(facilityId);
+            facility.CancelBooking(bookingId);
         }
 
         #endregion

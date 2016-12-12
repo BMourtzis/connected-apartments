@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
@@ -20,9 +21,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 apt = Cad.FetchApartment(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IApartment>(apt);
         }
@@ -36,9 +41,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 apt = Cad.FetchApartment(aptId, User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IApartment>(apt);
         }
@@ -57,9 +66,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 apt = Cad.FetchApartments(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return Ok<IEnumerable<IApartment>>(apt);
@@ -76,11 +89,16 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                Cad.CreateApartment(model.Level, model.Number, model.TenantsAllowed, model.FacingDirection,
+                    User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }
@@ -96,11 +114,16 @@ namespace ConnApsWebAPI.Controllers
 
             try
             {
-                Cad.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection, User.Identity.GetUserId());
+                Cad.UpdateApartment(model.Id, model.Level, model.Number, model.TenantsAllowed, model.FacingDirection,
+                    User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return GetResponse();

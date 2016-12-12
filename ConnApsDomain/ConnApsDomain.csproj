@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\BookingOverlapingException.cs" />
+    <Compile Include="Exceptions\ConnectedApartmentsException.cs" />
+    <Compile Include="Exceptions\InternalException.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="IDisposableFacade.cs" />
     <Compile Include="Migrations\201609190321490_InitialCreate.cs" />
     <Compile Include="Migrations\201609190321490_InitialCreate.Designer.cs">

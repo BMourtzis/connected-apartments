@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -47,17 +48,28 @@ namespace ConnApsWebAPI.Controllers
                 Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
 
-            if (model.Roles[0] == "Tenant")
+            try
             {
-                var tenant = Cad.FetchTenant(User.Identity.GetUserId());
-                var userinfo = new TenantInformationModel(model, tenant);
-                return Ok<TenantInformationModel>(userinfo);
+                if (model.Roles[0] == "Tenant")
+                {
+                    var tenant = Cad.FetchTenant(User.Identity.GetUserId());
+                    var userinfo = new TenantInformationModel(model, tenant);
+                    return Ok<TenantInformationModel>(userinfo);
+                }
+                else if (model.Roles[0] == "BuildingManager")
+                {
+                    var bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
+                    var userinfo = new PersonInformationModel(model, bm);
+                    return Ok<PersonInformationModel>(userinfo);
+                }
             }
-            else if (model.Roles[0] == "BuildingManager")
+            catch (ConnectedApartmentsException e)
             {
-                var bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
-                var userinfo = new PersonInformationModel(model, bm);
-                return Ok<PersonInformationModel>(userinfo);
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return Ok<UserInfoViewModel>(model);
@@ -77,9 +89,13 @@ namespace ConnApsWebAPI.Controllers
                 Cad.UpdatePerson(model.FirstName, model.LastName, model.DoB, model.Phone, User.Identity.GetUserId());
                 return GetResponse();
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
         }
 
@@ -120,9 +136,13 @@ namespace ConnApsWebAPI.Controllers
 
                 EmailService.SendPasswordResetEmail(cUser.Email, password);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return GetResponse();
