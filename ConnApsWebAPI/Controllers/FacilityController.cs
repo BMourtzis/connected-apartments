@@ -8,9 +8,17 @@ using Microsoft.AspNet.Identity;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This contrller is responsible for all the functions of the Facility Class
+    /// </summary>
     [Authorize, RoutePrefix("api/Facility")]
     public class FacilityController : BaseController
     {
+        /// <summary>
+        /// Fetches all the faciities of a building
+        /// </summary>
+        /// <returns>Returns a list of the facility details or an Error Message</returns>
+
         // GET api/Facility
         [HttpGet, Route()]
         public IHttpActionResult FetchFacilities()
@@ -32,14 +40,20 @@ namespace ConnApsWebAPI.Controllers
             return Ok<IEnumerable<IFacility>>(facilities);
         }
 
+        /// <summary>
+        /// Fetches a facility
+        /// </summary>
+        /// <param name="id">The Id of the facility</param>
+        /// <returns>Returns the facility details or an Error Message</returns>
+
         // GET api/Facility
         [HttpGet, Route()]
-        public IHttpActionResult FetchFacility(int facilityId)
+        public IHttpActionResult FetchFacility(int id)
         {
             IFacility facility;
             try
             {
-                facility = Cad.FetchFacility(User.Identity.GetUserId(), facilityId);
+                facility = Cad.FetchFacility(User.Identity.GetUserId(), id);
             }
             catch (ConnectedApartmentsException e)
             {
@@ -52,6 +66,12 @@ namespace ConnApsWebAPI.Controllers
 
             return Ok<IFacility>(facility);
         }
+
+        /// <summary>
+        /// Creates a new Facility
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // POST api/Facility/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
@@ -76,6 +96,12 @@ namespace ConnApsWebAPI.Controllers
             }
             return GetResponse();
         }
+
+        /// <summary>
+        /// Updates the Facility details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         //PUT api/Facility/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]

@@ -8,9 +8,18 @@ using Microsoft.AspNet.Identity;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This controller is responsible for all the functions of the Apartment class.
+    /// </summary>
+
     [Authorize, RoutePrefix("api/Apartment")]
     public class ApartmentController : BaseController
     {
+
+        /// <summary>
+        /// Fetches the Apartment of the Tenant
+        /// </summary>
+        /// <returns>Returns the apartment details or an Error Message</returns>
 
         // GET api/Apartment/
         [Authorize(Roles = "Tenant"), HttpGet, Route()]
@@ -32,14 +41,21 @@ namespace ConnApsWebAPI.Controllers
             return Ok<IApartment>(apt);
         }
 
+        /// <summary>
+        /// Fetches an apartment, with the id given.
+        /// The apartment needs to be in the same building as the tenant
+        /// </summary>
+        /// <param name="id">The Id of the apartment</param>
+        /// <returns>Returns the apartment details or an Error Message</returns>
+
         // GET api/Apartment?aptId=1
         [HttpGet, Route()]
-        public IHttpActionResult FetchApartment(int aptId)
+        public IHttpActionResult FetchApartment(int id)
         {
             IApartment apt;
             try
             {
-                apt = Cad.FetchApartment(aptId, User.Identity.GetUserId());
+                apt = Cad.FetchApartment(id, User.Identity.GetUserId());
             }
             catch (ConnectedApartmentsException e)
             {
@@ -53,9 +69,9 @@ namespace ConnApsWebAPI.Controllers
         }
 
         /// <summary>
-        /// Returns a List of Apartments that belong to the building
+        /// Fetches all the apartment of the building that the user belongs to
         /// </summary>
-        /// <returns>A Response that includes a list of apartments</returns>
+        /// <returns>Returnsa list of apartment details or an Error Message</returns>
 
         // GET api/Apartment/Building
         [HttpGet, Route("Building")]
@@ -77,6 +93,12 @@ namespace ConnApsWebAPI.Controllers
 
             return Ok<IEnumerable<IApartment>>(apt);
         }
+
+        /// <summary>
+        /// Creates a new apartment
+        /// </summary>
+        /// <param name="model">Supplies the details needed to create a new apartment</param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // POST api/Apartment/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
@@ -102,6 +124,12 @@ namespace ConnApsWebAPI.Controllers
             }
             return GetResponse();
         }
+
+        /// <summary>
+        /// Updates the  apartment details
+        /// </summary>
+        /// <param name="model">Includes all the informaiton needed to update the apartment</param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // POST api/Apartment/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]

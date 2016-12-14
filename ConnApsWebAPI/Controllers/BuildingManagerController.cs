@@ -10,9 +10,17 @@ using ConnApsWebAPI.Models;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This controller is responsible for all the functions of the Building Manager Class
+    /// </summary>
     [Authorize, RoutePrefix("api/Manager")]
     public class BuildingManagerController : BaseController
     {
+        /// <summary>
+        /// Fetches the Building Managers of the Building
+        /// </summary>
+        /// <returns>Returns a list of the Building Manager details or an Error Message</returns>
+
         // GET api/BuildingManager
         [HttpGet, Route()]
         public IHttpActionResult Index()
@@ -32,6 +40,12 @@ namespace ConnApsWebAPI.Controllers
             }
             return Ok<IEnumerable<IBuildingManager>>(bm);
         }
+
+        /// <summary>
+        /// Creates a new Building Manager
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // POST api/BuildingManager/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
@@ -72,6 +86,12 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
         }
+
+        /// <summary>
+        /// Updates a Building Managers details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // POST api/BuildingManager/Updateaaaa
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]

@@ -10,9 +10,17 @@ using ConnApsWebAPI.Models;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This controller is responsible for all the functions of the Tenant Class
+    /// </summary>
     [Authorize, RoutePrefix("api/Tenant")]
     public class TenantController : BaseController
     {
+        /// <summary>
+        /// Fetches the user's tenant information. The User needs to be a tenant
+        /// </summary>
+        /// <returns>Returns the tenant details or an Error Message</returns>
+
         // GET api/Tenant
         [Authorize(Roles = "Tenant"), HttpGet, Route()]
         public IHttpActionResult FetchTenant()
@@ -33,14 +41,20 @@ namespace ConnApsWebAPI.Controllers
             return Ok<ITenant>(t);
         }
 
+        /// <summary>
+        /// Fetches a tenant
+        /// </summary>
+        /// <param name="id">The Id of the user that connects to the tenant</param>
+        /// <returns>Returns the tenant details or an Error Message</returns>
+
         // GET api/Tenant?userId=string
         [HttpGet, Route()]
-        public IHttpActionResult FetchTenant(string userId)
+        public IHttpActionResult FetchTenant(string id)
         {
             ITenant t;
             try
             {
-                t = Cad.FetchTenant(userId);
+                t = Cad.FetchTenant(id);
             }
             catch (ConnectedApartmentsException e)
             {
@@ -52,6 +66,11 @@ namespace ConnApsWebAPI.Controllers
             }
             return Ok<ITenant>(t);
         }
+
+        /// <summary>
+        /// Fetches all the tenants of the building
+        /// </summary>
+        /// <returns>Returns a list of the tenant details or an Error Message</returns>
 
         // GET api/Tenant/Building
         [HttpGet, Route("Building")]
@@ -72,6 +91,12 @@ namespace ConnApsWebAPI.Controllers
             }
             return Ok<IEnumerable<ITenant>>(t);
         }
+
+        /// <summary>
+        /// Creates a new tenant
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         //POST api/Tenant/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
@@ -118,6 +143,12 @@ namespace ConnApsWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the Tenant's details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
+
         // PUT api/Tenant/Update
         [Authorize(Roles = "BuildingManager"),HttpPut, Route("Update")]
         public IHttpActionResult UpdateTenant(TenantUpdateModel model)
@@ -141,6 +172,12 @@ namespace ConnApsWebAPI.Controllers
             }
             return GetResponse();
         }
+
+        /// <summary>
+        /// Changes the apartment that a tenant lives in
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // PUT api/Tenant/ChangeApartment
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("ChangeApartment")]

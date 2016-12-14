@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using ConnApsDomain.Exceptions;
-using ConnApsDomain.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -16,6 +15,9 @@ using ConnApsEmailService;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This Controller is responsible for all the functions of the User Class (ASP.Net Identity)
+    /// </summary>
     [Authorize, RoutePrefix("api/Account")]
     public class AccountController : BaseController
     {
@@ -33,6 +35,11 @@ namespace ConnApsWebAPI.Controllers
         }
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
+        /// <summary>
+        /// Gets the User's information
+        /// </summary>
+        /// <returns>Returns the user's details as well as the details of the user's roles</returns>
 
         // GET api/Account
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize()]
@@ -75,6 +82,12 @@ namespace ConnApsWebAPI.Controllers
             return Ok<UserInfoViewModel>(model);
         }
         
+        /// <summary>
+        /// Edits the user's details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
+
         // PUT api/Account/Update
         [HttpPut, Authorize, Route("Update")]
         public IHttpActionResult EditAccount(EditAccountModel model)
@@ -99,6 +112,12 @@ namespace ConnApsWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Change the user's password
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
+
         // POST api/Account/ChangePassword
         [Route("ChangePassword")]
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
@@ -113,6 +132,12 @@ namespace ConnApsWebAPI.Controllers
             
             return !result.Succeeded ? GetErrorResult(result) : GetResponse();
         }
+
+        /// <summary>
+        /// Resets the users password, and sends an email to the user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         // POST api/Account/ResetPassword
         [HttpPost, AllowAnonymous, Route("ResetPassword")]
@@ -148,13 +173,20 @@ namespace ConnApsWebAPI.Controllers
             return GetResponse();
         }
 
+        /// <summary>
+        /// Deletes a user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Returns a default response</returns>
+
+        //TODO: Add exception handling
         // DELETE api/Account/Delete
         [Authorize(Roles = "Admin"), Route("Delete")]
         public IHttpActionResult DeleteUser(string email)
         {
             var user = UserManager.FindByEmail(email);
             UserManager.Delete(user);
-            return Ok();
+            return GetResponse();
         }
 
         protected override void Dispose(bool disposing)

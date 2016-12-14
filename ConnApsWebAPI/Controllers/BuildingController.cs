@@ -9,9 +9,18 @@ using Microsoft.AspNet.Identity;
 
 namespace ConnApsWebAPI.Controllers
 {
+    /// <summary>
+    /// This Controller is responsible for all the functions of the Building Class
+    /// </summary>
+    
     [Authorize, RoutePrefix("api/Building")]
     public class BuildingController : BaseController
     {
+        /// <summary>
+        /// Fetches a building
+        /// </summary>
+        /// <returns>Returns the building details or an error message</returns>
+
         // GET api/Building
         [HttpGet, Route()]
         public IHttpActionResult FetchBuildingInfo()
@@ -32,6 +41,12 @@ namespace ConnApsWebAPI.Controllers
 
             return Ok<IBuilding>(building);
         }
+
+        /// <summary>
+        /// Creates a new Building 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         //POST api/Building/Create
         [AllowAnonymous, HttpPost, Route("Create")]
@@ -72,6 +87,12 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
         }
+
+        /// <summary>
+        /// Updates a Building
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         // POST api/Building/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
