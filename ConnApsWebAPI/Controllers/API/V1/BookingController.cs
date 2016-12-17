@@ -6,13 +6,13 @@ using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// This controller is responsible for all the function of the Booking Class
     /// </summary>
     
-    [Authorize, RoutePrefix("api/Bookings")]
+    [Authorize, RoutePrefix("api/v1/Bookings")]
     public class BookingController : BaseController
     {
         /// <summary>

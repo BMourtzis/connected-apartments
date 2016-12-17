@@ -6,12 +6,12 @@ using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// This contrller is responsible for all the functions of the Facility Class
     /// </summary>
-    [Authorize, RoutePrefix("api/Facility")]
+    [Authorize, RoutePrefix("api/v1/Facility")]
     public class FacilityController : BaseController
     {
         /// <summary>

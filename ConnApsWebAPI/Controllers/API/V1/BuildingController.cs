@@ -1,34 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
-using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
-    /// This controller is responsible for all the functions of the Building Manager Class
+    /// This Controller is responsible for all the functions of the Building Class
     /// </summary>
-    [Authorize, RoutePrefix("api/Manager")]
-    public class BuildingManagerController : BaseController
+    
+    [Authorize, RoutePrefix("api/v1/Building")]
+    public class BuildingController : BaseController
     {
         /// <summary>
-        /// Fetches the Building Managers of the Building
+        /// Fetches a building
         /// </summary>
-        /// <returns>Returns a list of the Building Manager details or an Error Message</returns>
+        /// <returns>Returns the building details or an error message</returns>
 
-        // GET api/BuildingManager
+        // GET api/Building
         [HttpGet, Route()]
-        public IHttpActionResult Index()
+        public IHttpActionResult FetchBuildingInfo()
         {
-            IEnumerable<IBuildingManager> bm;
+            IBuilding building;
             try
             {
-                bm = Cad.FetchBuildingManagers(User.Identity.GetUserId());
+                building = Cad.FetchBuilding(User.Identity.GetUserId());
             }
             catch (ConnectedApartmentsException e)
             {
@@ -38,18 +38,19 @@ namespace ConnApsWebAPI.Controllers
             {
                 return InternalServerError();
             }
-            return Ok<IEnumerable<IBuildingManager>>(bm);
+
+            return Ok<IBuilding>(building);
         }
 
         /// <summary>
-        /// Creates a new Building Manager
+        /// Creates a new Building 
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Returns a default response or an Error Message</returns>
+        /// <returns>Returns a default response or an error message</returns>
 
-        // POST api/BuildingManager/Create
-        [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
-        public async Task<IHttpActionResult> CreateBuildingManager(BuildingManagerRegisterModel model)
+        //POST api/Building/Create
+        [AllowAnonymous, HttpPost, Route("Create")]
+        public async Task<IHttpActionResult> CreateBuilding(RegisterBuildingModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -64,8 +65,8 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    Cad.CreateBuildingManager(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id,
-                        model.BuildingId);
+                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id,
+                        model.BuildingName, model.Address);
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
                 catch (ConnectedApartmentsException e)
@@ -88,23 +89,23 @@ namespace ConnApsWebAPI.Controllers
         }
 
         /// <summary>
-        /// Updates a Building Managers details
+        /// Updates a Building
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>Returns a default response or an Error Message</returns>
+        /// <returns>Returns a default response or an error message</returns>
 
-        // POST api/BuildingManager/Updateaaaa
+        // POST api/Building/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
-        public IHttpActionResult UpdateBuildingManager(BuildingManagerUpdateModel model)
+        public IHttpActionResult UpdateBuilding(BuildingBindingModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             try
             {
-                Cad.UpdateBuildingManager(model.UserId, model.FirstName, model.LastName, model.DateOfBirth, model.Phone);
+                Cad.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
             }
             catch (ConnectedApartmentsException e)
             {
@@ -114,9 +115,7 @@ namespace ConnApsWebAPI.Controllers
             {
                 return InternalServerError();
             }
-
             return GetResponse();
         }
-
     }
 }
