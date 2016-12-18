@@ -1,24 +1,34 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text;
+using System.Web.Http;
 using ConnApsDomain;
 using ConnApsWebAPI.Models;
-using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
+    /// <summary>
+    /// Base Controller Class for the API section.
+    /// </summary>
     public abstract class BaseController : ApiController
     {
         protected readonly Facade Cad;
         protected ApplicationUserManager _userManager;
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         protected BaseController()
         {
             Cad = new Facade();
         }
 
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
         protected BaseController(Facade facade)
         {
             Cad = facade;
@@ -38,6 +48,10 @@ namespace ConnApsWebAPI.Controllers
 
         #region Helpers
 
+        /// <summary>
+        /// Get a Default response with an HTTP 200 code
+        /// </summary>
+        /// <returns>Returns a default response</returns>
         protected IHttpActionResult GetResponse()
         {
             var response = new GenericResponse
@@ -47,6 +61,11 @@ namespace ConnApsWebAPI.Controllers
             return Ok<GenericResponse>(response);
         }
 
+        /// <summary>
+        /// Returns a Bad Request response with the list of errors
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         protected IHttpActionResult GetErrorResult(IdentityResult result)
         {
             if (result == null)
@@ -72,6 +91,11 @@ namespace ConnApsWebAPI.Controllers
             return BadRequest(ModelState);
         }
 
+        /// <summary>
+        /// Generates a random password with the correct password patterns.
+        /// This password needs to be changed as soon as it is given to the user.
+        /// </summary>
+        /// <returns>A Random password</returns>
         protected string GeneratePassword()
         {
             var builder = new StringBuilder();

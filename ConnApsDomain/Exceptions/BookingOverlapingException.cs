@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnApsDomain.Exceptions
 {
-    public class BookingOverlapingException: Exception
+    public class BookingOverlapingException: ConnectedApartmentsException
     {
         public BookingOverlapingException() : base("Your Booking is overlaping another booking. Please pick another time") { }
     }

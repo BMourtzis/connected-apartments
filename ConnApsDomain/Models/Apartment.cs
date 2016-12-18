@@ -9,28 +9,31 @@ namespace ConnApsDomain.Models
     /// </summary>
     internal sealed class Apartment: Location, IApartment
     {
+        /// <summary>
+        /// The collection of Tenant living in the apartment
+        /// </summary>
         internal ICollection<Tenant> Tenants { get; set; }
 
         #region Constructors
 
         /// <summary>
-        /// Initialises an empty instance of the Apartment structure
+        /// Initialises an empty instance of Apartment
         /// Used by Entity Framework
         /// </summary>
         private Apartment(): base() { }
 
         /// <summary>
-        /// Initialises a new instance an Apartment Strcture
+        ///
         /// </summary>
         /// <param name="level">The Level that the apartment is on</param>
         /// <param name="number">The Number of the Apartment</param>
         /// <param name="tenantsAllowed">The Number of tenants allowed to live in the apartment</param>
-        /// <param name="facingdirection">The primary direction that the apartment is facing</param>
+        /// <param name="facingDirection">The primary direction that the apartment is facing</param>
         /// <param name="buildingId">The Building Id the apartment is in</param>
-        public Apartment(string level, string number, int tenantsAllowed, string facingdirection, int buildingId): base(level, number, buildingId)
+        public Apartment(string level, string number, int tenantsAllowed, string facingDirection, int buildingId): base(level, number, buildingId)
         {
             TenantsAllowed = tenantsAllowed;
-            FacingDirection = facingdirection;
+            FacingDirection = facingDirection;
         }
 
         #endregion

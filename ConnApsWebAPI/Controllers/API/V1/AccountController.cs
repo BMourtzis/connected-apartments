@@ -6,16 +6,19 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using ConnApsDomain.Models;
+using ConnApsDomain.Exceptions;
+using ConnApsEmailService;
+using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using ConnApsWebAPI.Models;
-using ConnApsEmailService;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
-    [Authorize, RoutePrefix("api/Account")]
+    /// <summary>
+    /// This Controller is responsible for all the functions of the User Class (ASP.Net Identity)
+    /// </summary>
+    [Authorize, RoutePrefix("api/v1/Account")]
     public class AccountController : BaseController
     {
         private const string LocalLoginProvider = "Local";
@@ -33,8 +36,13 @@ namespace ConnApsWebAPI.Controllers
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
+        /// <summary>
+        /// Gets the User's information
+        /// </summary>
+        /// <returns>Returns the user's details as well as the details of the user's roles</returns>
+
         // GET api/Account
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize()]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize(), Route()]
         public IHttpActionResult GetUserInfo()
         {
             var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
@@ -47,22 +55,39 @@ namespace ConnApsWebAPI.Controllers
                 Roles = UserManager.GetRoles(User.Identity.GetUserId())
             };
 
-            if (model.Roles[0] == "Tenant")
+            try
             {
-                var tenant = Cad.FetchTenant(User.Identity.GetUserId());
-                var userinfo = new TenantInformationModel(model, tenant);
-                return Ok<TenantInformationModel>(userinfo);
+                if (model.Roles[0] == "Tenant")
+                {
+                    var tenant = Cad.FetchTenant(User.Identity.GetUserId());
+                    var userinfo = new TenantInformationModel(model, tenant);
+                    return Ok<TenantInformationModel>(userinfo);
+                }
+                else if (model.Roles[0] == "BuildingManager")
+                {
+                    var bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
+                    var userinfo = new PersonInformationModel(model, bm);
+                    return Ok<PersonInformationModel>(userinfo);
+                }
             }
-            else if (model.Roles[0] == "BuildingManager")
+            catch (ConnectedApartmentsException e)
             {
-                var bm = Cad.FetchBuildingManager(User.Identity.GetUserId());
-                var userinfo = new PersonInformationModel(model, bm);
-                return Ok<PersonInformationModel>(userinfo);
+                return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return Ok<UserInfoViewModel>(model);
         }
         
+        /// <summary>
+        /// Edits the user's details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
+
         // PUT api/Account/Update
         [HttpPut, Authorize, Route("Update")]
         public IHttpActionResult EditAccount(EditAccountModel model)
@@ -77,11 +102,21 @@ namespace ConnApsWebAPI.Controllers
                 Cad.UpdatePerson(model.FirstName, model.LastName, model.DoB, model.Phone, User.Identity.GetUserId());
                 return GetResponse();
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
         }
+
+        /// <summary>
+        /// Change the user's password
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         // POST api/Account/ChangePassword
         [Route("ChangePassword")]
@@ -97,6 +132,12 @@ namespace ConnApsWebAPI.Controllers
             
             return !result.Succeeded ? GetErrorResult(result) : GetResponse();
         }
+
+        /// <summary>
+        /// Resets the users password, and sends an email to the user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         // POST api/Account/ResetPassword
         [HttpPost, AllowAnonymous, Route("ResetPassword")]
@@ -120,21 +161,32 @@ namespace ConnApsWebAPI.Controllers
 
                 EmailService.SendPasswordResetEmail(cUser.Email, password);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
 
             return GetResponse();
         }
 
+        /// <summary>
+        /// Deletes a user
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Returns a default response</returns>
+
+        //TODO: Add exception handling
         // DELETE api/Account/Delete
         [Authorize(Roles = "Admin"), Route("Delete")]
         public IHttpActionResult DeleteUser(string email)
         {
             var user = UserManager.FindByEmail(email);
             UserManager.Delete(user);
-            return Ok();
+            return GetResponse();
         }
 
         protected override void Dispose(bool disposing)

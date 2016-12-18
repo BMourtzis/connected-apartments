@@ -3,9 +3,14 @@ using System.Data.Entity;
 
 namespace ConnApsDomain
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     internal sealed class ConnApsContext : DbContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ConnApsContext()
             : base("name=Model")
         {
@@ -18,6 +23,7 @@ namespace ConnApsDomain
             BuildingManagers = Set<BuildingManager>();
             Tenants = Set<Tenant>();
         }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

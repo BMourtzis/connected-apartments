@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
-    [Authorize, RoutePrefix("api/Building")]
+    /// <summary>
+    /// This Controller is responsible for all the functions of the Building Class
+    /// </summary>
+    
+    [Authorize, RoutePrefix("api/v1/Building")]
     public class BuildingController : BaseController
     {
+        /// <summary>
+        /// Fetches a building
+        /// </summary>
+        /// <returns>Returns the building details or an error message</returns>
+
         // GET api/Building
         [HttpGet, Route()]
         public IHttpActionResult FetchBuildingInfo()
@@ -20,12 +30,23 @@ namespace ConnApsWebAPI.Controllers
             {
                 building = Cad.FetchBuilding(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return Ok<IBuilding>(building);
         }
+
+        /// <summary>
+        /// Creates a new Building 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         //POST api/Building/Create
         [AllowAnonymous, HttpPost, Route("Create")]
@@ -44,14 +65,18 @@ namespace ConnApsWebAPI.Controllers
             {
                 try
                 {
-                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id, model.BuildingName, model.Address);
+                    Cad.CreateBuilding(model.FirstName, model.LastName, model.DateOfBirth, model.Phone, user.Id,
+                        model.BuildingName, model.Address);
                     UserManager.AddToRole(user.Id, "BuildingManager");
                 }
-                catch (Exception e)
+                catch (ConnectedApartmentsException e)
                 {
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
-
+                }
+                catch (Exception)
+                {
+                    return InternalServerError();
                 }
 
                 EmailService.SendBuildingCreationEmail(model.Email);
@@ -62,6 +87,12 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
         }
+
+        /// <summary>
+        /// Updates a Building
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an error message</returns>
 
         // POST api/Building/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
@@ -76,9 +107,13 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateBuilding(User.Identity.GetUserId(), model.BuildingName, model.Address);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return GetResponse();
         }

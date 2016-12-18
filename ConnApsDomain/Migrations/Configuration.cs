@@ -1,18 +1,25 @@
 namespace ConnApsDomain.Migrations
 {
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
+    /// <summary>
+    /// The Configurations class for the DBMigrations
+    /// </summary>
     internal sealed class Configuration : DbMigrationsConfiguration<ConnApsDomain.ConnApsContext>
     {
+        /// <summary>
+        /// Initial configuration method
+        /// </summary>
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
             ContextKey = "ConnApsDomain.ConnApsContext";
         }
 
+        /// <summary>
+        /// Adds default instances, after the initial configuration
+        /// </summary>
+        /// <param name="context"></param>
         protected override void Seed(ConnApsDomain.ConnApsContext context)
         {
             //  This method will be called after migrating to the latest version.

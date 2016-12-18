@@ -2,16 +2,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
-using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
-    [Authorize, RoutePrefix("api/Tenant")]
+    /// <summary>
+    /// This controller is responsible for all the functions of the Tenant Class
+    /// </summary>
+    [Authorize, RoutePrefix("api/v1/Tenant")]
     public class TenantController : BaseController
     {
+        /// <summary>
+        /// Fetches the user's tenant information. The User needs to be a tenant
+        /// </summary>
+        /// <returns>Returns the tenant details or an Error Message</returns>
+
         // GET api/Tenant
         [Authorize(Roles = "Tenant"), HttpGet, Route()]
         public IHttpActionResult FetchTenant()
@@ -21,28 +30,47 @@ namespace ConnApsWebAPI.Controllers
             {
                 t = Cad.FetchTenant(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<ITenant>(t);
         }
 
+        /// <summary>
+        /// Fetches a tenant
+        /// </summary>
+        /// <param name="id">The Id of the user that connects to the tenant</param>
+        /// <returns>Returns the tenant details or an Error Message</returns>
+
         // GET api/Tenant?userId=string
         [HttpGet, Route()]
-        public IHttpActionResult FetchTenant(string userId)
+        public IHttpActionResult FetchTenant(string id)
         {
             ITenant t;
             try
             {
-                t = Cad.FetchTenant(userId);
+                t = Cad.FetchTenant(id);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
             return Ok<ITenant>(t);
         }
+
+        /// <summary>
+        /// Fetches all the tenants of the building
+        /// </summary>
+        /// <returns>Returns a list of the tenant details or an Error Message</returns>
 
         // GET api/Tenant/Building
         [HttpGet, Route("Building")]
@@ -53,13 +81,22 @@ namespace ConnApsWebAPI.Controllers
             {
                 t = Cad.FetchTenants(User.Identity.GetUserId());
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
-
                 return BadRequest(e.Message);
+            }
+            catch (Exception)
+            {
+                return InternalServerError();
             }
             return Ok<IEnumerable<ITenant>>(t);
         }
+
+        /// <summary>
+        /// Creates a new tenant
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         //POST api/Tenant/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
@@ -82,16 +119,21 @@ namespace ConnApsWebAPI.Controllers
                 {
                     using (Cad)
                     {
-                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id, model.ApartmentId, User.Identity.GetUserId());
+                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id,
+                            model.ApartmentId, User.Identity.GetUserId());
                     }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
-                catch (Exception e)
+                catch (ConnectedApartmentsException e)
                 {
                     UserManager.Delete(user);
                     return BadRequest(e.Message);
                 }
-
+                catch (Exception)
+                {
+                    return InternalServerError();
+                }
+               
                 EmailService.SendTenantCreationEmail(model.Email, password);
                 return Ok<ITenant>(tenant);
             }
@@ -100,6 +142,12 @@ namespace ConnApsWebAPI.Controllers
                 return GetErrorResult(result);
             }
         }
+
+        /// <summary>
+        /// Updates the Tenant's details
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // PUT api/Tenant/Update
         [Authorize(Roles = "BuildingManager"),HttpPut, Route("Update")]
@@ -114,12 +162,22 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.UpdateTenant(model.UserId, model.FirstName, model.LastName, model.DateofBirth, model.Phone);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
             return GetResponse();
         }
+
+        /// <summary>
+        /// Changes the apartment that a tenant lives in
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Returns a default response or an Error Message</returns>
 
         // PUT api/Tenant/ChangeApartment
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("ChangeApartment")]
@@ -134,10 +192,15 @@ namespace ConnApsWebAPI.Controllers
             {
                 Cad.ChangeApartment(model.UserId, model.ApartmentId);
             }
-            catch (Exception e)
+            catch (ConnectedApartmentsException e)
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception)
+            {
+                return InternalServerError();
+            }
+
             return GetResponse();
         }
     }
