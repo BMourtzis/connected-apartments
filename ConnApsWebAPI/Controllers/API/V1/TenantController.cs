@@ -5,15 +5,15 @@ using System.Web.Http;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
-using Microsoft.AspNet.Identity;
 using ConnApsWebAPI.Models;
+using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// This controller is responsible for all the functions of the Tenant Class
     /// </summary>
-    [Authorize, RoutePrefix("api/Tenant")]
+    [Authorize, RoutePrefix("api/v1/Tenant")]
     public class TenantController : BaseController
     {
         /// <summary>

@@ -6,16 +6,15 @@ using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// This controller is responsible for all the functions of the Apartment class.
     /// </summary>
 
-    [Authorize, RoutePrefix("api/Apartment")]
+    [Authorize, RoutePrefix("api/v1/Apartment")]
     public class ApartmentController : BaseController
     {
-
         /// <summary>
         /// Fetches the Apartment of the Tenant
         /// </summary>

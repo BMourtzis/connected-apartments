@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text;
+using System.Web.Http;
 using ConnApsDomain;
 using ConnApsWebAPI.Models;
-using System.Web.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// Base Controller Class for the API section.

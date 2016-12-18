@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using ConnApsDomain.Exceptions;
+using ConnApsEmailService;
+using ConnApsWebAPI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using ConnApsWebAPI.Models;
-using ConnApsEmailService;
 
-namespace ConnApsWebAPI.Controllers
+namespace ConnApsWebAPI.Controllers.API.V1
 {
     /// <summary>
     /// This Controller is responsible for all the functions of the User Class (ASP.Net Identity)
     /// </summary>
-    [Authorize, RoutePrefix("api/Account")]
+    [Authorize, RoutePrefix("api/v1/Account")]
     public class AccountController : BaseController
     {
         private const string LocalLoginProvider = "Local";
@@ -42,7 +42,7 @@ namespace ConnApsWebAPI.Controllers
         /// <returns>Returns the user's details as well as the details of the user's roles</returns>
 
         // GET api/Account
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize()]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer), Authorize(), Route()]
         public IHttpActionResult GetUserInfo()
         {
             var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
