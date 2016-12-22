@@ -3,7 +3,7 @@
 
 namespace ConnApsDomain.Exceptions
 {
-    class InternalException: Exception
+    public class InternalException: Exception
     {
 
     }

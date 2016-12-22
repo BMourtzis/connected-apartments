@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
@@ -16,6 +17,17 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Building")]
     public class BuildingController : BaseController
     {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public BuildingController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public BuildingController(IFacade facade): base(facade) { }
+
         /// <summary>
         /// Fetches a building
         /// </summary>

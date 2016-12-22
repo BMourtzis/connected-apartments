@@ -11,7 +11,7 @@ namespace ConnApsConsole
     {
         static void Main(string[] args)
         {
-
+            //var smth = new ConnApsWebAPIUnitTest.ApartmentControllerTests();
         }
     }
 }

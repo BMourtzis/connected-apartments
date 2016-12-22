@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
@@ -14,6 +15,17 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Facility")]
     public class FacilityController : BaseController
     {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public FacilityController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public FacilityController(IFacade facade): base(facade) { }
+
         /// <summary>
         /// Fetches all the faciities of a building
         /// </summary>

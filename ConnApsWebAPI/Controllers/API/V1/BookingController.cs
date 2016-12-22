@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
@@ -15,6 +16,17 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Bookings")]
     public class BookingController : BaseController
     {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public BookingController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public BookingController(IFacade facade): base(facade) { }
+
         /// <summary>
         /// Fetches the a booking
         /// </summary>

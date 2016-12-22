@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsEmailService;
 using ConnApsWebAPI.Models;
@@ -23,9 +24,16 @@ namespace ConnApsWebAPI.Controllers.API.V1
     {
         private const string LocalLoginProvider = "Local";
 
-        public AccountController()
-        {
-        }
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public AccountController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public AccountController(IFacade facade): base(facade) { }
 
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)

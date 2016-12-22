@@ -14,7 +14,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
     /// </summary>
     public abstract class BaseController : ApiController
     {
-        protected readonly Facade Cad;
+        protected readonly IFacade Cad;
         protected ApplicationUserManager _userManager;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
         /// Constructor that allowes for Dependency Injection
         /// </summary>
         /// <param name="facade"></param>
-        protected BaseController(Facade facade)
+        protected BaseController(IFacade facade)
         {
             Cad = facade;
         }

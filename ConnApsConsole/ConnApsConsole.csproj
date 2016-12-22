@@ -68,6 +68,10 @@
       <Project>{9e4a0541-8dc1-4eeb-b2b7-d8ba8301f398}</Project>
       <Name>ConnApsEmailService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ConnApsWebAPIUnitTest\ConnApsWebAPIUnitTest.csproj">
+      <Project>{f6bb2aad-7eb6-4854-a6af-37d9a260ae14}</Project>
+      <Name>ConnApsWebAPIUnitTest</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsWebAPI.Models;
@@ -15,6 +16,18 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Apartment")]
     public class ApartmentController : BaseController
     {
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public ApartmentController(): base (){}
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public ApartmentController(IFacade facade): base(facade) {}
+
         /// <summary>
         /// Fetches the Apartment of the Tenant
         /// </summary>

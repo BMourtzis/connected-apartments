@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
@@ -16,6 +17,18 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Tenant")]
     public class TenantController : BaseController
     {
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public TenantController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public TenantController(IFacade facade): base(facade) { }
+
         /// <summary>
         /// Fetches the user's tenant information. The User needs to be a tenant
         /// </summary>
@@ -117,11 +130,8 @@ namespace ConnApsWebAPI.Controllers.API.V1
                 ITenant tenant;
                 try
                 {
-                    using (Cad)
-                    {
-                        tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id,
+                    tenant = Cad.CreateTenant(model.FirstName, model.LastName, model.DoB, model.Phone, user.Id,
                             model.ApartmentId, User.Identity.GetUserId());
-                    }
                     UserManager.AddToRole(user.Id, "Tenant");
                 }
                 catch (ConnectedApartmentsException e)

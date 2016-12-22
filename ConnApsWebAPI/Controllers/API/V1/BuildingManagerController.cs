@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
+using ConnApsDomain;
 using ConnApsDomain.Exceptions;
 using ConnApsDomain.Models;
 using ConnApsEmailService;
@@ -16,6 +17,17 @@ namespace ConnApsWebAPI.Controllers.API.V1
     [Authorize, RoutePrefix("api/v1/Manager")]
     public class BuildingManagerController : BaseController
     {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public BuildingManagerController(): base (){ }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection
+        /// </summary>
+        /// <param name="facade"></param>
+        public BuildingManagerController(IFacade facade): base(facade) { }
+
         /// <summary>
         /// Fetches the Building Managers of the Building
         /// </summary>
