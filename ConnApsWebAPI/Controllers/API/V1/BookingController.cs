@@ -176,6 +176,11 @@ namespace ConnApsWebAPI.Controllers.API.V1
         [HttpDelete, Route("Cancel")]
         public IHttpActionResult CancelBooking(BookingCancelModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 Cad.CancelBooking(User.Identity.GetUserId(), model.BookingId);
@@ -202,6 +207,11 @@ namespace ConnApsWebAPI.Controllers.API.V1
         [Authorize(Roles = "BuildingManager"), HttpDelete, Route("Cancel")]
         public IHttpActionResult CancelBooking(BmBookingCancelModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 Cad.CancelBooking(User.Identity.GetUserId(), model.FacilityId, model.BookingId);
