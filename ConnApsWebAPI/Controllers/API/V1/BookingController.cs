@@ -200,7 +200,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
 
         //DELETE api/Booking/Cancel
         [Authorize(Roles = "BuildingManager"), HttpDelete, Route("Cancel")]
-        public IHttpActionResult CancelBooking(BMBookingCancelModel model)
+        public IHttpActionResult CancelBooking(BmBookingCancelModel model)
         {
             try
             {
