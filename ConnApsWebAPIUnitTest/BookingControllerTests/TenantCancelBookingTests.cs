@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Results;
 using ConnApsDomain;
-using ConnApsDomain.Models;
 using ConnApsWebAPI.Controllers.API.V1;
 using ConnApsWebAPI.Models;
 using Moq;
 using Xunit;
 
-namespace ConnApsWebAPIUnitTest.WebAPI.BookingControllerTests
+namespace ConnApsWebAPIUnitTest.BookingControllerTests
 {
     public class TenantCancelBookingTests
     {

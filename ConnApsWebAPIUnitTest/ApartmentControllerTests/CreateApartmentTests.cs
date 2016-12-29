@@ -9,7 +9,7 @@ using ConnApsWebAPI.Models;
 using Moq;
 using Xunit;
 
-namespace ConnApsWebAPIUnitTest.WebAPI.ApartmentControllerTests
+namespace ConnApsWebAPIUnitTest.ApartmentControllerTests
 {
     public class CreateApartmentTests
     {

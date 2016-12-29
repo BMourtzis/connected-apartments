@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Results;
 using ConnApsDomain;
@@ -14,7 +10,7 @@ using ConnApsWebAPI.Models;
 using Moq;
 using Xunit;
 
-namespace ConnApsWebAPIUnitTest.WebAPI.BookingControllerTests
+namespace ConnApsWebAPIUnitTest.BookingControllerTests
 {
     public class CreateBookingTests
     {

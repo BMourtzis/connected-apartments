@@ -8,7 +8,7 @@ using ConnApsWebAPI.Controllers.API.V1;
 using Moq;
 using Xunit;
 
-namespace ConnApsWebAPIUnitTest.WebAPI.BookingControllerTests
+namespace ConnApsWebAPIUnitTest.BookingControllerTests
 {
     public class FetchBookingWithTwoParameters
     {

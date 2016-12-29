@@ -9,7 +9,7 @@ using ConnApsWebAPI.Models;
 using Moq;
 using Xunit;
 
-namespace ConnApsWebAPIUnitTest.WebAPI.BuildingControllerTests
+namespace ConnApsWebAPIUnitTest.BuildingControllerTests
 {
     public class FetchBuildingInfoTests
     {

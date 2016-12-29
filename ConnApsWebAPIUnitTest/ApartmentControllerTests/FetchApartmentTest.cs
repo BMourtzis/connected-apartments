@@ -55,25 +55,6 @@ namespace ConnApsWebAPIUnitTest.ApartmentControllerTests
         }
 
         [Fact]
-        public void FetchApartment_ThrowsError_BadRequest()
-        {
-            //Arrange
-            var excpetion = new ConnApsDomain.Exceptions.NotFoundException("Apartment");
-
-            facade.Setup(f => f.FetchApartment("3445")).Throws(excpetion);
-
-            var controller = new ApartmentController(facade.Object) { ControllerContext = controllerContext };
-
-            //Act
-            var result = controller.FetchApartment();
-
-            //Assert
-            Assert.NotNull(result);
-
-            var badRequest = Assert.IsType<BadRequestErrorMessageResult>(result);
-        }
-
-        [Fact]
         public void FetchApartment_ThrowsError_InternalServerError()
         {
             //Arrange
@@ -89,7 +70,26 @@ namespace ConnApsWebAPIUnitTest.ApartmentControllerTests
             //Assert
             Assert.NotNull(result);
 
-            var badRequest = Assert.IsType<InternalServerErrorResult>(result);
+            Assert.IsType<InternalServerErrorResult>(result);
+        }
+
+        [Fact]
+        public void FetchApartment_ThrowsError_BadRequest()
+        {
+            //Arrange
+            var excpetion = new ConnApsDomain.Exceptions.NotFoundException("Apartment");
+
+            facade.Setup(f => f.FetchApartment("3445")).Throws(excpetion);
+
+            var controller = new ApartmentController(facade.Object) { ControllerContext = controllerContext };
+
+            //Act
+            var result = controller.FetchApartment();
+
+            //Assert
+            Assert.NotNull(result);
+
+            Assert.IsType<BadRequestErrorMessageResult>(result);
         }
     }
 }
