@@ -23,10 +23,17 @@ namespace ConnApsWebAPI.Controllers.API.V1
         public BuildingController(): base (){ }
 
         /// <summary>
-        /// Constructor that allowes for Dependency Injection
+        /// Constructor that allowes for Dependency Injection on the Facade
         /// </summary>
         /// <param name="facade"></param>
-        public BuildingController(IFacade facade): base(facade) { }
+        public BuildingController(IFacade facade) : base(facade) { }
+
+        /// <summary>
+        /// Constructor that allowes for Dependency Injection on both the Facade and the User Manager
+        /// </summary>
+        /// <param name="facade"></param>
+        /// <param name="userManager"></param>
+        public BuildingController(IFacade facade, ApplicationUserManager userManager): base(facade, userManager) { }
 
         /// <summary>
         /// Fetches a building

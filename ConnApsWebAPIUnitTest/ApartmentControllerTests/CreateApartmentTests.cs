@@ -102,7 +102,7 @@ namespace ConnApsWebAPIUnitTest.ApartmentControllerTests
         }
 
         [Fact]
-        public void CreateBooking_ThrowsError_BadModel()
+        public void CreateFacility_ThrowsError_BadModel()
         {
             //Arrange
             var controller = new ApartmentController(facade.Object) { ControllerContext = controllerContext };

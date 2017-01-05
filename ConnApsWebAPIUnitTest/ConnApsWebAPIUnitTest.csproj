@@ -43,6 +43,7 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
@@ -137,6 +138,13 @@
     <Compile Include="BuildingControllerTests\CreateBuildingTests.cs" />
     <Compile Include="BuildingControllerTests\FetchBuildingInfoTests.cs" />
     <Compile Include="BuildingControllerTests\UpdateBuildingTests.cs" />
+    <Compile Include="BuildingManagerControllerTests\CreateBuildingManagerTests.cs" />
+    <Compile Include="BuildingManagerControllerTests\FetchBuildingManagersTests.cs" />
+    <Compile Include="BuildingManagerControllerTests\UpdateBuildingManagerTests.cs" />
+    <Compile Include="FacilityControllerTests\CreateFacilityTests.cs" />
+    <Compile Include="FacilityControllerTests\FetchFacilitiesTests.cs" />
+    <Compile Include="FacilityControllerTests\FetchFacilityTests.cs" />
+    <Compile Include="FacilityControllerTests\UpdateFacilityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

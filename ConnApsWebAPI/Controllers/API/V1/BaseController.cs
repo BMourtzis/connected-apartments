@@ -26,12 +26,23 @@ namespace ConnApsWebAPI.Controllers.API.V1
         }
 
         /// <summary>
-        /// Constructor that allowes for Dependency Injection
+        /// Constructor that allows for Injection on the Facade
         /// </summary>
         /// <param name="facade"></param>
         protected BaseController(IFacade facade)
         {
             Cad = facade;
+        }
+
+        /// <summary>
+        /// Constructor that allows for injection on both the Facade and the userManager
+        /// </summary>
+        /// <param name="facade"></param>
+        /// <param name="userManager"></param>
+        protected BaseController(IFacade facade, ApplicationUserManager userManager)
+        {
+            Cad = facade;
+            UserManager = userManager;
         }
 
         protected ApplicationUserManager UserManager

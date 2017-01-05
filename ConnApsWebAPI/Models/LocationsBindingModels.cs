@@ -40,7 +40,7 @@ namespace ConnApsWebAPI.Models
         }
     }
 
-    public class FaciltyRegisterModel
+    public class FacilityRegisterModel
     {
         [Required]
         public string Level { get; set; }
@@ -48,7 +48,7 @@ namespace ConnApsWebAPI.Models
         public string Number { get; set; }
     }
 
-    public class FaciltyUpdateModel: IValidatableObject
+    public class FacilityUpdateModel: IValidatableObject
     {
         [Required]
         public int Id { get; set; }

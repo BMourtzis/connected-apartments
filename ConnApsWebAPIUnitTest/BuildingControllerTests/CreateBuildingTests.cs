@@ -1,10 +1,16 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Web.Http.Controllers;
+using System.Web.Http.Results;
 using ConnApsDomain;
+using ConnApsDomain.Models;
 using ConnApsWebAPI;
+using ConnApsWebAPI.Controllers.API.V1;
 using ConnApsWebAPI.Models;
+using Microsoft.AspNet.Identity;
 using Moq;
+using Xunit;
 
 namespace ConnApsWebAPIUnitTest.BuildingControllerTests
 {
@@ -13,7 +19,7 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
         private Mock<IFacade> facade;
         private HttpControllerContext controllerContext;
         private RegisterBuildingModel model;
-        private ApplicationUserManager userManager;
+        private  ApplicationUserManager userManager;
 
         public CreateBuildingTests()
         {
@@ -28,11 +34,19 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
             principal.Setup(p => p.Identity).Returns(identity);
             principal.Setup(p => p.IsInRole("Tenant")).Returns(true);
 
+            //var userStore = new Mock<IUserStore<ApplicationUser>>();
+            //userManager = new ApplicationUserManager(userStore.Object);
 
-            model = new RegisterBuildingModel() { Address = "32 Francis st, Sydney, 2000", BuildingName = "Metro Apartments" };
+            model = new RegisterBuildingModel()
+            {
+                Address = "32 Francis st, Sydney, 2000",
+                BuildingName = "Metro Apartments"
+            };
 
-            controllerContext = new HttpControllerContext { RequestContext = { Principal = principal.Object } };
+            controllerContext = new HttpControllerContext {RequestContext = {Principal = principal.Object}};
         }
+
+        //TODO: Find how to test User Creation methods and fix these tests.
 
         //[Fact]
         //public async Task CreateBuilding_RegularValues_OkResult()
@@ -45,7 +59,7 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
 
         //    facade.Setup(f => f.UpdateBuilding("3445", model.BuildingName, model.Address)).Returns(building.Object);
 
-        //    var controller = new BuildingController(facade.Object) { ControllerContext = controllerContext };
+        //    var controller = new BuildingController(facade.Object, userManager);
 
         //    //Act
         //    var result = await controller.CreateBuilding(model);
@@ -65,7 +79,7 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
 
         //    facade.Setup(f => f.UpdateBuilding("3445", model.BuildingName, model.Address)).Throws(exception);
 
-        //    var controller = new BuildingController(facade.Object) { ControllerContext = controllerContext };
+        //    var controller = new BuildingController(facade.Object, userManager);
 
         //    //Act
         //    var result = controller.CreateBuilding(model);
@@ -85,7 +99,7 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
 
         //    facade.Setup(f => f.UpdateBuilding("3445", model.BuildingName, model.Address)).Throws(excpetion);
 
-        //    var controller = new BuildingController(facade.Object) { ControllerContext = controllerContext };
+        //    var controller = new BuildingController(facade.Object, userManager);
 
         //    //Act
         //    var result = controller.CreateBuilding(model);
@@ -96,19 +110,19 @@ namespace ConnApsWebAPIUnitTest.BuildingControllerTests
         //    Assert.IsType<InternalServerErrorResult>(result);
         //}
 
-        //[Fact]
-        //public void CreateBuilding_BadModel_BadRequest()
-        //{
-        //    //Arrange
-        //    var controller = new BuildingController(facade.Object) { ControllerContext = controllerContext };
-        //    controller.ModelState.AddModelError("Key", "ErrorMessage");
+        [Fact]
+        public async Task CreateBuilding_BadModel_BadRequest()
+        {
+            //Arrange
+            var controller = new BuildingController(facade.Object);
+            controller.ModelState.AddModelError("Key", "ErrorMessage");
 
-        //    //Act
-        //    var result = controller.CreateBuilding(model);
+            //Act
+            var result = await controller.CreateBuilding(model);
 
-        //    //Assert
-        //    Assert.NotNull(result);
-        //    Assert.IsType<InvalidModelStateResult>(result);
-        //}
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<InvalidModelStateResult>(result);
+        }
     }
 }

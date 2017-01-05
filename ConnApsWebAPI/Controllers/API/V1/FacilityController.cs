@@ -87,7 +87,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
 
         // POST api/Facility/Create
         [Authorize(Roles = "BuildingManager"), HttpPost, Route("Create")]
-        public IHttpActionResult CreateFacility(FaciltyRegisterModel model)
+        public IHttpActionResult CreateFacility(FacilityRegisterModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -117,8 +117,13 @@ namespace ConnApsWebAPI.Controllers.API.V1
 
         //PUT api/Facility/Update
         [Authorize(Roles = "BuildingManager"), HttpPut, Route("Update")]
-        public IHttpActionResult UpdateFacility(FaciltyUpdateModel model)
+        public IHttpActionResult UpdateFacility(FacilityUpdateModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 Cad.UpdateFacility(User.Identity.GetUserId(), model.Id, model.Level, model.Number);
