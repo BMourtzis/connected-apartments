@@ -102,7 +102,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
         {
             if (!ModelState.IsValid)
             {
-                BadRequest(ModelState);
+                return BadRequest(ModelState);
             }
 
             try
