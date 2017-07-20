@@ -31,6 +31,11 @@ namespace ConnApsDomain
             _personRegister = new PersonRegister();
         }
 
+        //public Facade(IConnApsContext context)
+        //{
+
+        //}
+
         #endregion
 
         #region Person
