@@ -8,17 +8,16 @@ namespace ConnApsEmailService
     public static class EmailService
     {
         private const string ServiceEmail = "conn.aps.sup@gmail.com";
-        private const string Password = "L-j&K9hd=/8}9wqTXt";
 
         private static void SendEmail(MailMessage mail)
         {
             var client = new SmtpClient("smtp.gmail.com", 587)
             {
-                EnableSsl = true,
+                //EnableSsl = true,
                 Timeout = 10000,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(ServiceEmail, Password)
+                //DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = true
+                //Credentials = new NetworkCredential(ServiceEmail, Password)
             };
 
 
@@ -56,8 +55,7 @@ namespace ConnApsEmailService
             {
                 IsBodyHtml = true,
                 Subject = "Welcome to Connected Apartments",
-                Body =
-                    "Welcome to Connected Apartments. Your Building Manager account has been created. The next step to take is to create new Apartment."
+                Body = "Welcome to Connected Apartments. Your Building Manager account has been created. The next step to take is to create new Apartment."
             };
 
 
