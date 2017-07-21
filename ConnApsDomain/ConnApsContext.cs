@@ -1,11 +1,16 @@
+using ConnApsDomain.Models;
+using System.Data.Entity;
+
 namespace ConnApsDomain
 {
-    using System;
-    using System.Data.Entity;
-    using System.Linq;
-
-    internal class ConnApsContext : DbContext
+    /// <summary>
+    /// 
+    /// </summary>
+    internal sealed class ConnApsContext : DbContext, IConnApsContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ConnApsContext()
             : base("name=Model")
         {
@@ -19,6 +24,7 @@ namespace ConnApsDomain
             Tenants = Set<Tenant>();
         }
 
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,14 +37,28 @@ namespace ConnApsDomain
             modelBuilder.Entity<Person>().HasMany(p => p.Bookings);
         }
 
-        public virtual DbSet<Building> Buildings { get; set; }
-        public virtual DbSet<Location> Locations { get; set; }
-        public virtual DbSet<Apartment> Apartments { get; set; }
-        public virtual DbSet<Facility> Facilities { get; set; }
-        public virtual DbSet<Booking> Bookings { get; set; }
-        public virtual DbSet<Person> People { get; set; }
-        public virtual DbSet<BuildingManager> BuildingManagers { get; set; }
-        public virtual DbSet<Tenant> Tenants { get; set; }
+        public DbSet<Building> Buildings { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<Facility> Facilities { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Person> People { get; set; }
+        public DbSet<BuildingManager> BuildingManagers { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
 
+    }
+
+    interface IConnApsContext
+    {
+        DbSet<Apartment> Apartments { get; set; }
+        DbSet<Booking> Bookings { get; set; }
+        DbSet<BuildingManager> BuildingManagers { get; set; }
+        DbSet<Building> Buildings { get; set; }
+        DbSet<Facility> Facilities { get; set; }
+        DbSet<Location> Locations { get; set; }
+        DbSet<Person> People { get; set; }
+        DbSet<Tenant> Tenants { get; set; }
+        int SaveChanges();
+        void Dispose();
     }
 }
