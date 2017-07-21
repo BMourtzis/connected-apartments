@@ -23,6 +23,15 @@ namespace ConnApsDomain.Registers
             _context = new ConnApsContext();
         }
 
+        /// <summary>
+        /// A constructor that allows for dependency injection of the IConnApsContext
+        /// </summary>
+        /// <param name="context">The IConnApsContext to be injected</param>
+        public BuildingRegister(IConnApsContext context)
+        {
+            _context = context;
+        }
+
         #endregion
 
         #region Properties
@@ -30,7 +39,7 @@ namespace ConnApsDomain.Registers
         /// <summary>
         /// Connects to the database.
         /// </summary>
-        private readonly ConnApsContext _context;
+        private readonly IConnApsContext _context;
 
         #endregion
 
