@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConnApsEmailService;
 
 namespace ConnApsConsole
 {
@@ -11,7 +12,8 @@ namespace ConnApsConsole
     {
         static void Main(string[] args)
         {
-            //var smth = new ConnApsWebAPIUnitTest.ApartmentControllerTests();
+            var mailSerivce = new EmailService();
+            mailSerivce.SendTestEmail("bill.mourtzis@gmail.com");
         }
     }
 }

@@ -243,3 +243,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# .config files with sensitive data
+ConnApsWebAPI/cstrings\.config
+ConnApsWebAPI/appsettings\.config

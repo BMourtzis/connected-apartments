@@ -98,7 +98,8 @@ namespace ConnApsWebAPI.Controllers.API.V1
                     return InternalServerError();
                 }
 
-                EmailService.SendBuildingCreationEmail(model.Email);
+                var emailService = new EmailService();
+                emailService.SendBuildingCreationEmail(model.Email);
                 return GetResponse();
             }
             else
