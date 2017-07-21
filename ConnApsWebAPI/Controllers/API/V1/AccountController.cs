@@ -30,10 +30,11 @@ namespace ConnApsWebAPI.Controllers.API.V1
         public AccountController(): base (){ }
 
         /// <summary>
-        /// Constructor that allowes for Dependency Injection
+        /// Constructor that allows for injection of ConnApsDomain
         /// </summary>
         /// <param name="facade"></param>
         public AccountController(IFacade facade): base(facade) { }
+
 
         public AccountController(ApplicationUserManager userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
