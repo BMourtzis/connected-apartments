@@ -264,7 +264,7 @@ namespace ConnApsDomain
         /// <returns>Returns a Interface of the Building</returns>
         public IBuilding FetchBuilding(string id)
         {
-            var building = _buildingRegister.FetchBuilding(_personRegister.FetchBuildingId(id));
+            var building = _buildingRegister.FetchBuilding(_personRegister.FetchPerson(id).BuildingId);
             return building;
         }
 
