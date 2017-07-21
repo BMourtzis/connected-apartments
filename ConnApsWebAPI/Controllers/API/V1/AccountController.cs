@@ -167,7 +167,8 @@ namespace ConnApsWebAPI.Controllers.API.V1
                 await store.SetPasswordHashAsync(cUser, hashedPass);
                 await store.UpdateAsync(cUser);
 
-                EmailService.SendPasswordResetEmail(cUser.Email, password);
+                var emailService = new EmailService();
+                emailService.SendPasswordResetEmail(cUser.Email, password);
             }
             catch (ConnectedApartmentsException e)
             {

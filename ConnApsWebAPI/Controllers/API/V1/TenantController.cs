@@ -143,8 +143,9 @@ namespace ConnApsWebAPI.Controllers.API.V1
                 {
                     return InternalServerError();
                 }
-               
-                EmailService.SendTenantCreationEmail(model.Email, password);
+
+                var emailService = new EmailService();
+                emailService.SendTenantCreationEmail(model.Email, password);
                 return Ok<ITenant>(tenant);
             }
             else

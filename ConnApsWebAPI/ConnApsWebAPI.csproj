@@ -264,6 +264,8 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="cstrings.config" />
+    <Content Include="appsettings.config" />
     <None Include="Properties\PublishProfiles\ConnApsWebAPI20160926090904 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\ConnApsWebAPI20160926090904 - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\ConnApsWebAPI20160926090904 - Web Deploy.pubxml" />
