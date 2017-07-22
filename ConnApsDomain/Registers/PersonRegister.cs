@@ -220,7 +220,8 @@ namespace ConnApsDomain.Registers
         }
 
         /// <summary>
-        /// </summary>Fetches all the Tenant from the database
+        /// Fetches all the Tenant from the database
+        /// </summary>
         /// <returns>A list of Tenants</returns>
         public IEnumerable<Tenant> FetchTenants()
         {

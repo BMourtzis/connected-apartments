@@ -57,6 +57,25 @@ namespace ConnApsWebAPI.Controllers.API.V1
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if(_userManager != null)
+                {
+                    _userManager.Dispose();
+                    _userManager = null;
+                }
+
+                if(Cad != null)
+                {
+                    Cad.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
         #region Helpers
 
         /// <summary>
