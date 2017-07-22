@@ -229,7 +229,7 @@ namespace ConnApsDomain
         public IBuilding CreateBuilding(string firstName, string lastName, DateTime dob, string phone, string userId, string buildingName, string address)
         {
             var building = _buildingRegister.CreateBuilding(buildingName, address);
-            var bm = _personRegister.CreateBuildingManager(firstName, lastName, dob, address, userId, building.Id);
+            var bm = _personRegister.CreateBuildingManager(firstName, lastName, dob, phone, userId, building.Id);
             return building;
         }
 
