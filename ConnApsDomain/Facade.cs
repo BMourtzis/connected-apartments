@@ -27,14 +27,10 @@ namespace ConnApsDomain
         /// </summary>
         public Facade()
         {
-            _buildingRegister = new BuildingRegister();
-            _personRegister = new PersonRegister();
+            var context = new ConnApsContext();
+            _buildingRegister = new BuildingRegister(context);
+            _personRegister = new PersonRegister(context);
         }
-
-        //public Facade(IConnApsContext context)
-        //{
-
-        //}
 
         #endregion
 
@@ -427,7 +423,7 @@ namespace ConnApsDomain
         }
 
         /// <summary>
-        /// Updatees Tenant Details
+        /// Updated Tenant Details
         /// </summary>
         /// <param name="userId">The Id of the User</param>
         /// <param name="firstName">The new First Name of the Tenant</param>
@@ -440,17 +436,17 @@ namespace ConnApsDomain
             var tenant = _personRegister.UpdateTenant(userId, firstName, lastName, dob, phone);
             return tenant;
         }
-        
-        //TODO: Add verification that the one doing the change is part of the building
+
         /// <summary>
-            /// Chnages apartments for a tenant
-            /// </summary>
-            /// <param name="userId">The Id of the User that connects to the Tenant</param>
-            /// <param name="apartmentId">The Id of the new Apartment</param>
-            /// <returns>Returns the Interface the newly updated Tenant</returns>
-        public ITenant ChangeApartment(string userId, int apartmentId)
+        /// Chnages apartment for a Tenant. Used by a Building Manager
+        /// </summary>
+        /// <param name="managerId">The Id of the manager making the change</param>
+        /// <param name="userId">The Id of the User that connects to the Tenant</param>
+        /// <param name="apartmentId">The Id of the new Apartment</param>
+        /// <returns>Returns the Interface the newly updated Tenant</returns>
+        public ITenant ChangeApartment(string managerId, string userId, int apartmentId)
             {
-                var tenant = _personRegister.ChangeApartment(userId, apartmentId);
+                var tenant = _personRegister.ChangeApartment(managerId, userId, apartmentId);
                 return tenant;
             }
 
@@ -754,10 +750,11 @@ namespace ConnApsDomain
         /// <summary>
         /// Chnages apartments for a tenant
         /// </summary>
+        /// <param name="managerId">The Id of the manager making the change</param>
         /// <param name="userId">The Id of the User that connects to the Tenant</param>
         /// <param name="apartmentId">The Id of the new Apartment</param>
         /// <returns>Returns the Interface the newly updated Tenant</returns>
-        ITenant ChangeApartment(string userId, int apartmentId);
+        ITenant ChangeApartment(string managerId, string userId, int apartmentId);
 
         #endregion
 

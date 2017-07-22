@@ -31,7 +31,7 @@ namespace ConnApsDomain.Models
         protected Building() { }
 
         /// <summary>
-        /// 
+        /// Default Constructor
         /// </summary>
         /// <param name="buildingName">The Name of the building</param>
         /// <param name="address">The address of the building</param>
@@ -75,7 +75,7 @@ namespace ConnApsDomain.Models
 
         #endregion
 
-        #region Functions
+        #region Methods
 
         /// <summary>
         /// Update information for the building

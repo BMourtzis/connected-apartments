@@ -15,7 +15,6 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.BuildingController_Tests
     {
         private Mock<IFacade> facade;
         private HttpControllerContext controllerContext;
-        private BmBookingCancelModel model;
 
         public FetchBuildingInfoTests()
         {

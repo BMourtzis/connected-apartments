@@ -28,7 +28,7 @@ namespace ConnApsDomain.Registers
         /// A constructor that allows for dependency injection of the IConnApsContext
         /// </summary>
         /// <param name="context">The IConnApsContext to be injected</param>
-        public PersonRegister(IConnApsContext context)
+        public PersonRegister(ConnApsContext context)
         {
             _context = context;
         }
@@ -40,7 +40,7 @@ namespace ConnApsDomain.Registers
         /// <summary>
         /// Connects to the Database
         /// </summary>
-        private readonly IConnApsContext _context;
+        private readonly ConnApsContext _context;
 
         #endregion
 
@@ -225,7 +225,7 @@ namespace ConnApsDomain.Registers
         /// <returns>A list of Tenants</returns>
         public IEnumerable<Tenant> FetchTenants()
         {
-            var tenants = _context.Tenants;
+            var tenants = _context.People.OfType<Tenant>();
             return tenants;
         }
 
@@ -235,9 +235,15 @@ namespace ConnApsDomain.Registers
         /// <param name="userId">The Id of the User the tenant is connected to</param>
         /// <param name="apartmentId">The Id of the new apartment</param>
         /// <returns></returns>
-        public Tenant ChangeApartment(string userId, int apartmentId)
+        public Tenant ChangeApartment(string managerId, string userId, int apartmentId)
         {
-            var tenant = FetchTenant(userId);
+            var buildingId = FetchPerson(managerId).BuildingId;
+            var tenant = _context.People.OfType<Tenant>().FirstOrDefault(t => (t.BuildingId == buildingId) && (t.UserId == userId));
+            if(tenant == null)
+            {
+                throw new NotFoundException("Tenant");
+            }
+
             tenant.ChangeApartment(apartmentId);
             _context.SaveChanges();
             return tenant;
@@ -251,7 +257,7 @@ namespace ConnApsDomain.Registers
         public IEnumerable<Tenant> FetchTenants(int buildingId)
         {
             //TODO: Maybe put that in Building Register
-            var tenants = _context.Tenants.Where(t => t.BuildingId.Equals(buildingId));
+            var tenants = _context.People.OfType<Tenant>().Where(t => t.BuildingId.Equals(buildingId));
             return tenants; 
         }
 

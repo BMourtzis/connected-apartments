@@ -201,7 +201,7 @@ namespace ConnApsWebAPI.Controllers.API.V1
 
             try
             {
-                Cad.ChangeApartment(model.UserId, model.ApartmentId);
+                Cad.ChangeApartment(User.Identity.GetUserId(), model.UserId, model.ApartmentId);
             }
             catch (ConnectedApartmentsException e)
             {

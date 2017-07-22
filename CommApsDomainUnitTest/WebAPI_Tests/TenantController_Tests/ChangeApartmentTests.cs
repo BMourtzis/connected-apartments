@@ -30,7 +30,7 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
             principal.Setup(p => p.Identity).Returns(identity);
             principal.Setup(p => p.IsInRole("Tenant")).Returns(true);
 
-            model = new ChangeApartmentModel() {ApartmentId = 2, UserId = "3445"};
+            model = new ChangeApartmentModel() {ApartmentId = 2, UserId = "1335"};
 
             controllerContext = new HttpControllerContext { RequestContext = { Principal = principal.Object } };
         }
@@ -42,7 +42,7 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
             var facility = new Mock<ITenant>();
             facility.SetupGet(a => a.Id).Returns(2);
 
-            facade.Setup(f => f.ChangeApartment(model.UserId, model.ApartmentId)).Returns(facility.Object);
+            facade.Setup(f => f.ChangeApartment("3445", model.UserId, model.ApartmentId)).Returns(facility.Object);
 
             var controller = new TenantController(facade.Object) { ControllerContext = controllerContext };
 
@@ -62,7 +62,7 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
             //Arrange
             var exception = new ConnApsDomain.Exceptions.NotFoundException("Tenant");
 
-            facade.Setup(f => f.ChangeApartment(model.UserId, model.ApartmentId)).Throws(exception);
+            facade.Setup(f => f.ChangeApartment("3445", model.UserId, model.ApartmentId)).Throws(exception);
 
             var controller = new TenantController(facade.Object) { ControllerContext = controllerContext };
 
@@ -82,7 +82,7 @@ namespace CommApsDomainUnitTest.WebAPI_Tests.TenantController_Tests
             //Arrange
             var exception = new ConnApsDomain.Exceptions.InternalException();
 
-            facade.Setup(f => f.ChangeApartment(model.UserId, model.ApartmentId)).Throws(exception);
+            facade.Setup(f => f.ChangeApartment("3445", model.UserId, model.ApartmentId)).Throws(exception);
 
             var controller = new TenantController(facade.Object) { ControllerContext = controllerContext };
 

@@ -27,7 +27,7 @@ namespace ConnApsDomain.Registers
         /// A constructor that allows for dependency injection of the IConnApsContext
         /// </summary>
         /// <param name="context">The IConnApsContext to be injected</param>
-        public BuildingRegister(IConnApsContext context)
+        public BuildingRegister(ConnApsContext context)
         {
             _context = context;
         }
@@ -39,7 +39,7 @@ namespace ConnApsDomain.Registers
         /// <summary>
         /// Connects to the database.
         /// </summary>
-        private readonly IConnApsContext _context;
+        private readonly ConnApsContext _context;
 
         #endregion
 
@@ -181,6 +181,7 @@ namespace ConnApsDomain.Registers
             return building.Apartments;
         }
 
+        //TODO: Can I find a safer way to get all of the apartments?
         /// <summary>
         /// Fetches all the apartments in the building
         /// </summary>
