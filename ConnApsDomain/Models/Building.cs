@@ -234,7 +234,6 @@ namespace ConnApsDomain.Models
 
         #endregion
 
-
     }
 
     public interface IBuilding

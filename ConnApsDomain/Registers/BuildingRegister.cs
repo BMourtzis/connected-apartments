@@ -100,6 +100,16 @@ namespace ConnApsDomain.Registers
             var buildings = _context.Buildings;
             return buildings;
         }
+        
+        /// <summary>
+        /// Removed a building via its id and everything associated with it
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveBuilding(int id)
+        {
+            var building = FetchBuilding(id);
+            _context.Buildings.Remove(building);
+        }
 
         #endregion
 

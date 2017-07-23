@@ -264,6 +264,15 @@ namespace ConnApsDomain
             return building;
         }
 
+        /// <summary>
+        /// Removes a building with its id and everything else associated with it
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveBuilding(int id)
+        {
+            _buildingRegister.RemoveBuilding(id);
+        }
+
         #endregion
 
         #region Facility
