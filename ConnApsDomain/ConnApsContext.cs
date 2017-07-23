@@ -6,7 +6,7 @@ namespace ConnApsDomain
     /// <summary>
     /// 
     /// </summary>
-    internal sealed class ConnApsContext : DbContext, IConnApsContext
+    internal sealed class ConnApsContext : DbContext
     {
         /// <summary>
         /// 
@@ -46,19 +46,5 @@ namespace ConnApsDomain
         public DbSet<BuildingManager> BuildingManagers { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
 
-    }
-
-    interface IConnApsContext
-    {
-        DbSet<Apartment> Apartments { get; set; }
-        DbSet<Booking> Bookings { get; set; }
-        DbSet<BuildingManager> BuildingManagers { get; set; }
-        DbSet<Building> Buildings { get; set; }
-        DbSet<Facility> Facilities { get; set; }
-        DbSet<Location> Locations { get; set; }
-        DbSet<Person> People { get; set; }
-        DbSet<Tenant> Tenants { get; set; }
-        int SaveChanges();
-        void Dispose();
     }
 }
